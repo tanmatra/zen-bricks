@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 
@@ -58,5 +59,9 @@ public class UI
 
     int getTextAscent() {
         return fontMetrics.getAscent();
+    }
+
+    Point getTextExtent(String text) {
+        return gc.textExtent(text, SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
     }
 }
