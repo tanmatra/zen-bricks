@@ -10,6 +10,7 @@ public abstract class Brick
     int y;
     int width;
     int height;
+    boolean lineBreak;
 
     Brick(Brick parent) {
         this.parent = parent;
@@ -44,5 +45,13 @@ public abstract class Brick
 
     void calculateSize(UI ui) {
         // todo
+    }
+
+    boolean isLineBreak() {
+        return lineBreak;
+    }
+
+    int getAscent(UI ui) {
+        return 0;
     }
 }

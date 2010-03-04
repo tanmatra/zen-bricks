@@ -9,6 +9,7 @@ import org.eclipse.swt.graphics.Point;
 
 public class TextBrick extends Brick
 {
+    private static final int TEXT_MARGIN_TOP = 2;
     private static final int TEXT_MARGIN_LEFT = 2;
     private static final int LPAD = 18;
 
@@ -44,6 +45,18 @@ public class TextBrick extends Brick
         children.add(child);
     }
 
+    int getAscent(UI ui) {
+        int ascent = ui.getTextAscent();
+        for (final Brick brick : children) {
+            if (brick.isLineBreak()) {
+                break;
+            }
+            final int childAscent = brick.getAscent(ui);
+            ascent = Math.max(ascent, childAscent);
+        }
+        return ascent;
+    }
+
     void paint(GC gc, int baseX, int baseY, UI ui) {
         super.paint(gc, baseX, baseY, ui);
         paintText(gc, baseX, baseY, ui);
@@ -59,15 +72,16 @@ public class TextBrick extends Brick
     private void paintText(GC gc, int baseX, int baseY, UI ui) {
         gc.setForeground(ui.getTextColor());
         gc.setBackground(ui.getTextBackColor());
-        gc.drawText(text, baseX + TEXT_MARGIN_LEFT, baseY + 2, false);
+        gc.drawText(text, baseX + TEXT_MARGIN_LEFT, baseY + TEXT_MARGIN_TOP,
+                false);
     }
 
     void calculateSize(UI ui) {
-        final Point extent = ui.getGC().textExtent(text,
+        final Point textExtent = ui.getGC().textExtent(text,
                 SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
 //        System.out.println(extent);
-        int innerWidth = TEXT_MARGIN_LEFT + extent.x;
-        int currY = 2 + extent.y + 1; // extra 1 pixel for text bug?
+        int innerWidth = TEXT_MARGIN_LEFT + textExtent.x;
+        int currY = TEXT_MARGIN_TOP + textExtent.y + 1; // extra 1 pixel for text bug?
         // todo
         for (final Brick brick : children) {
             brick.calculateSize(ui);

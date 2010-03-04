@@ -2,6 +2,7 @@ package zen.bricks;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
@@ -13,13 +14,16 @@ public class UI
     private Color textColor;
     private Color backgroundColor;
     private Color textBackColor;
+    private FontMetrics fontMetrics;
 
     public UI(Canvas canvas) {
         gc = new GC(canvas);
         gc.setAntialias(SWT.ON);
+        fontMetrics = gc.getFontMetrics();
+
         final Display display = canvas.getDisplay();
         borderColor = display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
-        textColor = display.getSystemColor( SWT.COLOR_LIST_FOREGROUND);
+        textColor = display.getSystemColor(SWT.COLOR_LIST_FOREGROUND);
         backgroundColor = display.getSystemColor(SWT.COLOR_INFO_BACKGROUND);
         textBackColor = display.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
     }
@@ -46,5 +50,13 @@ public class UI
 
     void dispose() {
         gc.dispose();
+    }
+
+    FontMetrics getFontMetrics() {
+        return fontMetrics;
+    }
+
+    int getTextAscent() {
+        return fontMetrics.getAscent();
     }
 }
