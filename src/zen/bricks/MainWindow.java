@@ -1,18 +1,14 @@
 package zen.bricks;
 
-import java.io.File;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.window.ApplicationWindow;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 public class MainWindow extends ApplicationWindow
@@ -40,11 +36,8 @@ public class MainWindow extends ApplicationWindow
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
 
-        final Action importXmlAction = new Action("Import XML...") {
-            public void run() {
-                importXml();
-            }
-        };
+        final Action importXmlAction =
+                new ImportXMLAction(this, "Import XML...");
         fileMenu.add(importXmlAction);
         fileMenu.add(new Separator());
         final Action exitAction = new Action("E&xit") {
@@ -55,18 +48,6 @@ public class MainWindow extends ApplicationWindow
         fileMenu.add(exitAction);
 
         return mainMenu;
-    }
-
-    void importXml() {
-        final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-        dialog.setFilterNames(new String[] { "XML files" });
-        dialog.setFilterExtensions(new String[] { "*.xml" });
-        dialog.setFilterPath(new File("./").toString());
-        final String fileName = dialog.open();
-        if (fileName == null) {
-            return;
-        }
-        // TODO
     }
 
     protected Control createContents(Composite parent) {
