@@ -38,12 +38,16 @@ public class Editor
         rootBrick = new TextBrick(null,
                 "Quick brown fox\njumps over the lazy dog");
 
-        rootBrick.addChild(new ColorBrick(rootBrick, 200, 50,
+        final ColorBrick color1 = new ColorBrick(rootBrick, 200, 50,
                 new RGB(192, 64, 64),
-                new RGB(255, 128, 128)));
+                new RGB(255, 128, 128));
+        color1.lineBreak = false;
+        rootBrick.addChild(color1);
         final TextBrick b1 = new TextBrick("Jumps over");
         rootBrick.addChild(b1);
-        b1.addChild(new TextBrick("the lazy dog."));
+        final TextBrick text2 = new TextBrick("the lazy dog.");
+        text2.lineBreak = false;
+        b1.addChild(text2);
         rootBrick.addChild(new ColorBrick(rootBrick, 50, 100,
                 new RGB(64, 192, 64),
                 new RGB(128, 255, 128)));
@@ -124,14 +128,16 @@ public class Editor
         final int newYSelection = canvas.getVerticalBar().getSelection();
         final int delta = newYSelection - ySelection;
         ySelection = newYSelection;
-        canvas.scroll(0, -delta, 0, 0, clientArea.width, clientArea.height, false);
+        canvas.scroll(0, -delta, 0, 0, clientArea.width, clientArea.height,
+                false);
     }
 
     void horizScroll() {
         final int newXSelection = canvas.getHorizontalBar().getSelection();
         final int delta = newXSelection - xSelection;
         xSelection = newXSelection;
-        canvas.scroll(-delta, 0, 0, 0, clientArea.width, clientArea.height, false);
+        canvas.scroll(-delta, 0, 0, 0, clientArea.width, clientArea.height,
+                false);
     }
 
     public Canvas getCanvas() {
