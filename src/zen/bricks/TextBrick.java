@@ -3,15 +3,19 @@ package zen.bricks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 
 public class TextBrick extends Brick
 {
+    private static final int LINE_SPACING = 1;
+    private static final int PADDING_LEFT = 18;
+    private static final int PADDING_TOP = 2;
+    private static final int PADDING_RIGHT = 2;
+    private static final int PADDING_BOTTOM = 2;
+    private static final int SPACING = 2;
     private static final int TEXT_MARGIN_TOP = 2;
     private static final int TEXT_MARGIN_LEFT = 2;
-    private static final int LPAD = 18;
 
     String text;
     final List<Brick> children = new ArrayList<Brick>();
@@ -77,21 +81,35 @@ public class TextBrick extends Brick
     }
 
     void calculateSize(UI ui) {
-        final Point textExtent = ui.getGC().textExtent(text,
-                SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
-//        System.out.println(extent);
-        int innerWidth = TEXT_MARGIN_LEFT + textExtent.x;
-        int currY = TEXT_MARGIN_TOP + textExtent.y + 1; // extra 1 pixel for text bug?
-        // todo
+        final Point textExtent = ui.getTextExtent(text);
+        width = TEXT_MARGIN_LEFT + textExtent.x;
+        int currX = width + SPACING;
+        int currY = PADDING_TOP;
+        int currLineHeight = TEXT_MARGIN_TOP + textExtent.y;
         for (final Brick brick : children) {
             brick.calculateSize(ui);
-            brick.x = LPAD;
-            currY += 1;
-            brick.y = currY;
-            currY += brick.height;
-            innerWidth = Math.max(innerWidth, brick.x + brick.width);
+            if (brick.isLineBreak()) {
+                currX = PADDING_LEFT;
+                currY += currLineHeight + LINE_SPACING;
+                brick.x = currX;
+                brick.y = currY;
+                currLineHeight = brick.height;
+            } else {
+                currLineHeight = Math.max(currLineHeight, brick.height);
+                currX += SPACING;
+                // currY is unchanged
+                brick.x = currX;
+                brick.y = currY;
+                currX += brick.width;
+            }
+            width = Math.max(width, brick.x + brick.width);
         }
-        width = innerWidth + 2;
-        height = currY + 2;
+        width += PADDING_RIGHT;
+        height = currY + currLineHeight + PADDING_BOTTOM;
+    }
+
+    public String toString() {
+        return "TextBrick['" + text + "', x=" + x + ", y=" + y + ", w=" + width
+            + ", h=" + height + "]";
     }
 }
