@@ -10,7 +10,7 @@ public abstract class Brick
     int y;
     int width;
     int height;
-    boolean lineBreak;
+    boolean lineBreak = true;
 
     Brick(Brick parent) {
         this.parent = parent;
