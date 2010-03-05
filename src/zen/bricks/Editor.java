@@ -134,17 +134,17 @@ public class Editor
     void vertScroll() {
         final int newYSelection = canvas.getVerticalBar().getSelection();
         final int delta = newYSelection - ySelection;
-        ySelection = newYSelection;
         canvas.scroll(0, -delta, 0, 0, clientArea.width, clientArea.height,
                 false);
+        ySelection = newYSelection;
     }
 
     void horizScroll() {
         final int newXSelection = canvas.getHorizontalBar().getSelection();
         final int delta = newXSelection - xSelection;
-        xSelection = newXSelection;
         canvas.scroll(-delta, 0, 0, 0, clientArea.width, clientArea.height,
                 false);
+        xSelection = newXSelection;
     }
 
     public Canvas getCanvas() {
@@ -152,8 +152,6 @@ public class Editor
     }
 
     void paint(GC gc) {
-//        System.out.println("Clipping (x, y, w, h): " + gc.getClipping() +
-//                ", selection(x, y): " + xSelection + ", " + ySelection);
         gc.setAntialias(SWT.ON);
         final Rectangle clipping = gc.getClipping();
         rootBrick.paint(gc, -xSelection, -ySelection, ui, clipping);
