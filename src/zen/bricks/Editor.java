@@ -155,6 +155,7 @@ public class Editor
 //        System.out.println("Clipping (x, y, w, h): " + gc.getClipping() +
 //                ", selection(x, y): " + xSelection + ", " + ySelection);
         gc.setAntialias(SWT.ON);
-        rootBrick.paint(gc, -xSelection, -ySelection, ui);
+        final Rectangle clipping = gc.getClipping();
+        rootBrick.paint(gc, -xSelection, -ySelection, ui, clipping);
     }
 }

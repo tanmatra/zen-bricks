@@ -3,6 +3,7 @@ package zen.bricks;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 
 public class ColorBrick extends Brick
 {
@@ -33,7 +34,7 @@ public class ColorBrick extends Brick
         super.dispose();
     }
 
-    void paint(GC gc, int baseX, int baseY, UI ui) {
+    void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
 //        System.out.println("base x, y: " + baseX + ", " + baseY);
         gc.setForeground(foreColor);
         gc.setBackground(backColor);

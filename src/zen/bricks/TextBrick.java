@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 
 public class TextBrick extends Brick
 {
@@ -18,6 +19,7 @@ public class TextBrick extends Brick
     private static final int TEXT_MARGIN_LEFT = 2;
 
     String text;
+    private Point textExtent;
     final List<Brick> children = new ArrayList<Brick>();
 
     TextBrick(TextBrick parent) {
@@ -64,27 +66,37 @@ public class TextBrick extends Brick
         return ascent;
     }
 
-    void paint(GC gc, int baseX, int baseY, UI ui) {
-        super.paint(gc, baseX, baseY, ui);
-        paintText(gc, baseX, baseY, ui);
-        paintChildren(gc, baseX, baseY, ui);
+    void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+        super.paint(gc, baseX, baseY, ui, clipping);
+        paintText(gc, baseX, baseY, ui, clipping);
+        paintChildren(gc, baseX, baseY, ui, clipping);
     }
 
-    void paintChildren(GC gc, int baseX, int baseY, UI ui) {
+    private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+        final int textX = baseX + TEXT_MARGIN_LEFT;
+        final int textY = baseY + TEXT_MARGIN_TOP;
+        if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
+            return;
+        }
+        gc.setForeground(ui.getTextColor());
+        gc.setBackground(ui.getTextBackColor());
+        gc.drawText(text, textX, textY, false);
+    }
+
+    void paintChildren(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
         for (final Brick brick : children) {
-            brick.paint(gc, baseX + brick.x, baseY + brick.y, ui);
+            final int brickX = baseX + brick.x;
+            final int brickY = baseY + brick.y;
+            if (!clipping.intersects(brickX, brickY, brick.width, brick.height))
+            {
+                continue;
+            }
+            brick.paint(gc, brickX, brickY, ui, clipping);
         }
     }
 
-    private void paintText(GC gc, int baseX, int baseY, UI ui) {
-        gc.setForeground(ui.getTextColor());
-        gc.setBackground(ui.getTextBackColor());
-        gc.drawText(text, baseX + TEXT_MARGIN_LEFT, baseY + TEXT_MARGIN_TOP,
-                false);
-    }
-
     void calculateSize(UI ui) {
-        final Point textExtent = ui.getTextExtent(text);
+        textExtent = ui.getTextExtent(text);
         width = TEXT_MARGIN_LEFT + textExtent.x;
         int currX = width + SPACING;
         int currY = PADDING_TOP;

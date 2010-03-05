@@ -1,6 +1,7 @@
 package zen.bricks;
 
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Rectangle;
 
 public abstract class Brick
 {
@@ -46,7 +47,7 @@ public abstract class Brick
         }
     }
 
-    void paint(GC gc, int baseX, int baseY, UI ui) {
+    void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
         paintBackground(gc, baseX, baseY, ui);
         paintBorder(gc, baseX, baseY, ui);
     }
