@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 public class Editor
 {
     final Canvas canvas;
-    TextBrick rootBrick; // fix type
+    Brick rootBrick;
     Rectangle clientArea;
     int xSelection;
     int ySelection;
@@ -35,7 +35,13 @@ public class Editor
         createListeners();
         initScrollbars();
 
-        rootBrick = new TextBrick(null,
+        rootBrick = makeSample();
+
+        refresh();
+    }
+
+    TextBrick makeSample() {
+        TextBrick rootBrick = new TextBrick(null,
                 "Quick brown fox\njumps over the lazy dog");
 
         final ColorBrick color1 = new ColorBrick(rootBrick, 200, 50,
@@ -52,7 +58,7 @@ public class Editor
                 new RGB(64, 64, 192),
                 new RGB(128, 128, 255));
 
-        refresh();
+        return rootBrick;
     }
 
     void refresh() {
