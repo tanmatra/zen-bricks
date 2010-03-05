@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MainWindow extends ApplicationWindow
 {
-    private Editor editor;
+    Editor editor;
 
     public MainWindow() {
         super(null);

@@ -42,19 +42,20 @@ public class Editor
                 new RGB(192, 64, 64),
                 new RGB(255, 128, 128));
         color1.lineBreak = false;
-        rootBrick.addChild(color1);
-        final TextBrick b1 = new TextBrick("Jumps over");
-        rootBrick.addChild(b1);
-        final TextBrick text2 = new TextBrick("the lazy dog.");
+        final TextBrick b1 = new TextBrick(rootBrick, "Jumps over");
+        final Brick text2 = new TextBrick(b1, "the lazy dog.");
         text2.lineBreak = false;
-        b1.addChild(text2);
-        rootBrick.addChild(new ColorBrick(rootBrick, 50, 100,
+        new ColorBrick(rootBrick, 50, 100,
                 new RGB(64, 192, 64),
-                new RGB(128, 255, 128)));
-        rootBrick.addChild(new ColorBrick(rootBrick, 100, 100,
+                new RGB(128, 255, 128));
+        new ColorBrick(rootBrick, 100, 100,
                 new RGB(64, 64, 192),
-                new RGB(128, 128, 255)));
+                new RGB(128, 128, 255));
 
+        refresh();
+    }
+
+    void refresh() {
         rootBrick.realize(ui);
         rootBrick.calculateSize(ui);
     }

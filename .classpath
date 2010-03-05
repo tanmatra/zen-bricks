@@ -5,5 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SWT"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.jface"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.core.commands"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.core.runtime"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.equinox.common"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

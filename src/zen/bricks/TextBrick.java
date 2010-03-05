@@ -20,13 +20,16 @@ public class TextBrick extends Brick
     String text;
     final List<Brick> children = new ArrayList<Brick>();
 
-    TextBrick(Brick parent, String text) {
+    TextBrick(TextBrick parent) {
+        super(parent);
+    }
+
+    TextBrick(TextBrick parent, String text) {
         super(parent);
         this.text = text;
     }
 
-    TextBrick(String text) {
-        super(null);
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -111,5 +114,9 @@ public class TextBrick extends Brick
     public String toString() {
         return "TextBrick['" + text + "', x=" + x + ", y=" + y + ", w=" + width
             + ", h=" + height + "]";
+    }
+
+    void childResized(Brick child) {
+        // todo
     }
 }
