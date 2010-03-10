@@ -32,6 +32,27 @@ class ImportXMLAction extends Action
             return new InputSource(new StringReader(""));
         }
 
+        private static String removeCRs(String str) {
+            int i = str.indexOf('\r');
+            if (i < 0) {
+                return str;
+            }
+            StringBuilder res = new StringBuilder(str.length());
+            res.append(str, 0, i);
+            i++;
+            while (true) {
+                final int p = str.indexOf('\r', i);
+                if (p < 0) {
+                    res.append(str, i, str.length());
+                    break;
+                } else {
+                    res.append(str, i, p);
+                    i = p + 1;
+                }
+            }
+            return res.toString();
+        }
+
         public void startElement(String uri, String localName,
                 String qName, Attributes attributes) throws SAXException
         {
@@ -43,7 +64,7 @@ class ImportXMLAction extends Action
                 final String attName = attributes.getQName(i);
                 final TextBrick attNameBrick =
                         new TextBrick(elementBrick, attName + " =");
-                final String attValue = attributes.getValue(i);
+                final String attValue = removeCRs(attributes.getValue(i));
                 final TextBrick attValueBrick =
                         new TextBrick(attNameBrick, attValue);
                 attValueBrick.lineBreak = false;
@@ -54,7 +75,7 @@ class ImportXMLAction extends Action
 
         private void handleString() {
             if (buffer.length() != 0) {
-                final String str = buffer.toString().trim();
+                final String str = removeCRs(buffer.toString().trim());
                 if (str.length() != 0) {
                     if (brick != null) {
                         @SuppressWarnings("unused")
