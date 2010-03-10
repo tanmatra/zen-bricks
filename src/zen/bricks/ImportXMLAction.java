@@ -105,6 +105,7 @@ class ImportXMLAction extends Action
             editor.setRoot(root);
             mainWindow.setTitle(fileName);
         } catch (Exception e) {
+            e.printStackTrace();
             final IStatus status =
                     new Status(IStatus.ERROR, "zen.bricks",
                             e.getClass().getName(), e);
