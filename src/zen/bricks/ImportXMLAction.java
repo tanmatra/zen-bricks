@@ -92,13 +92,13 @@ class ImportXMLAction extends Action
         }
         try {
             final Editor editor = mainWindow.editor;
-            editor.rootBrick.dispose();
-            editor.rootBrick = parse(fileName);
-            editor.refresh();
-            editor.resized();
+            final TextBrick root = parse(fileName);
+            editor.setRoot(root);
+            mainWindow.setTitle(fileName);
         } catch (Exception e) {
             final IStatus status =
-                    new Status(IStatus.ERROR, "zen.bricks", "Exception", e);
+                    new Status(IStatus.ERROR, "zen.bricks",
+                            e.getClass().getName(), e);
             ErrorDialog.openError(mainWindow.getShell(), "Import error",
                     null, status);
         }

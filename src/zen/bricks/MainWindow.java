@@ -69,4 +69,8 @@ public class MainWindow extends ApplicationWindow
         window.open();
         Display.getCurrent().dispose();
     }
+
+    public void setTitle(String fileName) {
+        getShell().setText("Bricks - " + fileName);
+    }
 }

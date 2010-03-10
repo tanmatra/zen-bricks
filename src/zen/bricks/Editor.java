@@ -35,9 +35,18 @@ public class Editor
         createListeners();
         initScrollbars();
 
-        rootBrick = makeSample();
+        setRoot(makeSample());
+    }
 
-        refresh();
+    public void setRoot(TextBrick root) {
+        if (rootBrick != null) {
+            rootBrick.dispose();
+        }
+        rootBrick = root;
+        rootBrick.realize(ui);
+        rootBrick.calculateSize(ui);
+        resized();
+        canvas.redraw();
     }
 
     TextBrick makeSample() {
@@ -59,11 +68,6 @@ public class Editor
                 new RGB(128, 128, 255));
 
         return rootBrick;
-    }
-
-    void refresh() {
-        rootBrick.realize(ui);
-        rootBrick.calculateSize(ui);
     }
 
     private void createListeners() {
