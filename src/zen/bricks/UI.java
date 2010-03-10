@@ -10,6 +10,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class UI
 {
+    private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
+
     private GC gc;
     private Color borderColor;
     private Color textColor;
@@ -61,7 +63,13 @@ public class UI
         return fontMetrics.getAscent();
     }
 
-    Point getTextExtent(String text) {
-        return gc.textExtent(text, SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
+    public Point getTextExtent(String text) {
+        return gc.textExtent(text, TEXT_FLAGS);
+    }
+
+    public void paintText(GC screenGC, int x, int y, String text) {
+        screenGC.setForeground(getTextColor());
+        screenGC.setBackground(getTextBackColor());
+        screenGC.drawText(text, x, y, TEXT_FLAGS);
     }
 }

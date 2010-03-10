@@ -79,9 +79,7 @@ public class TextBrick extends Brick
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
-        gc.setForeground(ui.getTextColor());
-        gc.setBackground(ui.getTextBackColor());
-        gc.drawText(text, textX, textY, false);
+        ui.paintText(gc, textX, textY, text);
     }
 
     void paintChildren(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
