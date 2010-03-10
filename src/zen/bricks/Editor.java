@@ -104,7 +104,10 @@ public class Editor
     }
 
     void disposed() {
-        rootBrick.dispose();
+        if (rootBrick != null) {
+            rootBrick.dispose();
+            rootBrick = null;
+        }
         if (font != null) {
             font.dispose();
             font = null;

@@ -66,6 +66,7 @@ public class TextBrick extends Brick
         return ascent;
     }
 
+    @Override
     void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
         super.paint(gc, baseX, baseY, ui, clipping);
         paintText(gc, baseX, baseY, ui, clipping);
@@ -124,8 +125,21 @@ public class TextBrick extends Brick
     }
 
     public String toString() {
-        return "TextBrick['" + text + "', x=" + x + ", y=" + y + ", w=" + width
-            + ", h=" + height + "]";
+        StringBuilder buf = new StringBuilder(128);
+        buf.append("TextBrick[@").append(System.identityHashCode(this));
+        buf.append(", parent=@");
+        if (parent != null) {
+            buf.append(System.identityHashCode(parent));
+        } else {
+            buf.append("null");
+        }
+        buf.append(", '").append(text);
+        buf.append("', x=").append(x);
+        buf.append(", y=").append(y);
+        buf.append(", w=").append(width);
+        buf.append(", h=").append(height);
+        buf.append("]");
+        return buf.toString();
     }
 
     void childResized(Brick child) {

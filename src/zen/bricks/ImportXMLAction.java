@@ -23,10 +23,6 @@ class ImportXMLAction extends Action
 
         TextBrick brick;
 
-        public void startDocument() throws SAXException {
-            brick = new TextBrick(null, "<root>");
-        }
-
         public void startElement(String uri, String localName,
                 String qName, Attributes attributes) throws SAXException
         {
@@ -51,8 +47,10 @@ class ImportXMLAction extends Action
             if (buffer.length() != 0) {
                 final String str = buffer.toString().trim();
                 if (str.length() != 0) {
-                    @SuppressWarnings("unused")
-                    final Brick plainText = new TextBrick(brick, str);
+                    if (brick != null) {
+                        @SuppressWarnings("unused")
+                        final Brick plainText = new TextBrick(brick, str);
+                    }
                 }
                 buffer.setLength(0);
             }
@@ -68,10 +66,10 @@ class ImportXMLAction extends Action
                 throws SAXException
         {
             handleString();
-            brick = brick.getParent();
-        }
-
-        public void endDocument() throws SAXException {
+            final TextBrick parent = brick.getParent();
+            if (parent != null) {
+                brick = parent;
+            }
         }
     }
 
