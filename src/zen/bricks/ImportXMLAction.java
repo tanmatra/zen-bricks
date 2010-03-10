@@ -1,6 +1,8 @@
 package zen.bricks;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -12,6 +14,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -22,6 +25,12 @@ class ImportXMLAction extends Action
         private final StringBuilder buffer = new StringBuilder(128);
 
         TextBrick brick;
+
+        public InputSource resolveEntity(String publicId, String systemId)
+                throws IOException, SAXException
+        {
+            return new InputSource(new StringReader(""));
+        }
 
         public void startElement(String uri, String localName,
                 String qName, Attributes attributes) throws SAXException
@@ -106,6 +115,7 @@ class ImportXMLAction extends Action
 
     private TextBrick parse(String fileName) throws Exception {
         final SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+        saxFactory.setValidating(false);
         final SAXParser saxParser = saxFactory.newSAXParser();
         final BrickHandler handler = new BrickHandler();
         saxParser.parse(new File(fileName), handler);
