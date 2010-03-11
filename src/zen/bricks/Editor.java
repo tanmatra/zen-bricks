@@ -25,12 +25,9 @@ public class Editor
     // ============================================================ Constructors
 
     public Editor(Composite parent) {
-        canvas = new Canvas(parent,
-                SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL
-                | SWT.NO_BACKGROUND
-//                | SWT.NO_REDRAW_RESIZE
-                /*| SWT.BORDER*/);
-
+        canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL
+                        | SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND
+                        | SWT.NO_REDRAW_RESIZE);
         final Display display = parent.getDisplay();
         font = new Font(display, "Georgia", 9, SWT.NORMAL);
         canvas.setFont(font);
@@ -129,19 +126,38 @@ public class Editor
     }
 
     void resized() {
-        final Rectangle newArea = canvas.getClientArea();
+        clientArea = canvas.getClientArea();
+        boolean needRepaint = false;
 
         final ScrollBar verticalBar = canvas.getVerticalBar();
         verticalBar.setMaximum(root.height);
-        verticalBar.setThumb(Math.min(root.height, newArea.height));
-        root.y = - verticalBar.getSelection(); // is it ok?
+        verticalBar.setThumb(Math.min(root.height, clientArea.height));
+        int vertSelection = verticalBar.getSelection();
+        final int vertGap = root.height - clientArea.height;
+        if (vertSelection >= vertGap) {
+            if (vertGap <= 0) {
+                vertSelection = 0;
+            }
+            needRepaint = true;
+            root.y = - vertSelection;
+        }
 
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
         horizontalBar.setMaximum(root.width);
-        horizontalBar.setThumb(Math.min(root.width, newArea.width));
-        root.x = - horizontalBar.getSelection(); // is it ok?
+        horizontalBar.setThumb(Math.min(root.width, clientArea.width));
+        int horizSelection = horizontalBar.getSelection();
+        final int horizGap = root.width - clientArea.width;
+        if (horizSelection >= horizGap) {
+            if (horizGap <= 0) {
+                horizSelection = 0;
+            }
+            needRepaint = true;
+            root.x = - horizSelection;
+        }
 
-        clientArea = newArea;
+        if (needRepaint) {
+            canvas.redraw();
+        }
     }
 
     void vertScroll() {
