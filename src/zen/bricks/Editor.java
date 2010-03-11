@@ -132,30 +132,30 @@ public class Editor
         final ScrollBar verticalBar = canvas.getVerticalBar();
         verticalBar.setMaximum(root.height);
         verticalBar.setThumb(Math.min(root.height, newArea.height));
-        root.y = verticalBar.getSelection(); // is it ok?
+        root.y = - verticalBar.getSelection(); // is it ok?
 
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
         horizontalBar.setMaximum(root.width);
         horizontalBar.setThumb(Math.min(root.width, newArea.width));
-        root.x = horizontalBar.getSelection(); // is it ok?
+        root.x = - horizontalBar.getSelection(); // is it ok?
 
         clientArea = newArea;
     }
 
     void vertScroll() {
-        final int newYSelection = canvas.getVerticalBar().getSelection();
-        final int delta = newYSelection - root.y;
-        canvas.scroll(0, -delta, 0, 0, clientArea.width, clientArea.height,
+        final int newY = - canvas.getVerticalBar().getSelection();
+        final int yDelta = newY - root.y;
+        canvas.scroll(0, yDelta, 0, 0, clientArea.width, clientArea.height,
                 false);
-        root.y = newYSelection;
+        root.y = newY;
     }
 
     void horizScroll() {
-        final int newXSelection = canvas.getHorizontalBar().getSelection();
-        final int delta = newXSelection - root.x;
-        canvas.scroll(-delta, 0, 0, 0, clientArea.width, clientArea.height,
+        final int newX = - canvas.getHorizontalBar().getSelection();
+        final int xDelta = newX - root.x;
+        canvas.scroll(xDelta, 0, 0, 0, clientArea.width, clientArea.height,
                 false);
-        root.x = newXSelection;
+        root.x = newX;
     }
 
     public Canvas getCanvas() {
@@ -165,6 +165,6 @@ public class Editor
     void paint(GC gc) {
         gc.setAntialias(SWT.ON);
         final Rectangle clipping = gc.getClipping();
-        root.paint(gc, -root.x, -root.y, ui, clipping);
+        root.paint(gc, root.x, root.y, ui, clipping);
     }
 }
