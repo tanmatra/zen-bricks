@@ -19,8 +19,6 @@ public class Editor
     final Canvas canvas;
     Brick root;
     Rectangle clientArea;
-    int xSelection;
-    int ySelection;
     UI ui;
     Font font;
 
@@ -134,30 +132,30 @@ public class Editor
         final ScrollBar verticalBar = canvas.getVerticalBar();
         verticalBar.setMaximum(root.height);
         verticalBar.setThumb(Math.min(root.height, newArea.height));
-        ySelection = verticalBar.getSelection(); // is it ok?
+        root.y = verticalBar.getSelection(); // is it ok?
 
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
         horizontalBar.setMaximum(root.width);
         horizontalBar.setThumb(Math.min(root.width, newArea.width));
-        xSelection = horizontalBar.getSelection(); // is it ok?
+        root.x = horizontalBar.getSelection(); // is it ok?
 
         clientArea = newArea;
     }
 
     void vertScroll() {
         final int newYSelection = canvas.getVerticalBar().getSelection();
-        final int delta = newYSelection - ySelection;
+        final int delta = newYSelection - root.y;
         canvas.scroll(0, -delta, 0, 0, clientArea.width, clientArea.height,
                 false);
-        ySelection = newYSelection;
+        root.y = newYSelection;
     }
 
     void horizScroll() {
         final int newXSelection = canvas.getHorizontalBar().getSelection();
-        final int delta = newXSelection - xSelection;
+        final int delta = newXSelection - root.x;
         canvas.scroll(-delta, 0, 0, 0, clientArea.width, clientArea.height,
                 false);
-        xSelection = newXSelection;
+        root.x = newXSelection;
     }
 
     public Canvas getCanvas() {
@@ -167,6 +165,6 @@ public class Editor
     void paint(GC gc) {
         gc.setAntialias(SWT.ON);
         final Rectangle clipping = gc.getClipping();
-        root.paint(gc, -xSelection, -ySelection, ui, clipping);
+        root.paint(gc, -root.x, -root.y, ui, clipping);
     }
 }
