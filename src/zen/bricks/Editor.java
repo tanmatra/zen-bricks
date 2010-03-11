@@ -14,13 +14,17 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public class Editor
 {
+    // ================================================================== Fields
+
     final Canvas canvas;
-    Brick rootBrick;
+    Brick root;
     Rectangle clientArea;
     int xSelection;
     int ySelection;
     UI ui;
     Font font;
+
+    // ============================================================ Constructors
 
     public Editor(Composite parent) {
         canvas = new Canvas(parent,
@@ -38,13 +42,15 @@ public class Editor
         setRoot(makeSample());
     }
 
-    public void setRoot(TextBrick root) {
-        if (rootBrick != null) {
-            rootBrick.dispose();
+    // ================================================================= Methods
+
+    public void setRoot(TextBrick rootBrick) {
+        if (root != null) {
+            root.dispose();
         }
-        rootBrick = root;
-        rootBrick.realize(ui);
-        rootBrick.calculateSize(ui);
+        root = rootBrick;
+        root.realize(ui);
+        root.calculateSize(ui);
         resized();
         canvas.redraw();
     }
@@ -108,9 +114,9 @@ public class Editor
     }
 
     void disposed() {
-        if (rootBrick != null) {
-            rootBrick.dispose();
-            rootBrick = null;
+        if (root != null) {
+            root.dispose();
+            root = null;
         }
         if (font != null) {
             font.dispose();
@@ -126,13 +132,13 @@ public class Editor
         final Rectangle newArea = canvas.getClientArea();
 
         final ScrollBar verticalBar = canvas.getVerticalBar();
-        verticalBar.setMaximum(rootBrick.height);
-        verticalBar.setThumb(Math.min(rootBrick.height, newArea.height));
+        verticalBar.setMaximum(root.height);
+        verticalBar.setThumb(Math.min(root.height, newArea.height));
         ySelection = verticalBar.getSelection(); // is it ok?
 
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
-        horizontalBar.setMaximum(rootBrick.width);
-        horizontalBar.setThumb(Math.min(rootBrick.width, newArea.width));
+        horizontalBar.setMaximum(root.width);
+        horizontalBar.setThumb(Math.min(root.width, newArea.width));
         xSelection = horizontalBar.getSelection(); // is it ok?
 
         clientArea = newArea;
@@ -161,6 +167,6 @@ public class Editor
     void paint(GC gc) {
         gc.setAntialias(SWT.ON);
         final Rectangle clipping = gc.getClipping();
-        rootBrick.paint(gc, -xSelection, -ySelection, ui, clipping);
+        root.paint(gc, -xSelection, -ySelection, ui, clipping);
     }
 }
