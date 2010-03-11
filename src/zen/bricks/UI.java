@@ -72,4 +72,8 @@ public class UI
         screenGC.setBackground(getTextBackColor());
         screenGC.drawText(text, x, y, TEXT_FLAGS);
     }
+
+    public Color getCanvasBackgroundColor() {
+        return gc.getDevice().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+    }
 }

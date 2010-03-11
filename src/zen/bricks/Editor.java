@@ -26,8 +26,10 @@ public class Editor
 
     public Editor(Composite parent) {
         canvas = new Canvas(parent,
-                SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL);
-//                /*SWT.NO_BACKGROUND |*/ SWT.NO_REDRAW_RESIZE /*| SWT.BORDER*/);
+                SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL
+                | SWT.NO_BACKGROUND
+//                | SWT.NO_REDRAW_RESIZE
+                /*| SWT.BORDER*/);
 
         final Display display = parent.getDisplay();
         font = new Font(display, "Georgia", 9, SWT.NORMAL);
@@ -165,6 +167,23 @@ public class Editor
     void paint(GC gc) {
         gc.setAntialias(SWT.ON);
         final Rectangle clipping = gc.getClipping();
+
+        gc.setBackground(ui.getCanvasBackgroundColor());
+
+        // draw background on the right
+        final int rightMarginWidth = clientArea.width - root.width;
+        final int rightMarginX = root.x + root.width;
+        if (rightMarginWidth > 0) {
+            gc.fillRectangle(rightMarginX, 0, rightMarginWidth, clientArea.height);
+        }
+
+        // draw background on the bottom
+        final int bottomMarginHeight = clientArea.height - root.height;
+        final int bottomMarginY = root.y + root.height;
+        if (bottomMarginHeight > 0) {
+            gc.fillRectangle(0, bottomMarginY, rightMarginX, bottomMarginHeight);
+        }
+
         root.paint(gc, root.x, root.y, ui, clipping);
     }
 }
