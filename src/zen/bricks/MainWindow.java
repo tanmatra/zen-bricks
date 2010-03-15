@@ -1,8 +1,11 @@
 package zen.bricks;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -61,6 +64,13 @@ public class MainWindow extends ApplicationWindow
         getStatusLineManager().setMessage("Ready.");
 
         return contents;
+    }
+
+    void handleException(Exception e, String dialogTitle) {
+        e.printStackTrace();
+        final IStatus status = new Status(IStatus.ERROR, "zen.bricks",
+                e.getClass().getName(), e);
+        ErrorDialog.openError(getShell(), dialogTitle, null, status);
     }
 
     public static void main(String[] args) {

@@ -7,10 +7,7 @@ import java.io.StringReader;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.xml.sax.Attributes;
@@ -126,12 +123,7 @@ class ImportXMLAction extends Action
             editor.setRoot(root);
             mainWindow.setTitle(fileName);
         } catch (Exception e) {
-            e.printStackTrace();
-            final IStatus status =
-                    new Status(IStatus.ERROR, "zen.bricks",
-                            e.getClass().getName(), e);
-            ErrorDialog.openError(mainWindow.getShell(), "Import error",
-                    null, status);
+            mainWindow.handleException(e, "Import error");
         }
     }
 
