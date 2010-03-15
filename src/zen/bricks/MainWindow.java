@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -7,11 +9,13 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 public class MainWindow extends ApplicationWindow
@@ -49,6 +53,24 @@ public class MainWindow extends ApplicationWindow
             }
         };
         fileMenu.add(exitAction);
+
+        final MenuManager viewMenu = new MenuManager("&View");
+        mainMenu.add(viewMenu);
+
+        final Action loadStyleAction = new Action("&Load style...") {
+            public void run() {
+                final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+                dialog.setFilterNames(new String[] { "Properties" });
+                dialog.setFilterExtensions(new String[] { "*.properties" });
+                dialog.setFilterPath(new File("styles/").toString());
+                final String fileName = dialog.open();
+                if (fileName == null) {
+                    return;
+                }
+                editor.loadUI(fileName);
+            }
+        };
+        viewMenu.add(loadStyleAction);
 
         return mainMenu;
     }

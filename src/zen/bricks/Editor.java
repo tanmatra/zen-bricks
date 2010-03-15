@@ -3,13 +3,11 @@ package zen.bricks;
 import java.io.IOException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -22,7 +20,6 @@ public class Editor
     Brick root;
     Rectangle clientArea;
     UI ui;
-    Font font;
 
     // ============================================================ Constructors
 
@@ -37,10 +34,6 @@ public class Editor
             throw e;
         }
 
-        final Display display = parent.getDisplay();
-        font = new Font(display, "Georgia", 9, SWT.NORMAL);
-        canvas.setFont(font);
-
         createListeners();
         initScrollbars();
 
@@ -54,10 +47,19 @@ public class Editor
             root.dispose();
         }
         root = rootBrick;
+        refresh();
+    }
+
+    public void refresh() {
         root.realize(ui);
         root.calculateSize(ui);
         resized();
         canvas.redraw();
+    }
+
+    void loadUI(String fileName) {
+        // TODO
+        refresh();
     }
 
     TextBrick makeSample() {
@@ -122,10 +124,6 @@ public class Editor
         if (root != null) {
             root.dispose();
             root = null;
-        }
-        if (font != null) {
-            font.dispose();
-            font = null;
         }
         if (ui != null) {
             ui.dispose();
