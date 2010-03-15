@@ -58,8 +58,11 @@ public class MainWindow extends ApplicationWindow
         final FillLayout layout = new FillLayout();
         layout.marginHeight = layout.marginWidth = 5;
         contents.setLayout(layout);
-        editor = new Editor(contents);
-//        editor.getCanvas();
+        try {
+            editor = new Editor(this, contents);
+        } catch (Exception e) {
+            // go on
+        }
 
         getStatusLineManager().setMessage("Ready.");
 

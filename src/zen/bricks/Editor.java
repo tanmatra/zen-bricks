@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -24,14 +26,20 @@ public class Editor
 
     // ============================================================ Constructors
 
-    public Editor(Composite parent) {
+    public Editor(MainWindow mainWindow, Composite parent) throws Exception {
         canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL
-                        | SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND
-                        | SWT.NO_REDRAW_RESIZE);
+                | SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND
+                | SWT.NO_REDRAW_RESIZE);
+        try {
+            ui = new UI(canvas, "styles/default.style.properties");
+        } catch (IOException e) {
+            mainWindow.handleException(e, "Error loading style");
+            throw e;
+        }
+
         final Display display = parent.getDisplay();
         font = new Font(display, "Georgia", 9, SWT.NORMAL);
         canvas.setFont(font);
-        ui = new UI(canvas);
 
         createListeners();
         initScrollbars();
