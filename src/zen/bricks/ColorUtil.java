@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 public class ColorUtil
 {
@@ -60,16 +60,16 @@ public class ColorUtil
     private ColorUtil() {
     }
 
-    private static Color copySystemColor(Display display, int id) {
-        final Color systemColor = display.getSystemColor(id);
+    private static Color copySystemColor(Device device, int id) {
+        final Color systemColor = device.getSystemColor(id);
         final RGB rgb = systemColor.getRGB();
-        return new Color(display, rgb);
+        return new Color(device, rgb);
     }
 
-    public static Color parse(Display display, String str) {
+    public static Color parse(Device device, String str) {
         final Integer sysId = systemColors.get(str.toUpperCase());
         if (sysId != null) {
-            return copySystemColor(display, sysId);
+            return copySystemColor(device, sysId);
         }
         if (str.charAt(0) == '#') {
             final int r;
@@ -86,7 +86,7 @@ public class ColorUtil
             } else {
                 throw new IllegalArgumentException("Misformed color: " + str);
             }
-            return new Color(display, r, g, b);
+            return new Color(device, r, g, b);
         }
         throw new IllegalArgumentException("Misformed color: " + str);
     }
