@@ -10,6 +10,8 @@ import org.eclipse.swt.graphics.RGB;
 
 public class ColorUtil
 {
+    private static final int MULTIPLIER = 0x11;
+
     private static final Map<String, Integer> systemColors =
             new HashMap<String, Integer>(35);
 
@@ -80,9 +82,9 @@ public class ColorUtil
                 g = Integer.parseInt(str.substring(3, 5), 16);
                 b = Integer.parseInt(str.substring(5, 7), 16);
             } else if (str.length() == 4) {
-                r = Integer.parseInt(str.substring(1, 2), 16);
-                g = Integer.parseInt(str.substring(2, 3), 16);
-                b = Integer.parseInt(str.substring(3, 4), 16);
+                r = Integer.parseInt(str.substring(1, 2), 16) * MULTIPLIER;
+                g = Integer.parseInt(str.substring(2, 3), 16) * MULTIPLIER;
+                b = Integer.parseInt(str.substring(3, 4), 16) * MULTIPLIER;
             } else {
                 throw new IllegalArgumentException("Misformed color: " + str);
             }
