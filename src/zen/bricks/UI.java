@@ -12,7 +12,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Canvas;
 
 public class UI
 {
@@ -22,7 +21,8 @@ public class UI
 
     // ================================================================== Fields
 
-    private GC gc;
+    private final Device device;
+    private final GC gc;
     private Font font;
     private FontMetrics fontMetrics;
     private Color borderColor;
@@ -33,24 +33,18 @@ public class UI
 
     // ============================================================ Constructors
 
-    public UI(Canvas canvas, Properties properties) {
-        gc = new GC(canvas);
+    public UI(Device device, Properties properties) {
+        this.device = device;
+        gc = new GC(device);
         init(properties);
         font = new Font(getDevice(), "Georgia", 9, SWT.NORMAL);
-        canvas.setFont(font);
         gc.setFont(font);
         fontMetrics = gc.getFontMetrics();
         gc.setAntialias(SWT.ON);
     }
 
-    public UI(Canvas canvas, String styleFileName) throws IOException {
-        this(canvas, loadProperties(styleFileName));
-    }
-
-    public UI(Canvas canvas, String styleFileName, String defaultStyleFileName)
-            throws IOException
-    {
-        this(canvas, loadProperties(styleFileName, defaultStyleFileName));
+    public UI(Device device, String styleFileName) throws IOException {
+        this(device, loadProperties(styleFileName));
     }
 
     // ================================================================= Methods
@@ -72,13 +66,18 @@ public class UI
         gc.dispose();
     }
 
+    public void applyTo(Editor editor) {
+        editor.canvas.setFont(font);
+        // what else?
+    }
+
     private Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
         return ColorUtil.parse(getDevice(), value);
     }
 
     private Device getDevice() {
-        return gc.getDevice();
+        return device;
     }
 
     GC getGC() {

@@ -1,6 +1,8 @@
 package zen.bricks;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,13 +42,16 @@ public class MainWindow extends ApplicationWindow
     protected MenuManager createMenuManager() {
         final MenuManager mainMenu = super.createMenuManager();
 
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
 
         final Action importXmlAction =
                 new ImportXMLAction(this, "Import XML...");
         fileMenu.add(importXmlAction);
+
         fileMenu.add(new Separator());
+
         final Action exitAction = new Action("E&xit") {
             public void run() {
                 close();
@@ -54,6 +59,7 @@ public class MainWindow extends ApplicationWindow
         };
         fileMenu.add(exitAction);
 
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
 
@@ -67,11 +73,12 @@ public class MainWindow extends ApplicationWindow
                 if (fileName == null) {
                     return;
                 }
-                editor.loadUI(fileName);
+                loadEditorStyle(fileName);
             }
         };
         viewMenu.add(loadStyleAction);
 
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         return mainMenu;
     }
 
@@ -80,11 +87,10 @@ public class MainWindow extends ApplicationWindow
         final FillLayout layout = new FillLayout();
         layout.marginHeight = layout.marginWidth = 5;
         contents.setLayout(layout);
-        try {
-            editor = new Editor(this, contents);
-        } catch (Exception e) {
-            // go on
-        }
+
+        editor = new Editor(this, contents);
+        loadEditorStyle("styles/default.style.properties");
+        editor.setRoot(Editor.makeSample());
 
         getStatusLineManager().setMessage("Ready.");
 
@@ -107,5 +113,17 @@ public class MainWindow extends ApplicationWindow
 
     public void setTitle(String fileName) {
         getShell().setText("Bricks - " + fileName);
+    }
+
+    private void loadEditorStyle(String fileName) {
+        final Properties props;
+        try {
+            props = UI.loadProperties(fileName);
+        } catch (IOException e) {
+            handleException(e, "Error loading style");
+            return;
+        }
+        final UI ui = new UI(getShell().getDisplay(), props);
+        editor.setUI(ui);
     }
 }

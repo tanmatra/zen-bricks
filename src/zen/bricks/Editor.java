@@ -1,7 +1,5 @@
 package zen.bricks;
 
-import java.io.IOException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -23,24 +21,20 @@ public class Editor
 
     // ============================================================ Constructors
 
-    public Editor(MainWindow mainWindow, Composite parent) throws Exception {
+    public Editor(MainWindow mainWindow, Composite parent) {
         canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL
                 | SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND
                 | SWT.NO_REDRAW_RESIZE);
-        try {
-            ui = new UI(canvas, "styles/default.style.properties");
-        } catch (IOException e) {
-            mainWindow.handleException(e, "Error loading style");
-            throw e;
-        }
-
         createListeners();
         initScrollbars();
-
-        setRoot(makeSample());
     }
 
     // ================================================================= Methods
+
+    public void setUI(UI ui) {
+        this.ui = ui;
+        ui.applyTo(this);
+    }
 
     public void setRoot(TextBrick rootBrick) {
         if (root != null) {
@@ -57,12 +51,7 @@ public class Editor
         canvas.redraw();
     }
 
-    void loadUI(String fileName) {
-        // TODO
-        refresh();
-    }
-
-    TextBrick makeSample() {
+    static TextBrick makeSample() {
         TextBrick rootBrick = new TextBrick(null,
                 "Quick brown fox\njumps over the lazy dog");
 
