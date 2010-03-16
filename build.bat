@@ -17,4 +17,4 @@ copy run.bat %DIST%
 :pack
 jar cf %LIB%\zen.jar -C build\classes zen
 :dist
-jar cfM build\zen.bricks.win32_0.1.zip -C %DIST% lib styles run.bat
+jar cfM build\zen.bricks.win32_0.1.zip -C %DIST% .
