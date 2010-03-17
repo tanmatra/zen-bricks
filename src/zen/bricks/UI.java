@@ -65,8 +65,10 @@ public class UI
     private Color canvasBackgroundColor;
     private Font font;
     private FontMetrics fontMetrics;
+    private int lineSpacing;
     private Color textBackgroundColor;
     private Color textColor;
+    private int spacing;
     private int textMarginLeft;
     private int textMarginTop;
 
@@ -97,6 +99,8 @@ public class UI
         brickPaddingRight = parseInt(props, "brick.padding.right");
         brickPaddingBottom = parseInt(props, "brick.padding.bottom");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
+        lineSpacing = parseInt(props, "line.spacing");
+        spacing = parseInt(props, "spacing");
         textBackgroundColor = parseColor(props, "text.background.color");
         textColor = parseColor(props, "text.color");
         textMarginLeft = parseInt(props, "text.margin.left");
@@ -214,5 +218,13 @@ public class UI
 
     public int getTextMarginTop() {
         return textMarginTop;
+    }
+
+    public int getSpacing() {
+        return spacing;
+    }
+
+    public int getLineSpacing() {
+        return lineSpacing;
     }
 }

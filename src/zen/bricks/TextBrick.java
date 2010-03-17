@@ -9,12 +9,13 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public class TextBrick extends Brick
 {
-    private static final int LINE_SPACING = 1;
-    private static final int SPACING = 2;
+    // ================================================================== Fields
 
     String text;
     private Point textExtent;
     final List<Brick> children = new ArrayList<Brick>();
+
+    // ============================================================ Constructors
 
     TextBrick(TextBrick parent) {
         super(parent);
@@ -24,6 +25,8 @@ public class TextBrick extends Brick
         super(parent);
         this.text = text;
     }
+
+    // ================================================================= Methods
 
     public void setText(String text) {
         this.text = text;
@@ -91,20 +94,20 @@ public class TextBrick extends Brick
     void calculateSize(UI ui) {
         textExtent = ui.getTextExtent(text);
         width = ui.getTextMarginLeft() + textExtent.x;
-        int currX = width + SPACING;
+        int currX = width + ui.getSpacing();
         int currY = ui.getBrickPaddingTop();
         int currLineHeight = ui.getTextMarginTop() + textExtent.y;
         for (final Brick brick : children) {
             brick.calculateSize(ui);
             if (brick.isLineBreak()) {
                 currX = ui.getBrickPaddingLeft();
-                currY += currLineHeight + LINE_SPACING;
+                currY += currLineHeight + ui.getLineSpacing();
                 brick.x = currX;
                 brick.y = currY;
                 currLineHeight = brick.height;
             } else {
                 currLineHeight = Math.max(currLineHeight, brick.height);
-                currX += SPACING;
+                currX += ui.getSpacing();
                 // currY is unchanged
                 brick.x = currX;
                 brick.y = currY;
