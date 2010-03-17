@@ -22,7 +22,7 @@ public class UI
     // ================================================================== Fields
 
     private final Device device;
-    private final GC gc;
+    private final GC savedGC;
     private Font font;
     private FontMetrics fontMetrics;
     private Color borderColor;
@@ -35,12 +35,12 @@ public class UI
 
     public UI(Device device, Properties properties) {
         this.device = device;
-        gc = new GC(device);
+        savedGC = new GC(device);
         init(properties);
         font = new Font(getDevice(), "Georgia", 9, SWT.NORMAL);
-        gc.setFont(font);
-        fontMetrics = gc.getFontMetrics();
-        gc.setAntialias(SWT.ON);
+        savedGC.setFont(font);
+        fontMetrics = savedGC.getFontMetrics();
+        savedGC.setAntialias(SWT.ON);
     }
 
     public UI(Device device, String styleFileName) throws IOException {
@@ -63,7 +63,7 @@ public class UI
         textColor.dispose();
         backgroundColor.dispose();
         textBackgroundColor.dispose();
-        gc.dispose();
+        savedGC.dispose();
     }
 
     public void applyTo(Editor editor) {
@@ -81,7 +81,7 @@ public class UI
     }
 
     GC getGC() {
-        return gc;
+        return savedGC;
     }
 
     Color getBackgroundColor() {
@@ -109,7 +109,7 @@ public class UI
     }
 
     public Point getTextExtent(String text) {
-        return gc.textExtent(text, TEXT_FLAGS);
+        return savedGC.textExtent(text, TEXT_FLAGS);
     }
 
     public void paintText(GC screenGC, int x, int y, String text) {
