@@ -123,21 +123,9 @@ public class TextBrick extends Brick
     }
 
     public String toString() {
-        StringBuilder buf = new StringBuilder(128);
-        buf.append("TextBrick[@").append(System.identityHashCode(this));
-        buf.append(", parent=@");
-        if (parent != null) {
-            buf.append(System.identityHashCode(parent));
-        } else {
-            buf.append("null");
-        }
-        buf.append(", '").append(text);
-        buf.append("', x=").append(x);
-        buf.append(", y=").append(y);
-        buf.append(", w=").append(width);
-        buf.append(", h=").append(height);
-        buf.append("]");
-        return buf.toString();
+        return String.format(
+                "TextBrick[@%H, parent=%H, '%s', x=%d, y=%d, w=%d, h=%d]",
+                this, parent, text, x, y, width, height);
     }
 
     void childResized(Brick child) {
