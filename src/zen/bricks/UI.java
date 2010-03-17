@@ -55,6 +55,7 @@ public class UI
     private final Device device;
     private final GC savedGC;
 
+    private int antialias;
     private Color backgroundColor;
     private int borderArcSize;
     private Color borderColor;
@@ -78,10 +79,10 @@ public class UI
         this.device = device;
         savedGC = new GC(device);
         init(properties);
+        savedGC.setAntialias(antialias);
         font = new Font(getDevice(), "Georgia", 9, SWT.NORMAL);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
-        savedGC.setAntialias(SWT.ON);
     }
 
     public UI(Device device, String styleFileName) throws IOException {
@@ -91,6 +92,7 @@ public class UI
     // ================================================================= Methods
 
     void init(Properties props) {
+        antialias = parseState(props, "antialias");
         borderArcSize = parseInt(props, "border.arc.size");
         borderColor = parseColor(props, "border.color");
         backgroundColor = parseColor(props, "background.color");
@@ -129,6 +131,19 @@ public class UI
     private int parseInt(Properties properties, String key) {
         final String value = properties.getProperty(key);
         return Integer.parseInt(value);
+    }
+
+    private int parseState(Properties properties, String key) {
+        final String value = properties.getProperty(key);
+        if ("default".equals(value)) {
+            return SWT.DEFAULT;
+        } else if ("on".equals(value)) {
+            return SWT.ON;
+        } else if ("off".equals(value)) {
+            return SWT.OFF;
+        } else {
+            throw new IllegalArgumentException("Wrong state: " + value);
+        }
     }
 
     private Device getDevice() {
@@ -226,5 +241,9 @@ public class UI
 
     public int getLineSpacing() {
         return lineSpacing;
+    }
+
+    public void preparePaint(GC gc) {
+        gc.setAntialias(antialias);
     }
 }

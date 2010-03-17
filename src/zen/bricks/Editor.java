@@ -176,7 +176,7 @@ public class Editor
     }
 
     void paint(GC gc) {
-        gc.setAntialias(SWT.ON);
+        ui.preparePaint(gc);
         final Rectangle clipping = gc.getClipping();
 
         gc.setBackground(ui.getCanvasBackgroundColor());
