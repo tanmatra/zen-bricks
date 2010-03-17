@@ -58,6 +58,10 @@ public class UI
     private Color backgroundColor;
     private int borderArcSize;
     private Color borderColor;
+    private int brickPaddingLeft;
+    private int brickPaddingTop;
+    private int brickPaddingRight;
+    private int brickPaddingBottom;
     private Color canvasBackgroundColor;
     private Font font;
     private FontMetrics fontMetrics;
@@ -85,10 +89,14 @@ public class UI
     void init(Properties props) {
         borderArcSize = parseInt(props, "border.arc.size");
         borderColor = parseColor(props, "border.color");
-        textColor = parseColor(props, "text.color");
         backgroundColor = parseColor(props, "background.color");
-        textBackgroundColor = parseColor(props, "text.background.color");
+        brickPaddingLeft = parseInt(props, "brick.padding.left");
+        brickPaddingTop = parseInt(props, "brick.padding.top");
+        brickPaddingRight = parseInt(props, "brick.padding.right");
+        brickPaddingBottom = parseInt(props, "brick.padding.bottom");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
+        textBackgroundColor = parseColor(props, "text.background.color");
+        textColor = parseColor(props, "text.color");
     }
 
     void dispose() {
@@ -178,5 +186,21 @@ public class UI
                     brick.width - 1, brick.height - 1,
                     borderArcSize, borderArcSize);
         }
+    }
+
+    public int getBrickPaddingTop() {
+        return brickPaddingTop;
+    }
+
+    public int getBrickPaddingLeft() {
+        return brickPaddingLeft;
+    }
+
+    public int getBrickPaddingRight() {
+        return brickPaddingRight;
+    }
+
+    public int getBrickPaddingBottom() {
+        return brickPaddingBottom;
     }
 }

@@ -10,10 +10,6 @@ import org.eclipse.swt.graphics.Rectangle;
 public class TextBrick extends Brick
 {
     private static final int LINE_SPACING = 1;
-    private static final int PADDING_LEFT = 18;
-    private static final int PADDING_TOP = 2;
-    private static final int PADDING_RIGHT = 2;
-    private static final int PADDING_BOTTOM = 2;
     private static final int SPACING = 2;
     private static final int TEXT_MARGIN_TOP = 2;
     private static final int TEXT_MARGIN_LEFT = 2;
@@ -98,12 +94,12 @@ public class TextBrick extends Brick
         textExtent = ui.getTextExtent(text);
         width = TEXT_MARGIN_LEFT + textExtent.x;
         int currX = width + SPACING;
-        int currY = PADDING_TOP;
+        int currY = ui.getBrickPaddingTop();
         int currLineHeight = TEXT_MARGIN_TOP + textExtent.y;
         for (final Brick brick : children) {
             brick.calculateSize(ui);
             if (brick.isLineBreak()) {
-                currX = PADDING_LEFT;
+                currX = ui.getBrickPaddingLeft();
                 currY += currLineHeight + LINE_SPACING;
                 brick.x = currX;
                 brick.y = currY;
@@ -118,8 +114,8 @@ public class TextBrick extends Brick
             }
             width = Math.max(width, brick.x + brick.width);
         }
-        width += PADDING_RIGHT;
-        height = currY + currLineHeight + PADDING_BOTTOM;
+        width += ui.getBrickPaddingRight();
+        height = currY + currLineHeight + ui.getBrickPaddingBottom();
     }
 
     public String toString() {
