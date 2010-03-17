@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 
 public class UI
 {
@@ -19,17 +20,49 @@ public class UI
 
     private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
 
-    // ================================================================== Fields
+    // =========================================================== Class Methods
+
+    static Properties loadProperties(Properties properties, String filePath)
+            throws IOException
+    {
+        final InputStream inputStream = new FileInputStream(filePath);
+        try {
+            properties.load(inputStream);
+            return properties;
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+
+    static Properties loadProperties(String filePath) throws IOException {
+        return loadProperties(new Properties(), filePath);
+    }
+
+    static Properties loadProperties(String filePath, String defaultsFilePath)
+            throws IOException
+    {
+        final Properties defaults = loadProperties(defaultsFilePath);
+        final Properties properties = new Properties(defaults);
+        return loadProperties(properties, filePath);
+    }
+
+// ================================================================== Fields
 
     private final Device device;
     private final GC savedGC;
+
+    private Color backgroundColor;
+    private int borderArcSize;
+    private Color borderColor;
+    private Color canvasBackgroundColor;
     private Font font;
     private FontMetrics fontMetrics;
-    private Color borderColor;
-    private Color textColor;
-    private Color backgroundColor;
     private Color textBackgroundColor;
-    private Color canvasBackgroundColor;
+    private Color textColor;
 
     // ============================================================ Constructors
 
@@ -50,6 +83,7 @@ public class UI
     // ================================================================= Methods
 
     void init(Properties props) {
+        borderArcSize = parseInt(props, "border.arc.size");
         borderColor = parseColor(props, "border.color");
         textColor = parseColor(props, "text.color");
         backgroundColor = parseColor(props, "background.color");
@@ -74,6 +108,11 @@ public class UI
     private Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
         return ColorUtil.parse(getDevice(), value);
+    }
+
+    private int parseInt(Properties properties, String key) {
+        final String value = properties.getProperty(key);
+        return Integer.parseInt(value);
     }
 
     private Device getDevice() {
@@ -122,33 +161,22 @@ public class UI
         return canvasBackgroundColor;
     }
 
-    static Properties loadProperties(Properties properties, String filePath)
-            throws IOException
+    /**
+     * Paint brick background and border.
+     */
+    public void paintBackground(GC gc, Brick brick, int baseX, int baseY,
+            Rectangle clipping)
     {
-        final InputStream inputStream = new FileInputStream(filePath);
-        try {
-            properties.load(inputStream);
-            return properties;
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // ignore
-            }
+        gc.setBackground(getBackgroundColor());
+        gc.fillRectangle(baseX, baseY, brick.width, brick.height);
+
+        gc.setForeground(getBorderColor());
+        if (borderArcSize == 0) {
+            gc.drawRectangle(baseX, baseY, brick.width - 1, brick.height - 1);
+        } else {
+            gc.drawRoundRectangle(baseX, baseY,
+                    brick.width - 1, brick.height - 1,
+                    borderArcSize, borderArcSize);
         }
-    }
-
-    static Properties loadProperties(String filePath)
-            throws IOException
-    {
-        return loadProperties(new Properties(), filePath);
-    }
-
-    static Properties loadProperties(String filePath, String defaultsFilePath)
-            throws IOException
-    {
-        final Properties defaults = loadProperties(defaultsFilePath);
-        final Properties properties = new Properties(defaults);
-        return loadProperties(properties, filePath);
     }
 }

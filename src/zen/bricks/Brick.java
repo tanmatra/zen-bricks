@@ -5,8 +5,6 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public abstract class Brick
 {
-    private static int BORDER_ARC_SIZE = 0; // 6
-
     TextBrick parent;
     int index;
     int x;
@@ -32,24 +30,8 @@ public abstract class Brick
     void dispose() {
     }
 
-    private void paintBackground(GC gc, int baseX, int baseY, UI ui) {
-        gc.setBackground(ui.getBackgroundColor());
-        gc.fillRectangle(baseX, baseY, width, height);
-    }
-
-    private void paintBorder(GC gc, int baseX, int baseY, UI ui) {
-        gc.setForeground(ui.getBorderColor());
-        if (BORDER_ARC_SIZE == 0) {
-            gc.drawRectangle(baseX, baseY, width - 1, height - 1);
-        } else {
-            gc.drawRoundRectangle(baseX, baseY, width - 1, height - 1,
-                    BORDER_ARC_SIZE, BORDER_ARC_SIZE);
-        }
-    }
-
     void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        paintBackground(gc, baseX, baseY, ui);
-        paintBorder(gc, baseX, baseY, ui);
+        ui.paintBackground(gc, this, baseX, baseY, clipping);
     }
 
     void calculateSize(UI ui) {
