@@ -67,6 +67,8 @@ public class UI
     private FontMetrics fontMetrics;
     private Color textBackgroundColor;
     private Color textColor;
+    private int textMarginLeft;
+    private int textMarginTop;
 
     // ============================================================ Constructors
 
@@ -97,6 +99,8 @@ public class UI
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         textBackgroundColor = parseColor(props, "text.background.color");
         textColor = parseColor(props, "text.color");
+        textMarginLeft = parseInt(props, "text.margin.left");
+        textMarginTop = parseInt(props, "text.margin.top");
     }
 
     void dispose() {
@@ -202,5 +206,13 @@ public class UI
 
     public int getBrickPaddingBottom() {
         return brickPaddingBottom;
+    }
+
+    public int getTextMarginLeft() {
+        return textMarginLeft;
+    }
+
+    public int getTextMarginTop() {
+        return textMarginTop;
     }
 }

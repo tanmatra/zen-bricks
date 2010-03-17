@@ -11,8 +11,6 @@ public class TextBrick extends Brick
 {
     private static final int LINE_SPACING = 1;
     private static final int SPACING = 2;
-    private static final int TEXT_MARGIN_TOP = 2;
-    private static final int TEXT_MARGIN_LEFT = 2;
 
     String text;
     private Point textExtent;
@@ -70,8 +68,8 @@ public class TextBrick extends Brick
     }
 
     private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        final int textX = baseX + TEXT_MARGIN_LEFT;
-        final int textY = baseY + TEXT_MARGIN_TOP;
+        final int textX = baseX + ui.getTextMarginLeft();
+        final int textY = baseY + ui.getTextMarginTop();
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
@@ -92,10 +90,10 @@ public class TextBrick extends Brick
 
     void calculateSize(UI ui) {
         textExtent = ui.getTextExtent(text);
-        width = TEXT_MARGIN_LEFT + textExtent.x;
+        width = ui.getTextMarginLeft() + textExtent.x;
         int currX = width + SPACING;
         int currY = ui.getBrickPaddingTop();
-        int currLineHeight = TEXT_MARGIN_TOP + textExtent.y;
+        int currLineHeight = ui.getTextMarginTop() + textExtent.y;
         for (final Brick brick : children) {
             brick.calculateSize(ui);
             if (brick.isLineBreak()) {
