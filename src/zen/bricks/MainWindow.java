@@ -22,13 +22,27 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MainWindow extends ApplicationWindow
 {
+    // ============================================================ Class Fields
+
+    private static final String DEFAULT_STYLE_FILE =
+            "styles/default.style.properties";
+
+    // ================================================================== Fields
+
     Editor editor;
 
-    public MainWindow() {
+    private Properties defaultStyle;
+
+    // ============================================================ Constructors
+
+    public MainWindow() throws IOException {
         super(null);
+        defaultStyle = UI.loadProperties(DEFAULT_STYLE_FILE);
         addMenuBar();
         addStatusLine();
     }
+
+    // ================================================================= Methods
 
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
@@ -73,7 +87,14 @@ public class MainWindow extends ApplicationWindow
                 if (fileName == null) {
                     return;
                 }
-                loadEditorStyle(fileName);
+                final Properties props = new Properties(defaultStyle);
+                try {
+                    UI.loadProperties(props, fileName);
+                } catch (IOException e) {
+                    handleException(e, "Error loading style");
+                    return;
+                }
+                setEditorStyle(props);
             }
         };
         viewMenu.add(loadStyleAction);
@@ -89,7 +110,7 @@ public class MainWindow extends ApplicationWindow
         contents.setLayout(layout);
 
         editor = new Editor(this, contents);
-        loadEditorStyle("styles/default.style.properties");
+        setEditorStyle(defaultStyle);
         editor.setRoot(Editor.makeSample());
 
         getStatusLineManager().setMessage("Ready.");
@@ -104,7 +125,7 @@ public class MainWindow extends ApplicationWindow
         ErrorDialog.openError(getShell(), dialogTitle, null, status);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final MainWindow window = new MainWindow();
         window.setBlockOnOpen(true);
         window.open();
@@ -115,14 +136,7 @@ public class MainWindow extends ApplicationWindow
         getShell().setText("Bricks - " + fileName);
     }
 
-    private void loadEditorStyle(String fileName) {
-        final Properties props;
-        try {
-            props = UI.loadProperties(fileName);
-        } catch (IOException e) {
-            handleException(e, "Error loading style");
-            return;
-        }
+    void setEditorStyle(final Properties props) {
         final UI ui = new UI(getShell().getDisplay(), props);
         editor.setUI(ui);
     }
