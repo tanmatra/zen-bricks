@@ -57,8 +57,7 @@ public class UI
 
     private int antialias;
     private Color backgroundColor;
-    private int borderArcSize;
-    private Color borderColor;
+    private Border border;
     private int brickPaddingLeft;
     private int brickPaddingTop;
     private int brickPaddingRight;
@@ -91,10 +90,12 @@ public class UI
 
     // ================================================================= Methods
 
+    /**
+     * @throws IllegalArgumentException
+     */
     void init(Properties props) {
         antialias = parseState(props, "antialias");
-        borderArcSize = parseInt(props, "border.arc.size");
-        borderColor = parseColor(props, "border.color");
+        initBorder(props);
         backgroundColor = parseColor(props, "background.color");
         brickPaddingLeft = parseInt(props, "brick.padding.left");
         brickPaddingTop = parseInt(props, "brick.padding.top");
@@ -109,9 +110,28 @@ public class UI
         textMarginTop = parseInt(props, "text.margin.top");
     }
 
+    private void initBorder(Properties props) {
+        final String borderClassName = props.getProperty("border.class");
+        final Class<? extends Border> borderClass;
+        try {
+            borderClass =
+                    (Class<? extends Border>) Class.forName(borderClassName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+        try {
+            border = borderClass.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+        border.init(this, props);
+    }
+
     void dispose() {
         font.dispose();
-        borderColor.dispose();
+        border.dispose();
         textColor.dispose();
         backgroundColor.dispose();
         if (textBackgroundColor != null) {
@@ -125,7 +145,7 @@ public class UI
         // what else?
     }
 
-    private Color parseColor(Properties properties, String key) {
+    public Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
         if ("none".equals(value) || "transparent".equals(value)) {
             return null;
@@ -133,7 +153,7 @@ public class UI
         return ColorUtil.parse(getDevice(), value);
     }
 
-    private int parseInt(Properties properties, String key) {
+    public int parseInt(Properties properties, String key) {
         final String value = properties.getProperty(key);
         return Integer.parseInt(value);
     }
@@ -161,10 +181,6 @@ public class UI
 
     Color getBackgroundColor() {
         return backgroundColor;
-    }
-
-    Color getBorderColor() {
-        return borderColor;
     }
 
     Color getTextColor() {
@@ -209,16 +225,9 @@ public class UI
             Rectangle clipping)
     {
         gc.setBackground(getBackgroundColor());
-        gc.fillRectangle(baseX, baseY, brick.width, brick.height);
+        gc.fillRectangle(baseX, baseY, brick.getWidth(), brick.getHeight());
 
-        gc.setForeground(getBorderColor());
-        if (borderArcSize == 0) {
-            gc.drawRectangle(baseX, baseY, brick.width - 1, brick.height - 1);
-        } else {
-            gc.drawRoundRectangle(baseX, baseY,
-                    brick.width - 1, brick.height - 1,
-                    borderArcSize, borderArcSize);
-        }
+        border.paint(gc, baseX, baseY, brick, clipping);
     }
 
     public int getBrickPaddingTop() {
