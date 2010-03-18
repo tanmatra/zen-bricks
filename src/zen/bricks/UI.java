@@ -114,7 +114,9 @@ public class UI
         borderColor.dispose();
         textColor.dispose();
         backgroundColor.dispose();
-        textBackgroundColor.dispose();
+        if (textBackgroundColor != null) {
+            textBackgroundColor.dispose();
+        }
         savedGC.dispose();
     }
 
@@ -125,6 +127,9 @@ public class UI
 
     private Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
+        if ("none".equals(value) || "transparent".equals(value)) {
+            return null;
+        }
         return ColorUtil.parse(getDevice(), value);
     }
 
@@ -184,8 +189,13 @@ public class UI
 
     public void paintText(GC screenGC, int x, int y, String text) {
         screenGC.setForeground(getTextColor());
-        screenGC.setBackground(getTextBackgroundColor());
-        screenGC.drawText(text, x, y, TEXT_FLAGS);
+        int flags = TEXT_FLAGS;
+        if (textBackgroundColor != null) {
+            screenGC.setBackground(textBackgroundColor);
+        } else {
+            flags |= SWT.DRAW_TRANSPARENT;
+        }
+        screenGC.drawText(text, x, y, flags);
     }
 
     public Color getCanvasBackgroundColor() {
