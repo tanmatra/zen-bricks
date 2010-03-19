@@ -10,8 +10,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -26,6 +29,20 @@ public class MainWindow extends ApplicationWindow
 
     private static final String DEFAULT_STYLE_FILE =
             "styles/default.style.properties";
+
+    // =========================================================== Class Methods
+
+    public static void main(String[] args) throws IOException {
+        final ImageDescriptor imageDesc =
+                ImageDescriptor.createFromFile(MainWindow.class, "bricks.png");
+        final Image shellImage = imageDesc.createImage();
+        Window.setDefaultImage(shellImage);
+        final MainWindow window = new MainWindow();
+        window.setBlockOnOpen(true);
+        window.open();
+        shellImage.dispose();
+        Display.getCurrent().dispose();
+    }
 
     // ================================================================== Fields
 
@@ -123,13 +140,6 @@ public class MainWindow extends ApplicationWindow
         final IStatus status = new Status(IStatus.ERROR, "zen.bricks",
                 e.getClass().getName(), e);
         ErrorDialog.openError(getShell(), dialogTitle, null, status);
-    }
-
-    public static void main(String[] args) throws IOException {
-        final MainWindow window = new MainWindow();
-        window.setBlockOnOpen(true);
-        window.open();
-        Display.getCurrent().dispose();
     }
 
     public void setTitle(String fileName) {
