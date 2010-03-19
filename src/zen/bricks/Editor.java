@@ -34,6 +34,7 @@ public class Editor
     public void setUI(UI ui) {
         this.ui = ui;
         ui.applyTo(this);
+        refresh();
     }
 
     public void setRoot(TextBrick rootBrick) {
@@ -41,13 +42,19 @@ public class Editor
             root.dispose();
         }
         root = rootBrick;
+        root.x = 0;
+        root.y = 0;
+        canvas.getVerticalBar().setSelection(0);
+        canvas.getHorizontalBar().setSelection(0);
         refresh();
     }
 
     public void refresh() {
-        root.realize(ui);
-        root.calculateSize(ui);
-        resized();
+        if (root != null) {
+            root.realize(ui);
+            root.calculateSize(ui);
+            resized();
+        }
         canvas.redraw();
     }
 
@@ -122,6 +129,9 @@ public class Editor
 
     void resized() {
         clientArea = canvas.getClientArea();
+        if (root == null) {
+            return;
+        }
         boolean needRepaint = false;
 
         final ScrollBar verticalBar = canvas.getVerticalBar();
