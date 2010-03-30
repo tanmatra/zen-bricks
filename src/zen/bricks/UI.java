@@ -4,11 +4,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -53,7 +55,7 @@ public class UI
 // ================================================================== Fields
 
     private final Device device;
-    private final GC savedGC;
+    private GC savedGC;
 
     private int antialias;
     private Color backgroundColor;
@@ -79,7 +81,6 @@ public class UI
         savedGC = new GC(device);
         init(properties);
         savedGC.setAntialias(antialias);
-        font = new Font(getDevice(), "Georgia", 9, SWT.NORMAL);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
     }
@@ -102,12 +103,40 @@ public class UI
         brickPaddingRight = parseInt(props, "brick.padding.right");
         brickPaddingBottom = parseInt(props, "brick.padding.bottom");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
+        font = new Font(device, parseFont(props, "font"));
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textBackgroundColor = parseColor(props, "text.background.color");
         textColor = parseColor(props, "text.color");
         textMarginLeft = parseInt(props, "text.margin.left");
         textMarginTop = parseInt(props, "text.margin.top");
+    }
+
+    void dispose() {
+        if (font != null) {
+            font.dispose();
+            font = null;
+        }
+        if (border != null) {
+            border.dispose();
+            border = null;
+        }
+        if (textColor != null) {
+            textColor.dispose();
+            textColor = null;
+        }
+        if (backgroundColor != null) {
+            backgroundColor.dispose();
+            backgroundColor = null;
+        }
+        if (textBackgroundColor != null) {
+            textBackgroundColor.dispose();
+            textBackgroundColor = null;
+        }
+        if (savedGC != null) {
+            savedGC.dispose();
+            savedGC = null;
+        }
     }
 
     private void initBorder(Properties props) {
@@ -127,17 +156,6 @@ public class UI
             throw new IllegalArgumentException(e);
         }
         border.init(this, props);
-    }
-
-    void dispose() {
-        font.dispose();
-        border.dispose();
-        textColor.dispose();
-        backgroundColor.dispose();
-        if (textBackgroundColor != null) {
-            textBackgroundColor.dispose();
-        }
-        savedGC.dispose();
     }
 
     public void applyTo(Editor editor) {
@@ -169,6 +187,33 @@ public class UI
         } else {
             throw new IllegalArgumentException("Wrong state: " + value);
         }
+    }
+
+    private FontData parseFont(Properties properties, String key) {
+        final String value = properties.getProperty(key);
+        String name;
+        int height = 8;
+        int style = SWT.NORMAL;
+        StringTokenizer tokenizer;
+        if (value.charAt(0) == '"') {
+            final int p = value.indexOf('"', 1);
+            name = value.substring(1, p);
+            tokenizer = new StringTokenizer(value.substring(p + 1));
+        } else {
+            tokenizer = new StringTokenizer(value);
+            name = tokenizer.nextToken();
+        }
+        String heightStr = tokenizer.nextToken();
+        height = Integer.parseInt(heightStr);
+        while (tokenizer.hasMoreTokens()) {
+            final String token = tokenizer.nextToken();
+            if ("bold".equals(token)) {
+                style |= SWT.BOLD;
+            } else if ("italic".equals(token)) {
+                style |= SWT.ITALIC;
+            }
+        }
+        return new FontData(name, height, style);
     }
 
     private Device getDevice() {
