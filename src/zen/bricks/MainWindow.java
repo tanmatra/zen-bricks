@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Shell;
 
 public class MainWindow extends ApplicationWindow
@@ -93,6 +95,21 @@ public class MainWindow extends ApplicationWindow
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
+
+        final Action fontAction = new Action("&Font...") {
+            public void run() {
+                final FontDialog fontDialog = new FontDialog(getShell());
+                final UI ui = editor.ui;
+                fontDialog.setFontList(new FontData[] { ui.fontData });
+                final FontData data = fontDialog.open();
+                if (data == null) {
+                    return;
+                }
+                ui.changeFont(data);
+                editor.setUI(ui);
+            }
+        };
+        viewMenu.add(fontAction);
 
         final Action loadStyleAction = new Action("&Load style...") {
             public void run() {

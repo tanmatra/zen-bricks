@@ -66,6 +66,7 @@ public class UI
     private int brickPaddingBottom;
     private Color canvasBackgroundColor;
     private Font font;
+    FontData fontData;
     private FontMetrics fontMetrics;
     private int lineSpacing;
     private Color textBackgroundColor;
@@ -103,7 +104,8 @@ public class UI
         brickPaddingRight = parseInt(props, "brick.padding.right");
         brickPaddingBottom = parseInt(props, "brick.padding.bottom");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
-        font = new Font(device, parseFont(props, "font"));
+        fontData = parseFont(props, "font");
+        font = new Font(device, fontData);
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textBackgroundColor = parseColor(props, "text.background.color");
@@ -218,6 +220,16 @@ public class UI
             fontData.height = height;
         }
         return fontData;
+    }
+
+    void changeFont(FontData data) {
+        this.fontData = data;
+        if (font != null) {
+            font.dispose();
+        }
+        font = new Font(device, data);
+        savedGC.setFont(font);
+        fontMetrics = savedGC.getFontMetrics();
     }
 
     private Device getDevice() {
