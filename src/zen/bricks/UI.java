@@ -192,7 +192,7 @@ public class UI
     private FontData parseFont(Properties properties, String key) {
         final String value = properties.getProperty(key);
         String name;
-        int height = 8;
+        float height = 8.0f;
         int style = SWT.NORMAL;
         StringTokenizer tokenizer;
         if (value.charAt(0) == '"') {
@@ -204,7 +204,7 @@ public class UI
             name = tokenizer.nextToken();
         }
         String heightStr = tokenizer.nextToken();
-        height = Integer.parseInt(heightStr);
+        height = Float.parseFloat(heightStr);
         while (tokenizer.hasMoreTokens()) {
             final String token = tokenizer.nextToken();
             if ("bold".equals(token)) {
@@ -213,7 +213,11 @@ public class UI
                 style |= SWT.ITALIC;
             }
         }
-        return new FontData(name, height, style);
+        final FontData fontData = new FontData(name, (int) height, style);
+        if (Math.floor(height) != height) {
+            fontData.height = height;
+        }
+        return fontData;
     }
 
     private Device getDevice() {
