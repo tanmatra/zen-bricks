@@ -111,6 +111,22 @@ public class MainWindow extends ApplicationWindow
         };
         viewMenu.add(fontAction);
 
+        final Action adjustFontAction = new Action("&Adjust font...") {
+            public void run() {
+                final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
+                final UI ui = editor.ui;
+                dialog.fontData = ui.fontData;
+                if (dialog.open() != Window.OK) {
+                    return;
+                }
+                ui.changeFont(dialog.fontData);
+                editor.setUI(ui);
+            }
+        };
+        viewMenu.add(adjustFontAction);
+
+        viewMenu.add(new Separator());
+
         final Action loadStyleAction = new Action("&Load style...") {
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
