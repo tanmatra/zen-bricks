@@ -29,8 +29,8 @@ public class MainWindow extends ApplicationWindow
 {
     // ============================================================ Class Fields
 
-    private static final String DEFAULT_STYLE_FILE =
-            "styles/default.style.properties";
+    private static final String DEFAULT_THEME_FILE =
+            "themes/default.theme.properties";
 
     // =========================================================== Class Methods
 
@@ -50,13 +50,13 @@ public class MainWindow extends ApplicationWindow
 
     Editor editor;
 
-    private Properties defaultStyle;
+    private Properties defaultTheme;
 
     // ============================================================ Constructors
 
     public MainWindow() throws IOException {
         super(null);
-        defaultStyle = UI.loadProperties(DEFAULT_STYLE_FILE);
+        defaultTheme = UI.loadProperties(DEFAULT_THEME_FILE);
         addMenuBar();
         addStatusLine();
     }
@@ -127,27 +127,27 @@ public class MainWindow extends ApplicationWindow
 
         viewMenu.add(new Separator());
 
-        final Action loadStyleAction = new Action("&Load style...") {
+        final Action loadThemeAction = new Action("&Load theme...") {
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 dialog.setFilterNames(new String[] { "Properties" });
                 dialog.setFilterExtensions(new String[] { "*.properties" });
-                dialog.setFilterPath(new File("styles/").toString());
+                dialog.setFilterPath(new File("themes/").toString());
                 final String fileName = dialog.open();
                 if (fileName == null) {
                     return;
                 }
-                final Properties props = new Properties(defaultStyle);
+                final Properties props = new Properties(defaultTheme);
                 try {
                     UI.loadProperties(props, fileName);
                 } catch (IOException e) {
-                    handleException(e, "Error loading style");
+                    handleException(e, "Error loading theme");
                     return;
                 }
-                setEditorStyle(props);
+                setEditorTheme(props);
             }
         };
-        viewMenu.add(loadStyleAction);
+        viewMenu.add(loadThemeAction);
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         return mainMenu;
@@ -160,7 +160,7 @@ public class MainWindow extends ApplicationWindow
         contents.setLayout(layout);
 
         editor = new Editor(this, contents);
-        setEditorStyle(defaultStyle);
+        setEditorTheme(defaultTheme);
         editor.setRoot(Editor.makeSample());
 
         getStatusLineManager().setMessage("Ready.");
@@ -179,7 +179,7 @@ public class MainWindow extends ApplicationWindow
         getShell().setText("Bricks - " + fileName);
     }
 
-    void setEditorStyle(final Properties props) {
+    void setEditorTheme(final Properties props) {
         final UI ui = new UI(getShell().getDisplay(), props);
         editor.setUI(ui);
     }

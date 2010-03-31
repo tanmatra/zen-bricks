@@ -86,8 +86,8 @@ public class UI
         fontMetrics = savedGC.getFontMetrics();
     }
 
-    public UI(Device device, String styleFileName) throws IOException {
-        this(device, loadProperties(styleFileName));
+    public UI(Device device, String themeFileName) throws IOException {
+        this(device, loadProperties(themeFileName));
     }
 
     // ================================================================= Methods
