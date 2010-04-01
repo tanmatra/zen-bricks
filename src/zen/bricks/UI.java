@@ -68,6 +68,7 @@ public class UI
     private Font font;
     FontData fontData;
     private FontMetrics fontMetrics;
+    private TupleLayout layout;
     private int lineSpacing;
     private Color textBackgroundColor;
     private Color textColor;
@@ -81,6 +82,7 @@ public class UI
         this.device = device;
         savedGC = new GC(device);
         init(properties);
+        layout = new SimpleLayout(this);
         savedGC.setAntialias(antialias);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
@@ -262,6 +264,10 @@ public class UI
 
     public Point getTextExtent(String text) {
         return savedGC.textExtent(text, TEXT_FLAGS);
+    }
+
+    public void layout(TextBrick brick) {
+        layout.doLayout(brick);
     }
 
     public void paintText(GC screenGC, int x, int y, String text) {

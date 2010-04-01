@@ -12,7 +12,7 @@ public class TextBrick extends Brick
     // ================================================================== Fields
 
     String text;
-    private Point textExtent;
+    Point textExtent;
     final List<Brick> children = new ArrayList<Brick>();
 
     // ============================================================ Constructors
@@ -92,31 +92,7 @@ public class TextBrick extends Brick
     }
 
     void calculateSize(UI ui) {
-        textExtent = ui.getTextExtent(text);
-        width = ui.getTextMarginLeft() + textExtent.x;
-        int currX = width + ui.getSpacing();
-        int currY = ui.getBrickPaddingTop();
-        int currLineHeight = ui.getTextMarginTop() + textExtent.y;
-        for (final Brick brick : children) {
-            brick.calculateSize(ui);
-            if (brick.isLineBreak()) {
-                currX = ui.getBrickPaddingLeft();
-                currY += currLineHeight + ui.getLineSpacing();
-                brick.x = currX;
-                brick.y = currY;
-                currLineHeight = brick.height;
-            } else {
-                currLineHeight = Math.max(currLineHeight, brick.height);
-                currX += ui.getSpacing();
-                // currY is unchanged
-                brick.x = currX;
-                brick.y = currY;
-                currX += brick.width;
-            }
-            width = Math.max(width, brick.x + brick.width);
-        }
-        width += ui.getBrickPaddingRight();
-        height = currY + currLineHeight + ui.getBrickPaddingBottom();
+        ui.layout(this);
     }
 
     public String toString() {
