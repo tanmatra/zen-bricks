@@ -11,6 +11,7 @@ public abstract class Brick
     int y;
     int width;
     int height;
+    int ascent;
     boolean lineBreak = true;
 
     Brick(TextBrick parent) {
@@ -58,6 +59,7 @@ public abstract class Brick
         return lineBreak;
     }
 
+    @Deprecated
     int getAscent(UI ui) {
         return 0;
     }
