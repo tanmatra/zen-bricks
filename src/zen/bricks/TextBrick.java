@@ -13,6 +13,7 @@ public class TextBrick extends Brick
 
     String text;
     Point textExtent;
+    int textY;
     final List<Brick> children = new ArrayList<Brick>();
 
     // ============================================================ Constructors
@@ -49,18 +50,6 @@ public class TextBrick extends Brick
     void addChild(Brick child) {
         child.index = children.size();
         children.add(child);
-    }
-
-    int getAscent(UI ui) {
-        int ascent = ui.getTextAscent();
-        for (final Brick brick : children) {
-            if (brick.isLineBreak()) {
-                break;
-            }
-            final int childAscent = brick.getAscent(ui);
-            ascent = Math.max(ascent, childAscent);
-        }
-        return ascent;
     }
 
     @Override

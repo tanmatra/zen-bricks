@@ -3,6 +3,7 @@ package zen.bricks;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -82,7 +83,9 @@ public class UI
         this.device = device;
         savedGC = new GC(device);
         init(properties);
-        layout = new SimpleLayout(this);
+        if (layout == null) {
+            layout = new SimpleLayout(this);
+        }
         savedGC.setAntialias(antialias);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
@@ -108,12 +111,34 @@ public class UI
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         fontData = parseFont(props, "font");
         font = new Font(device, fontData);
+        try {
+            initLayout(props);
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO Auto-generated catch block
+        }
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textBackgroundColor = parseColor(props, "text.background.color");
         textColor = parseColor(props, "text.color");
         textMarginLeft = parseInt(props, "text.margin.left");
         textMarginTop = parseInt(props, "text.margin.top");
+    }
+
+    private void initLayout(Properties props) throws Exception {
+        layout = null;
+        final String layoutClassName = props.getProperty("layout.class");
+        if (layoutClassName == null) {
+            return;
+        }
+        final Class<TupleLayout> layoutClass =
+                (Class<TupleLayout>) Class.forName(layoutClassName);
+        if (!TupleLayout.class.isAssignableFrom(layoutClass)) {
+            System.err.println("Not a subclass of TupleLayout");
+            return;
+        }
+        final Constructor<TupleLayout> constr =
+                layoutClass.getConstructor(UI.class);
+        layout = constr.newInstance(this);
     }
 
     void dispose() {

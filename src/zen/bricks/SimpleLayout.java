@@ -2,7 +2,7 @@ package zen.bricks;
 
 public class SimpleLayout extends TupleLayout
 {
-    SimpleLayout(UI ui) {
+    public SimpleLayout(UI ui) {
         super(ui);
     }
 
