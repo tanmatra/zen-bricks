@@ -19,6 +19,8 @@ class ImportXMLAction extends Action
 {
     private static final class BrickHandler extends DefaultHandler
     {
+        private static final String ATTR_SUFFIX = " :";
+
         private final StringBuilder buffer = new StringBuilder(128);
 
         TextBrick brick;
@@ -60,7 +62,7 @@ class ImportXMLAction extends Action
             for (int i = 0; i < attLen; i++) {
                 final String attName = attributes.getQName(i);
                 final TextBrick attNameBrick =
-                        new TextBrick(elementBrick, attName + " =");
+                        new TextBrick(elementBrick, attName + ATTR_SUFFIX);
                 final String attValue = removeCRs(attributes.getValue(i));
                 final TextBrick attValueBrick =
                         new TextBrick(attNameBrick, attValue);
@@ -110,8 +112,8 @@ class ImportXMLAction extends Action
     public void run() {
         final FileDialog dialog =
                 new FileDialog(mainWindow.getShell(), SWT.OPEN);
-        dialog.setFilterNames(new String[] { "XML files" });
-        dialog.setFilterExtensions(new String[] { "*.xml" });
+        dialog.setFilterNames(new String[] { "XML files", "All files" });
+        dialog.setFilterExtensions(new String[] { "*.xml", "*.*" });
         dialog.setFilterPath(new File("samples/").toString());
         final String fileName = dialog.open();
         if (fileName == null) {
