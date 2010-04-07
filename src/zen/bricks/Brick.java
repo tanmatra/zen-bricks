@@ -1,7 +1,9 @@
 package zen.bricks;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Event;
 
 public abstract class Brick
 {
@@ -29,6 +31,11 @@ public abstract class Brick
     }
 
     void dispose() {
+    }
+
+    public boolean contains(int x, int y) {
+        return (x >= this.x) && (y >= this.y)
+                && (x < (this.x + width)) && (y < (this.y + height));
     }
 
     void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
@@ -62,5 +69,26 @@ public abstract class Brick
     @Deprecated
     int getAscent(UI ui) {
         return 0;
+    }
+
+    public Brick mouseDown(int mouseX, int mouseY, Event event) {
+        // debugMouseEvent(event);
+        return null;
+    }
+
+    @SuppressWarnings("unused")
+    private void debugMouseEvent(Event event) {
+        final String type;
+        switch (event.type) {
+            case SWT.MouseDoubleClick: type = "MouseDoubleClick"; break;
+            case SWT.MouseDown: type = "MouseDown"; break;
+            case SWT.MouseHover: type = "MouseHover"; break;
+            case SWT.MouseMove: type = "MouseMove"; break;
+            case SWT.MouseUp: type = "MouseUp"; break;
+            default: type = "???"; break;
+        }
+        System.out.println("\nmouse event: " + event
+                + "\ntype: " + type
+                + "\non: " + this);
     }
 }

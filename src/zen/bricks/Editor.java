@@ -95,6 +95,17 @@ public class Editor
                 resized();
             }
         });
+
+        final Listener mouseListener = new Listener() {
+            public void handleEvent(Event event) {
+                handleMouseEvent(event);
+            }
+        };
+        canvas.addListener(SWT.MouseDown, mouseListener);
+        canvas.addListener(SWT.MouseUp, mouseListener);
+        canvas.addListener(SWT.MouseDoubleClick, mouseListener);
+        // canvas.addListener(SWT.MouseHover, mouseListener);
+        // canvas.addListener(SWT.MouseMove, mouseListener);
     }
 
     private void initScrollbars() {
@@ -206,5 +217,16 @@ public class Editor
         }
 
         root.paint(gc, root.x, root.y, ui, clipping);
+    }
+
+    void handleMouseEvent(Event event) {
+        Brick target = root;
+        int x = event.x;
+        int y = event.y;
+        while (target != null) {
+            x -= target.x;
+            y -= target.y;
+            target = target.mouseDown(x, y, event);
+        }
     }
 }

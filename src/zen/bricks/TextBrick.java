@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Event;
 
 public class TextBrick extends Brick
 {
@@ -91,6 +92,24 @@ public class TextBrick extends Brick
     }
 
     void childResized(Brick child) {
-        // todo
+        // TODO
+    }
+
+    public Brick mouseDown(int mouseX, int mouseY, Event event) {
+        final Brick child = findChildAt(mouseX, mouseY);
+        if (child == null) {
+            return super.mouseDown(mouseX, mouseY, event); // TODO
+        } else {
+            return child;
+        }
+    }
+
+    protected Brick findChildAt(int x, int y) {
+        for (final Brick brick : children) {
+            if (brick.contains(x, y)) {
+                return brick;
+            }
+        }
+        return null;
     }
 }
