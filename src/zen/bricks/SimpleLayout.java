@@ -12,7 +12,9 @@ public class SimpleLayout extends TupleLayout
         int currX = brick.width + ui.getSpacing();
         int currY = ui.getBrickPaddingTop();
         int currLineHeight = ui.getTextMarginTop() + brick.textExtent.y;
-        for (final Brick child : brick.children) {
+        final int count = brick.childrenCount();
+        for (int i = 0; i < count; i++) {
+            final Brick child = brick.getChild(i);
             child.calculateSize(ui);
             if (child.isLineBreak()) {
                 currX = ui.getBrickPaddingLeft();

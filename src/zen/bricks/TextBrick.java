@@ -15,7 +15,7 @@ public class TextBrick extends Brick
     String text;
     Point textExtent;
     int textY;
-    final List<Brick> children = new ArrayList<Brick>();
+    final private List<Brick> children = new ArrayList<Brick>();
 
     // ============================================================ Constructors
 
@@ -51,6 +51,14 @@ public class TextBrick extends Brick
     void addChild(Brick child) {
         child.index = children.size();
         children.add(child);
+    }
+
+    int childrenCount() {
+        return children.size();
+    }
+
+    Brick getChild(int i) {
+        return children.get(i);
     }
 
     @Override
