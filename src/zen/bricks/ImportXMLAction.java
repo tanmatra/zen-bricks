@@ -17,6 +17,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 class ImportXMLAction extends Action
 {
+    // ========================================================== Nested Classes
+
     private static final class BrickHandler extends DefaultHandler
     {
         private static final String ATTR_SUFFIX = " :";
@@ -102,23 +104,32 @@ class ImportXMLAction extends Action
         }
     }
 
+    // ================================================================== Fields
+
     private final MainWindow mainWindow;
+
+    private String path = "samples/";
+
+    // ============================================================ Constructors
 
     ImportXMLAction(MainWindow mainWindow, String text) {
         super(text);
         this.mainWindow = mainWindow;
     }
 
+    // ================================================================= Methods
+
     public void run() {
         final FileDialog dialog =
                 new FileDialog(mainWindow.getShell(), SWT.OPEN);
         dialog.setFilterNames(new String[] { "XML files", "All files" });
         dialog.setFilterExtensions(new String[] { "*.xml", "*.*" });
-        dialog.setFilterPath(new File("samples/").toString());
+        dialog.setFilterPath(path);
         final String fileName = dialog.open();
         if (fileName == null) {
             return;
         }
+        path = new File(fileName).getParent();
         try {
             final Editor editor = mainWindow.editor;
             final TextBrick root = parse(fileName);
