@@ -20,6 +20,7 @@ public class ColorBrick extends Brick
         this.height = height;
         this.fore = fore;
         this.back = back;
+        ascent = height;
     }
 
     void realize(UI ui) {

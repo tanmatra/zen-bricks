@@ -21,7 +21,7 @@ class ImportXMLAction extends Action
 
     private static final class BrickHandler extends DefaultHandler
     {
-        private static final String ATTR_SUFFIX = " :";
+        private static final String ATTR_SUFFIX = ":";
 
         private final StringBuilder buffer = new StringBuilder(128);
 
@@ -65,6 +65,7 @@ class ImportXMLAction extends Action
                 final String attName = attributes.getQName(i);
                 final TextBrick attNameBrick =
                         new TextBrick(elementBrick, attName + ATTR_SUFFIX);
+                attNameBrick.lineBreak = false;
                 final String attValue = removeCRs(attributes.getValue(i));
                 final TextBrick attValueBrick =
                         new TextBrick(attNameBrick, attValue);

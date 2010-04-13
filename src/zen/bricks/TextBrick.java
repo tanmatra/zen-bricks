@@ -70,7 +70,7 @@ public class TextBrick extends Brick
 
     private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
         final int textX = baseX + ui.getTextMarginLeft();
-        final int textY = baseY + ui.getTextMarginTop();
+        final int textY = baseY + this.textY;
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }

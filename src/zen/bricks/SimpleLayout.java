@@ -7,6 +7,7 @@ public class SimpleLayout extends TupleLayout
     }
 
     void doLayout(TextBrick brick) {
+        brick.textY = ui.getTextMarginTop();
         brick.textExtent = ui.getTextExtent(brick.text);
         brick.width = ui.getTextMarginLeft() + brick.textExtent.x;
         int currX = brick.width + ui.getSpacing();

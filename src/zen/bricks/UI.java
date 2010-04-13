@@ -74,6 +74,7 @@ public class UI
     private Color textBackgroundColor;
     private Color textColor;
     private int spacing;
+    private int textAscent;
     private int textMarginLeft;
     private int textMarginTop;
 
@@ -89,6 +90,7 @@ public class UI
         savedGC.setAntialias(antialias);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
+        textAscent = fontMetrics.getAscent() + fontMetrics.getLeading();
     }
 
     public UI(Device device, String themeFileName) throws IOException {
@@ -284,7 +286,7 @@ public class UI
     }
 
     int getTextAscent() {
-        return fontMetrics.getAscent();
+        return textAscent;
     }
 
     public Point getTextExtent(String text) {
@@ -355,6 +357,8 @@ public class UI
     }
 
     public void preparePaint(GC gc) {
+        gc.setAdvanced(true);
+        gc.setTextAntialias(SWT.ON);
         gc.setAntialias(antialias);
     }
 }
