@@ -80,35 +80,33 @@ public class UI
 
     // ============================================================ Constructors
 
-    public UI(Device device, Properties properties) {
+    public UI(Device device, Properties properties) throws Exception {
         this.device = device;
         savedGC = new GC(device);
-        init(properties);
-        if (layout == null) {
-            layout = new SimpleLayout(this);
+        try {
+            init(properties);
+            if (layout == null) {
+                layout = new SimpleLayout(this);
+            }
+            savedGC.setAntialias(antialias);
+            savedGC.setFont(font);
+            fontMetrics = savedGC.getFontMetrics();
+            textAscent = fontMetrics.getAscent() + fontMetrics.getLeading();
+        } catch (Exception e) {
+            dispose();
+            throw e;
         }
-        savedGC.setAntialias(antialias);
-        savedGC.setFont(font);
-        fontMetrics = savedGC.getFontMetrics();
-        textAscent = fontMetrics.getAscent() + fontMetrics.getLeading();
     }
 
-    public UI(Device device, String themeFileName) throws IOException {
+    public UI(Device device, String themeFileName) throws Exception {
         this(device, loadProperties(themeFileName));
     }
 
     // ================================================================= Methods
 
-    /**
-     * @throws IllegalArgumentException
-     */
-    void init(Properties props) {
+    void init(Properties props) throws Exception {
         antialias = parseState(props, "antialias");
-        try {
-            initBorder(props);
-        } catch (Exception e1) {
-            e1.printStackTrace(); // TODO Auto-generated catch block
-        }
+        initBorder(props);
         backgroundColor = parseColor(props, "background.color");
         brickPaddingLeft = parseInt(props, "brick.padding.left");
         brickPaddingTop = parseInt(props, "brick.padding.top");
@@ -117,11 +115,7 @@ public class UI
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         fontData = parseFont(props, "font");
         font = new Font(device, fontData);
-        try {
-            initLayout(props);
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO Auto-generated catch block
-        }
+        initLayout(props);
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textBackgroundColor = parseColor(props, "text.background.color");

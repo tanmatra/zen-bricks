@@ -180,7 +180,13 @@ public class MainWindow extends ApplicationWindow
     }
 
     void setEditorTheme(final Properties props) {
-        final UI ui = new UI(getShell().getDisplay(), props);
+        UI ui;
+        try {
+            ui = new UI(getShell().getDisplay(), props);
+        } catch (Exception e) {
+            handleException(e, "Error loading theme");
+            return;
+        }
         editor.setUI(ui);
     }
 }
