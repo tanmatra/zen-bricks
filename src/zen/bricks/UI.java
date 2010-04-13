@@ -53,11 +53,12 @@ public class UI
         return loadProperties(properties, filePath);
     }
 
-// ================================================================== Fields
+    // ================================================================== Fields
 
     private final Device device;
     private GC savedGC;
 
+    private Boolean advanced;
     private int antialias;
     private Color backgroundColor;
     private Border border;
@@ -74,6 +75,7 @@ public class UI
     private Color textBackgroundColor;
     private Color textColor;
     private int spacing;
+    private int textAntialias;
     private int textAscent;
     private int textMarginLeft;
     private int textMarginTop;
@@ -105,6 +107,7 @@ public class UI
     // ================================================================= Methods
 
     void init(Properties props) throws Exception {
+        advanced = parseBoolean(props, "advanced");
         antialias = parseState(props, "antialias");
         initBorder(props);
         backgroundColor = parseColor(props, "background.color");
@@ -118,6 +121,7 @@ public class UI
         initLayout(props);
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
+        textAntialias = parseState(props, "text.antialias");
         textBackgroundColor = parseColor(props, "text.background.color");
         textColor = parseColor(props, "text.color");
         textMarginLeft = parseInt(props, "text.margin.left");
@@ -184,6 +188,14 @@ public class UI
         // what else?
     }
 
+    public Boolean parseBoolean(Properties properties, String key) {
+        final String value = properties.getProperty(key);
+        if (value == null) {
+            return null;
+        }
+        return Boolean.valueOf(value);
+    }
+
     public Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
         if ("none".equals(value) || "transparent".equals(value)) {
@@ -199,7 +211,7 @@ public class UI
 
     private int parseState(Properties properties, String key) {
         final String value = properties.getProperty(key);
-        if ("default".equals(value)) {
+        if ((value == null) || "default".equals(value)) {
             return SWT.DEFAULT;
         } else if ("on".equals(value)) {
             return SWT.ON;
@@ -347,8 +359,10 @@ public class UI
     }
 
     public void preparePaint(GC gc) {
-        gc.setAdvanced(true);
-        gc.setTextAntialias(SWT.ON);
+        if (advanced != null) {
+            gc.setAdvanced(advanced);
+        }
         gc.setAntialias(antialias);
+        gc.setTextAntialias(textAntialias);
     }
 }
