@@ -10,7 +10,7 @@ public abstract class Border
 {
     protected Color color;
 
-    public void init(UI ui, Properties properties) {
+    protected Border(UI ui, Properties properties) {
         color = ui.parseColor(properties, "border.color");
     }
 

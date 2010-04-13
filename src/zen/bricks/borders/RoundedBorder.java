@@ -13,8 +13,8 @@ public class RoundedBorder extends Border
 {
     private int arcSize;
 
-    public void init(UI ui, Properties properties) {
-        super.init(ui, properties);
+    public RoundedBorder(UI ui, Properties properties) {
+        super(ui, properties);
         arcSize = ui.parseInt(properties, "border.arc.size");
     }
 

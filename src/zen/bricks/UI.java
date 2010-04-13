@@ -104,7 +104,11 @@ public class UI
      */
     void init(Properties props) {
         antialias = parseState(props, "antialias");
-        initBorder(props);
+        try {
+            initBorder(props);
+        } catch (Exception e1) {
+            e1.printStackTrace(); // TODO Auto-generated catch block
+        }
         backgroundColor = parseColor(props, "background.color");
         brickPaddingLeft = parseInt(props, "brick.padding.left");
         brickPaddingTop = parseInt(props, "brick.padding.top");
@@ -170,23 +174,15 @@ public class UI
         }
     }
 
-    private void initBorder(Properties props) {
+    private void initBorder(Properties props) throws Exception {
         final String borderClassName = props.getProperty("border.class");
-        final Class<? extends Border> borderClass;
-        try {
-            borderClass =
-                    (Class<? extends Border>) Class.forName(borderClassName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
-        try {
-            border = borderClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-        border.init(this, props);
+        final Class<? extends Border> borderClass =
+                (Class<? extends Border>) Class.forName(borderClassName);
+        final Constructor<? extends Border> constr =
+                borderClass.getConstructor(UI.class, Properties.class);
+//        border = borderClass.newInstance();
+//        border.init(this, props);
+        border = constr.newInstance(this, props);
     }
 
     public void applyTo(Editor editor) {
