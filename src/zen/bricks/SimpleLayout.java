@@ -10,15 +10,19 @@ public class SimpleLayout extends TupleLayout
         brick.textY = ui.getTextMarginTop();
         brick.textExtent = ui.getTextExtent(brick.text);
         brick.width = ui.getTextMarginLeft() + brick.textExtent.x;
+
+        final Margin brickPadding = ui.getBrickPadding();
+
         int currX = brick.width + ui.getSpacing();
-        int currY = ui.getBrickPaddingTop();
+        int currY = brickPadding.getTop();
         int currLineHeight = ui.getTextMarginTop() + brick.textExtent.y;
+
         final int count = brick.childrenCount();
         for (int i = 0; i < count; i++) {
             final Brick child = brick.getChild(i);
             child.calculateSize(ui);
             if (child.isLineBreak()) {
-                currX = ui.getBrickPaddingLeft();
+                currX = brickPadding.getLeft();
                 currY += currLineHeight + ui.getLineSpacing();
                 child.x = currX;
                 child.y = currY;
@@ -33,7 +37,8 @@ public class SimpleLayout extends TupleLayout
             }
             brick.width = Math.max(brick.width, child.x + child.width);
         }
-        brick.width += ui.getBrickPaddingRight();
-        brick.height = currY + currLineHeight + ui.getBrickPaddingBottom();
+
+        brick.width += brickPadding.getRight();
+        brick.height = currY + currLineHeight + brickPadding.getBottom();
     }
 }

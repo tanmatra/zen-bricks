@@ -62,10 +62,7 @@ public class UI
     private int antialias;
     private Color backgroundColor;
     private Border border;
-    private int brickPaddingLeft;
-    private int brickPaddingTop;
-    private int brickPaddingRight;
-    private int brickPaddingBottom;
+    private final Margin brickPadding = new Margin();
     private Color canvasBackgroundColor;
     private Font font;
     FontData fontData;
@@ -111,10 +108,7 @@ public class UI
         antialias = parseState(props, "antialias");
         initBorder(props);
         backgroundColor = parseColor(props, "background.color");
-        brickPaddingLeft = parseInt(props, "brick.padding.left");
-        brickPaddingTop = parseInt(props, "brick.padding.top");
-        brickPaddingRight = parseInt(props, "brick.padding.right");
-        brickPaddingBottom = parseInt(props, "brick.padding.bottom");
+        brickPadding.parse(props, "brick.padding");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         fontData = parseFont(props, "font");
         font = new Font(device, fontData);
@@ -326,20 +320,8 @@ public class UI
         border.paint(gc, baseX, baseY, brick, clipping);
     }
 
-    public int getBrickPaddingTop() {
-        return brickPaddingTop;
-    }
-
-    public int getBrickPaddingLeft() {
-        return brickPaddingLeft;
-    }
-
-    public int getBrickPaddingRight() {
-        return brickPaddingRight;
-    }
-
-    public int getBrickPaddingBottom() {
-        return brickPaddingBottom;
+    public Margin getBrickPadding() {
+        return brickPadding;
     }
 
     public int getTextMarginLeft() {
