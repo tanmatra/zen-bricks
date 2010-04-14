@@ -22,7 +22,7 @@ public class Editor
     // ============================================================ Constructors
 
     public Editor(MainWindow mainWindow, Composite parent) {
-        canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL
+        canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER
                 | SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND
                 | SWT.NO_REDRAW_RESIZE);
         createListeners();

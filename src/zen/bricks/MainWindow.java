@@ -52,6 +52,10 @@ public class MainWindow extends ApplicationWindow
 
     private Properties defaultTheme;
 
+    private String themeFileName;
+
+    private Action reloadThemeAction;
+
     // ============================================================ Constructors
 
     public MainWindow() throws IOException {
@@ -137,17 +141,22 @@ public class MainWindow extends ApplicationWindow
                 if (fileName == null) {
                     return;
                 }
-                final Properties props = new Properties(defaultTheme);
-                try {
-                    UI.loadProperties(props, fileName);
-                } catch (IOException e) {
-                    handleException(e, "Error loading theme");
-                    return;
-                }
-                setEditorTheme(props);
+                themeFileName = fileName;
+                loadTheme();
             }
         };
         viewMenu.add(loadThemeAction);
+
+        reloadThemeAction = new Action("&Reload theme\tF5") {
+            public void run() {
+                if (themeFileName == null) {
+                    return;
+                }
+                loadTheme();
+            }
+        };
+        reloadThemeAction.setEnabled(false);
+        viewMenu.add(reloadThemeAction);
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         return mainMenu;
@@ -188,5 +197,19 @@ public class MainWindow extends ApplicationWindow
             return;
         }
         editor.setUI(ui);
+    }
+
+    void loadTheme() {
+        final Properties props = new Properties(defaultTheme);
+        try {
+            UI.loadProperties(props, themeFileName);
+        } catch (IOException e) {
+            handleException(e, "Error loading theme");
+            return;
+        }
+        setEditorTheme(props);
+        getStatusLineManager().setMessage(
+                "Loaded theme \"" + themeFileName + "\"");
+        reloadThemeAction.setEnabled(true);
     }
 }
