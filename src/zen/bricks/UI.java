@@ -120,23 +120,6 @@ public class UI
         textMargin.parse(props, "text.margin");
     }
 
-    private void initLayout(Properties props) throws Exception {
-        layout = null;
-        final String layoutClassName = props.getProperty("layout.class");
-        if (layoutClassName == null) {
-            return;
-        }
-        final Class<TupleLayout> layoutClass =
-                (Class<TupleLayout>) Class.forName(layoutClassName);
-        if (!TupleLayout.class.isAssignableFrom(layoutClass)) {
-            System.err.println("Not a subclass of TupleLayout");
-            return;
-        }
-        final Constructor<TupleLayout> constr =
-                layoutClass.getConstructor(UI.class);
-        layout = constr.newInstance(this);
-    }
-
     void dispose() {
         if (font != null) {
             font.dispose();
@@ -164,14 +147,31 @@ public class UI
         }
     }
 
+    private void initLayout(Properties props) throws Exception {
+        layout = null;
+        final String layoutClassName = props.getProperty("layout.class");
+        if (layoutClassName == null) {
+            return;
+        }
+        final Class<TupleLayout> layoutClass =
+                (Class<TupleLayout>) Class.forName(layoutClassName);
+        if (!TupleLayout.class.isAssignableFrom(layoutClass)) {
+            throw new ClassNotFoundException("Not a subclass of TupleLayout");
+        }
+        final Constructor<TupleLayout> constr =
+                layoutClass.getConstructor(UI.class);
+        layout = constr.newInstance(this);
+    }
+
     private void initBorder(Properties props) throws Exception {
         final String borderClassName = props.getProperty("border.class");
-        final Class<? extends Border> borderClass =
-                (Class<? extends Border>) Class.forName(borderClassName);
-        final Constructor<? extends Border> constr =
+        final Class<Border> borderClass =
+                (Class<Border>) Class.forName(borderClassName);
+        final Constructor<Border> constr =
                 borderClass.getConstructor(UI.class, Properties.class);
-//        border = borderClass.newInstance();
-//        border.init(this, props);
+        if (!Border.class.isAssignableFrom(borderClass)) {
+            throw new ClassNotFoundException("Not a subclass of Border");
+        }
         border = constr.newInstance(this, props);
     }
 
