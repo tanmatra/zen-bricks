@@ -74,8 +74,7 @@ public class UI
     private int spacing;
     private int textAntialias;
     private int textAscent;
-    private int textMarginLeft;
-    private int textMarginTop;
+    private final Margin textMargin = new Margin();
 
     // ============================================================ Constructors
 
@@ -118,8 +117,7 @@ public class UI
         textAntialias = parseState(props, "text.antialias");
         textBackgroundColor = parseColor(props, "text.background.color");
         textColor = parseColor(props, "text.color");
-        textMarginLeft = parseInt(props, "text.margin.left");
-        textMarginTop = parseInt(props, "text.margin.top");
+        textMargin.parse(props, "text.margin");
     }
 
     private void initLayout(Properties props) throws Exception {
@@ -324,12 +322,8 @@ public class UI
         return brickPadding;
     }
 
-    public int getTextMarginLeft() {
-        return textMarginLeft;
-    }
-
-    public int getTextMarginTop() {
-        return textMarginTop;
+    public Margin getTextMargin() {
+        return textMargin;
     }
 
     public int getSpacing() {

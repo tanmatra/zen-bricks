@@ -18,7 +18,7 @@ public class BaselineLayout extends TupleLayout
         int line = 0;
         final int textAscent = ui.getTextAscent();
         int lineAscent = textAscent;
-        int lineWidth = ui.getTextMarginLeft() + textExtent.x;
+        int lineWidth = ui.getTextMargin().getLeft() + textExtent.x;
 
         final int count = brick.childrenCount();
 

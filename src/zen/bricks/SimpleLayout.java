@@ -7,15 +7,16 @@ public class SimpleLayout extends TupleLayout
     }
 
     void doLayout(TextBrick brick) {
-        brick.textY = ui.getTextMarginTop();
-        brick.textExtent = ui.getTextExtent(brick.text);
-        brick.width = ui.getTextMarginLeft() + brick.textExtent.x;
-
+        final Margin textMargin = ui.getTextMargin();
         final Margin brickPadding = ui.getBrickPadding();
+
+        brick.textY = textMargin.getTop();
+        brick.textExtent = ui.getTextExtent(brick.text);
+        brick.width = textMargin.getLeft() + brick.textExtent.x;
 
         int currX = brick.width + ui.getSpacing();
         int currY = brickPadding.getTop();
-        int currLineHeight = ui.getTextMarginTop() + brick.textExtent.y;
+        int currLineHeight = textMargin.getTop() + brick.textExtent.y;
 
         final int count = brick.childrenCount();
         for (int i = 0; i < count; i++) {
