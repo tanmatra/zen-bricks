@@ -4,25 +4,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 public class UI
 {
-    // ============================================================ Class Fields
-
-    private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
-
     // =========================================================== Class Methods
 
     static Properties loadProperties(Properties properties, String filePath)
@@ -64,17 +58,12 @@ public class UI
     private Border border;
     private final Margin brickPadding = new Margin();
     private Color canvasBackgroundColor;
-    private Font font;
-    FontData fontData;
-    private FontMetrics fontMetrics;
     private TupleLayout layout;
     private int lineSpacing;
-    private Color textBackgroundColor;
-    private Color textColor;
     private int spacing;
     private int textAntialias;
-    private int textAscent;
     private final Margin textMargin = new Margin();
+    private TextStyle textStyle;
 
     // ============================================================ Constructors
 
@@ -87,9 +76,7 @@ public class UI
                 layout = new SimpleLayout(this);
             }
             savedGC.setAntialias(antialias);
-            savedGC.setFont(font);
-            fontMetrics = savedGC.getFontMetrics();
-            textAscent = fontMetrics.getAscent() + fontMetrics.getLeading();
+            // TODO: pass antialias to all text styles
         } catch (Exception e) {
             dispose();
             throw e;
@@ -109,41 +96,30 @@ public class UI
         backgroundColor = parseColor(props, "background.color");
         brickPadding.parse(props, "brick.padding");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
-        fontData = parseFont(props, "font");
-        font = new Font(device, fontData);
         initLayout(props);
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textAntialias = parseState(props, "text.antialias");
-        textBackgroundColor = parseColor(props, "text.background.color");
-        textColor = parseColor(props, "text.color");
         textMargin.parse(props, "text.margin");
+        textStyle = new TextStyle(device, props, "text");
     }
 
     void dispose() {
-        if (font != null) {
-            font.dispose();
-            font = null;
-        }
         if (border != null) {
             border.dispose();
             border = null;
-        }
-        if (textColor != null) {
-            textColor.dispose();
-            textColor = null;
         }
         if (backgroundColor != null) {
             backgroundColor.dispose();
             backgroundColor = null;
         }
-        if (textBackgroundColor != null) {
-            textBackgroundColor.dispose();
-            textBackgroundColor = null;
-        }
         if (savedGC != null) {
             savedGC.dispose();
             savedGC = null;
+        }
+        if (textStyle != null) {
+            textStyle.dispose();
+            textStyle = null;
         }
     }
 
@@ -176,8 +152,7 @@ public class UI
     }
 
     public void applyTo(Editor editor) {
-        editor.canvas.setFont(font);
-        // what else?
+        // what here ???
     }
 
     public Boolean parseBoolean(Properties properties, String key) {
@@ -190,9 +165,6 @@ public class UI
 
     public Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
-        if ("none".equals(value) || "transparent".equals(value)) {
-            return null;
-        }
         return ColorUtil.parse(getDevice(), value);
     }
 
@@ -214,45 +186,9 @@ public class UI
         }
     }
 
-    private FontData parseFont(Properties properties, String key) {
-        final String value = properties.getProperty(key);
-        String name;
-        float height = 8.0f;
-        int style = SWT.NORMAL;
-        StringTokenizer tokenizer;
-        if (value.charAt(0) == '"') {
-            final int p = value.indexOf('"', 1);
-            name = value.substring(1, p);
-            tokenizer = new StringTokenizer(value.substring(p + 1));
-        } else {
-            tokenizer = new StringTokenizer(value);
-            name = tokenizer.nextToken();
-        }
-        String heightStr = tokenizer.nextToken();
-        height = Float.parseFloat(heightStr);
-        while (tokenizer.hasMoreTokens()) {
-            final String token = tokenizer.nextToken();
-            if ("bold".equals(token)) {
-                style |= SWT.BOLD;
-            } else if ("italic".equals(token)) {
-                style |= SWT.ITALIC;
-            }
-        }
-        final FontData fontData = new FontData(name, (int) height, style);
-        if (Math.floor(height) != height) {
-            fontData.height = height;
-        }
-        return fontData;
-    }
-
+    @Deprecated
     void changeFont(FontData data) {
-        this.fontData = data;
-        if (font != null) {
-            font.dispose();
-        }
-        font = new Font(device, data);
-        savedGC.setFont(font);
-        fontMetrics = savedGC.getFontMetrics();
+        textStyle.changeFont(data);
     }
 
     private Device getDevice() {
@@ -267,39 +203,8 @@ public class UI
         return backgroundColor;
     }
 
-    Color getTextColor() {
-        return textColor;
-    }
-
-    Color getTextBackgroundColor() {
-        return textBackgroundColor;
-    }
-
-    FontMetrics getFontMetrics() {
-        return fontMetrics;
-    }
-
-    int getTextAscent() {
-        return textAscent;
-    }
-
-    public Point getTextExtent(String text) {
-        return savedGC.textExtent(text, TEXT_FLAGS);
-    }
-
     public void layout(TextBrick brick) {
         layout.doLayout(brick);
-    }
-
-    public void paintText(GC screenGC, int x, int y, String text) {
-        screenGC.setForeground(getTextColor());
-        int flags = TEXT_FLAGS;
-        if (textBackgroundColor != null) {
-            screenGC.setBackground(textBackgroundColor);
-        } else {
-            flags |= SWT.DRAW_TRANSPARENT;
-        }
-        screenGC.drawText(text, x, y, flags);
     }
 
     public Color getCanvasBackgroundColor() {
@@ -334,11 +239,23 @@ public class UI
         return lineSpacing;
     }
 
+    public TextStyle getTextStyle() {
+        return textStyle;
+    }
+
     public void preparePaint(GC gc) {
         if (advanced != null) {
             gc.setAdvanced(advanced);
         }
         gc.setAntialias(antialias);
         gc.setTextAntialias(textAntialias);
+    }
+
+    public TextStyle getTextStyle(TextBrick brick) {
+        return textStyle; // for now always return the same
+    }
+
+    public List<TextStyle> getTextStyles() {
+        return Collections.singletonList(textStyle); // todo
     }
 }

@@ -27,7 +27,7 @@ public abstract class Brick
         return parent;
     }
 
-    void realize(UI ui) {
+    void realize(Editor editor) {
     }
 
     void dispose() {

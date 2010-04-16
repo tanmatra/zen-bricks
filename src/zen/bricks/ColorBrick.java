@@ -4,6 +4,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 
 public class ColorBrick extends Brick
 {
@@ -23,10 +24,10 @@ public class ColorBrick extends Brick
         ascent = height;
     }
 
-    void realize(UI ui) {
-        super.realize(ui);
-        foreColor = new Color(ui.getGC().getDevice(), fore);
-        backColor = new Color(ui.getGC().getDevice(), back);
+    void realize(Editor editor) {
+        final Display device = editor.getCanvas().getDisplay();
+        foreColor = new Color(device, fore);
+        backColor = new Color(device, back);
     }
 
     void dispose() {

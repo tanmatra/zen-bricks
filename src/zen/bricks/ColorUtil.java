@@ -2,6 +2,7 @@ package zen.bricks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -69,6 +70,11 @@ public class ColorUtil
     }
 
     public static Color parse(Device device, String str) {
+        if ((str == null) || str.isEmpty()
+                || "none".equals(str) || "transparent".equals(str))
+        {
+            return null;
+        }
         final Integer sysId = systemColors.get(str.toUpperCase());
         if (sysId != null) {
             return copySystemColor(device, sysId);
@@ -91,5 +97,11 @@ public class ColorUtil
             return new Color(device, r, g, b);
         }
         throw new IllegalArgumentException("Misformed color: " + str);
+    }
+
+    public static Color parse(Device device, Properties properties,
+            String keyPrefix, String keySuffix)
+    {
+        return parse(device, properties.getProperty(keyPrefix + keySuffix));
     }
 }

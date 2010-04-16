@@ -51,7 +51,7 @@ public class Editor
 
     public void refresh() {
         if (root != null) {
-            root.realize(ui);
+            root.realize(this);
             root.calculateSize(ui);
             resized();
         }

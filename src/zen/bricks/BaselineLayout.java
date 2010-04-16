@@ -9,14 +9,15 @@ public class BaselineLayout extends TupleLayout
     }
 
     void doLayout(TextBrick brick) {
-        final Point textExtent = ui.getTextExtent(brick.text);
+        final TextStyle textStyle = ui.getTextStyle(brick);
+        final Point textExtent = textStyle.getTextExtent(brick.text);
         brick.textExtent = textExtent;
         final Margin brickPadding = ui.getBrickPadding();
         int width = brickPadding.getLeft();
         int bottom = brickPadding.getTop();
 
         int line = 0;
-        final int textAscent = ui.getTextAscent();
+        final int textAscent = textStyle.getTextAscent();
         int lineAscent = textAscent;
         int lineWidth = ui.getTextMargin().getLeft() + textExtent.x;
 

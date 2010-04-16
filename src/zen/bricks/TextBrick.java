@@ -34,10 +34,10 @@ public class TextBrick extends Brick
         this.text = text;
     }
 
-    void realize(UI ui) {
-        super.realize(ui);
+    void realize(Editor editor) {
+        super.realize(editor);
         for (final Brick brick : children) {
-            brick.realize(ui);
+            brick.realize(editor);
         }
     }
 
@@ -63,7 +63,7 @@ public class TextBrick extends Brick
 
     @Override
     void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        super.paint(gc, baseX, baseY, ui, clipping);
+        ui.paintBackground(gc, this, baseX, baseY, clipping);
         paintText(gc, baseX, baseY, ui, clipping);
         paintChildren(gc, baseX, baseY, ui, clipping);
     }
@@ -74,7 +74,7 @@ public class TextBrick extends Brick
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
-        ui.paintText(gc, textX, textY, text);
+        ui.getTextStyle(this).paintText(gc, textX, textY, text); // ???
     }
 
     void paintChildren(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
