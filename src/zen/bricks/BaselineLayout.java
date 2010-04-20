@@ -13,13 +13,17 @@ public class BaselineLayout extends TupleLayout
         final Point textExtent = textStyle.getTextExtent(brick.text);
         brick.textExtent = textExtent;
         final Margin brickPadding = ui.getBrickPadding();
-        int width = brickPadding.getLeft();
+        final int paddingLeft = brickPadding.getLeft();
+        int width = paddingLeft;
         int bottom = brickPadding.getTop();
 
         int line = 0;
         final int textAscent = textStyle.getTextAscent();
         int lineAscent = textAscent;
         int lineWidth = ui.getTextMargin().getLeft() + textExtent.x;
+        if (lineWidth < paddingLeft) { // for narrow text
+            lineWidth = paddingLeft;
+        }
 
         final int count = brick.childrenCount();
 
@@ -82,7 +86,7 @@ public class BaselineLayout extends TupleLayout
             lineEnd++;
             line++;
 //            lineHeight = 0;
-            lineWidth = brickPadding.getLeft();
+            lineWidth = paddingLeft;
             lineAscent = 0;
         }
 
