@@ -14,6 +14,9 @@ public class Editor
 {
     // ================================================================== Fields
 
+    private static final int VERT_SCROLL_INCREMENT = 5;
+    private static final int HORIZ_SCROLL_INCREMENT = 5;
+
     final Canvas canvas;
     Brick root;
     Rectangle clientArea;
@@ -106,11 +109,16 @@ public class Editor
         canvas.addListener(SWT.MouseDoubleClick, mouseListener);
         // canvas.addListener(SWT.MouseHover, mouseListener);
         // canvas.addListener(SWT.MouseMove, mouseListener);
+        canvas.addListener(SWT.KeyDown, new Listener() {
+            public void handleEvent(Event e) {
+                keyDown(e);
+            }
+        });
     }
 
     private void initScrollbars() {
         final ScrollBar verticalBar = canvas.getVerticalBar();
-        verticalBar.setIncrement(5);
+        verticalBar.setIncrement(VERT_SCROLL_INCREMENT);
         verticalBar.setPageIncrement(100);
         verticalBar.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -118,7 +126,7 @@ public class Editor
             }
         });
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
-        horizontalBar.setIncrement(5);
+        horizontalBar.setIncrement(HORIZ_SCROLL_INCREMENT);
         horizontalBar.setPageIncrement(100);
         horizontalBar.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -148,6 +156,7 @@ public class Editor
         final ScrollBar verticalBar = canvas.getVerticalBar();
         verticalBar.setMaximum(root.height);
         verticalBar.setThumb(Math.min(root.height, clientArea.height));
+        verticalBar.setPageIncrement(clientArea.height); // TODO
         int vertSelection = verticalBar.getSelection();
         final int vertGap = root.height - clientArea.height;
         if (vertSelection >= vertGap) {
@@ -161,6 +170,7 @@ public class Editor
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
         horizontalBar.setMaximum(root.width);
         horizontalBar.setThumb(Math.min(root.width, clientArea.width));
+        horizontalBar.setPageIncrement(clientArea.width); // TODO
         int horizSelection = horizontalBar.getSelection();
         final int horizGap = root.width - clientArea.width;
         if (horizSelection >= horizGap) {
@@ -227,6 +237,30 @@ public class Editor
             x -= target.x;
             y -= target.y;
             target = target.mouseDown(x, y, event);
+        }
+    }
+
+    void keyDown(Event e) {
+        if (e.keyCode == SWT.PAGE_DOWN && e.stateMask == 0) {
+            final ScrollBar bar = canvas.getVerticalBar();
+            final int increment = bar.getPageIncrement();
+            bar.setSelection(bar.getSelection() + increment);
+            vertScroll();
+        } else if (e.keyCode == SWT.PAGE_UP && e.stateMask == 0) {
+            final ScrollBar bar = canvas.getVerticalBar();
+            final int increment = bar.getPageIncrement();
+            bar.setSelection(bar.getSelection() - increment);
+            vertScroll();
+        } else if (e.keyCode == SWT.ARROW_UP && e.stateMask == 0) {
+            final ScrollBar bar = canvas.getVerticalBar();
+            final int increment = bar.getIncrement();
+            bar.setSelection(bar.getSelection() - increment);
+            vertScroll();
+        } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == 0) {
+            final ScrollBar bar = canvas.getVerticalBar();
+            final int increment = bar.getIncrement();
+            bar.setSelection(bar.getSelection() + increment);
+            vertScroll();
         }
     }
 }
