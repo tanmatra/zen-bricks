@@ -21,6 +21,8 @@ class ImportXMLAction extends Action
 
     private static final class BrickHandler extends DefaultHandler
     {
+        private static final boolean GROUP_ATTRIBUTES = true;
+        private static final String ALL_ATTRS_TEXT = "@";
         private static final String ATTR_SUFFIX = ":";
 
         private final StringBuilder buffer = new StringBuilder(128);
@@ -61,17 +63,29 @@ class ImportXMLAction extends Action
             TextBrick elementBrick = new TextBrick(brick, qName);
 
             final int attLen = attributes.getLength();
-            for (int i = 0; i < attLen; i++) {
-                final String attName = attributes.getQName(i);
-                final TextBrick attNameBrick =
-                        new TextBrick(elementBrick, attName + ATTR_SUFFIX);
-                attNameBrick.lineBreak = false;
-                final String attValue = removeCRs(attributes.getValue(i));
-                final TextBrick attValueBrick =
-                        new TextBrick(attNameBrick, attValue);
-                attValueBrick.lineBreak = false;
+            if (attLen > 0) {
+                final TextBrick attrParent;
+                if (GROUP_ATTRIBUTES) {
+                    TextBrick allAttrsBrick =
+                            new TextBrick(elementBrick, ALL_ATTRS_TEXT);
+                    allAttrsBrick.lineBreak = false;
+                    attrParent = allAttrsBrick;
+                } else {
+                    attrParent = elementBrick;
+                }
+                for (int i = 0; i < attLen; i++) {
+                    final String attName = attributes.getQName(i);
+                    final TextBrick attNameBrick =
+                            new TextBrick(attrParent, attName + ATTR_SUFFIX);
+                    if (i == 0) {
+                        attNameBrick.lineBreak = false;
+                    }
+                    final String attValue = removeCRs(attributes.getValue(i));
+                    final TextBrick attValueBrick =
+                            new TextBrick(attNameBrick, attValue);
+                    attValueBrick.lineBreak = false;
+                }
             }
-
             brick = elementBrick;
         }
 
