@@ -70,9 +70,7 @@ public class ColorUtil
     }
 
     public static Color parse(Device device, String str) {
-        if ((str == null) || str.isEmpty()
-                || "none".equals(str) || "transparent".equals(str))
-        {
+        if ((str == null) || str.isEmpty()) {
             return null;
         }
         final Integer sysId = systemColors.get(str.toUpperCase());

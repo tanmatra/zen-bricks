@@ -16,25 +16,41 @@ public class TextStyle
 {
     private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
 
+    private TextStyle parent;
     private final Device device;
     private Font font;
-    private FontData fontData;
     private FontMetrics fontMetrics;
-    private int textAscent;
     private GC savedGC;
-    private Color backgroundColor;
     private Color foregroundColor;
+    private boolean transparent;
+    private Color backgroundColor;
 
-    public TextStyle(Device device, Properties properties, String keyPrefix) {
+    public TextStyle(TextStyle parent, Device device,
+            Properties properties, String keyPrefix)
+    {
+        this.parent = parent;
         this.device = device;
         savedGC = new GC(device);
         try {
-            fontData = parseFontData(properties, keyPrefix + ".font");
-            createFont(fontData);
-            backgroundColor = ColorUtil.parse(
-                    device, properties, keyPrefix, ".background");
+            final String fontVal = properties.getProperty(keyPrefix + ".font");
+            System.out.println("fontVal: " + fontVal);
+            if (!"inherit".equals(fontVal)) {
+                FontData fontData = parseFontData(fontVal);
+                createFont(fontData);
+            }
+
             foregroundColor = ColorUtil.parse(
                     device, properties, keyPrefix, ".color");
+
+            final String backVal =
+                    properties.getProperty(keyPrefix + ".background");
+            if (backVal == null) {
+                transparent = parent.transparent;
+            } else if ("none".equals(backVal) || "transparent".equals(backVal)) {
+                transparent = true;
+            } else {
+                backgroundColor = ColorUtil.parse(device, backVal);
+            }
         } catch (RuntimeException e) {
             dispose();
             throw e;
@@ -60,37 +76,83 @@ public class TextStyle
         }
     }
 
-    private void createFont(FontData data) {
-        font = new Font(device, data);
+    private void createFont(FontData fontData) {
+        if (fontData == null) {
+            return;
+        }
+        font = new Font(device, fontData);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
-        textAscent = fontMetrics.getAscent() + fontMetrics.getLeading();
+    }
+
+    private Font getFont() {
+        if (font != null) {
+            return font;
+        } else {
+            return parent.getFont();
+        }
+    }
+
+    private FontMetrics getFontMetrics() {
+        if (font != null) {
+            return fontMetrics;
+        } else {
+            return parent.getFontMetrics();
+        }
+    }
+
+    private Color getForegroundColor() {
+        if (foregroundColor != null) {
+            return foregroundColor;
+        } else {
+            return parent.getForegroundColor();
+        }
+    }
+
+    private Color getBackgroundColor() {
+        if (backgroundColor != null) {
+            return backgroundColor;
+        } else {
+            return parent.getBackgroundColor();
+        }
+    }
+
+    public int getTextAscent() {
+        final FontMetrics fm = getFontMetrics();
+        return fm.getAscent() + fm.getLeading();
     }
 
     public void paintText(GC gc, int x, int y, String text) {
-        gc.setFont(font);
-        gc.setForeground(foregroundColor);
+        gc.setFont(getFont());
+        gc.setForeground(getForegroundColor());
         int flags = TEXT_FLAGS;
-        if (backgroundColor != null) {
-            gc.setBackground(backgroundColor);
-        } else {
+        if (transparent) {
             flags |= SWT.DRAW_TRANSPARENT;
+        } else {
+            gc.setBackground(getBackgroundColor());
         }
         gc.drawText(text, x, y, flags);
     }
 
     private static FontData parseFontData(Properties properties, String key) {
         final String value = properties.getProperty(key);
+        return parseFontData(value);
+    }
+
+    private static FontData parseFontData(String str) {
+        if (str == null) {
+            return null;
+        }
         String name;
         float height = 8.0f;
         int style = SWT.NORMAL;
         StringTokenizer tokenizer;
-        if (value.charAt(0) == '"') {
-            final int p = value.indexOf('"', 1);
-            name = value.substring(1, p);
-            tokenizer = new StringTokenizer(value.substring(p + 1));
+        if (str.charAt(0) == '"') {
+            final int p = str.indexOf('"', 1);
+            name = str.substring(1, p);
+            tokenizer = new StringTokenizer(str.substring(p + 1));
         } else {
-            tokenizer = new StringTokenizer(value);
+            tokenizer = new StringTokenizer(str);
             name = tokenizer.nextToken();
         }
         String heightStr = tokenizer.nextToken();
@@ -111,18 +173,18 @@ public class TextStyle
     }
 
     public Point getTextExtent(String text) {
-        return savedGC.textExtent(text, TEXT_FLAGS);
+        if (font != null) {
+            return savedGC.textExtent(text, TEXT_FLAGS);
+        } else {
+            return parent.getTextExtent(text);
+        }
     }
 
-    public int getTextAscent() {
-        return textAscent;
-    }
-
-    void changeFont(FontData data) {
-        this.fontData = data;
+    void changeFont(FontData fontData) {
         if (font != null) {
             font.dispose();
+            fontMetrics = null;
         }
-        createFont(data);
+        createFont(fontData);
     }
 }

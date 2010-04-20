@@ -61,6 +61,10 @@ public class TextBrick extends Brick
         return children.get(i);
     }
 
+    public boolean isAtom() {
+        return children.isEmpty();
+    }
+
     @Override
     void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
         ui.paintBackground(gc, this, baseX, baseY, clipping);

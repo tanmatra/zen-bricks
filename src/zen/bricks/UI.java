@@ -63,7 +63,9 @@ public class UI
     private int spacing;
     private int textAntialias;
     private final Margin textMargin = new Margin();
+
     private TextStyle textStyle;
+    private TextStyle listTextStyle;
 
     // ============================================================ Constructors
 
@@ -101,7 +103,9 @@ public class UI
         spacing = parseInt(props, "spacing");
         textAntialias = parseState(props, "text.antialias");
         textMargin.parse(props, "text.margin");
-        textStyle = new TextStyle(device, props, "text");
+
+        textStyle = new TextStyle(null, device, props, "text");
+        listTextStyle = new TextStyle(textStyle, device, props, "list.text");
     }
 
     void dispose() {
@@ -120,6 +124,10 @@ public class UI
         if (textStyle != null) {
             textStyle.dispose();
             textStyle = null;
+        }
+        if (listTextStyle != null) {
+            listTextStyle.dispose();
+            listTextStyle = null;
         }
     }
 
@@ -252,7 +260,11 @@ public class UI
     }
 
     public TextStyle getTextStyle(TextBrick brick) {
-        return textStyle; // for now always return the same
+        if (brick.isAtom()) {
+            return textStyle;
+        } else {
+            return listTextStyle;
+        }
     }
 
     public List<TextStyle> getTextStyles() {
