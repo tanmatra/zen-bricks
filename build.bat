@@ -8,7 +8,7 @@ mkdir %LIB%
 copy %PLUGINS%\org.eclipse.swt_3.6.0.*.jar %LIB%
 copy %PLUGINS%\org.eclipse.swt.win32.win32.x86_3.6.0.*.jar %LIB%
 copy %PLUGINS%\org.eclipse.jface_3.6.0.*.jar %LIB%
-copy %PLUGINS%\org.eclipse.core.commands_3.5.0.*.jar %LIB%
+copy %PLUGINS%\org.eclipse.core.commands_3.6.0.*.jar %LIB%
 copy %PLUGINS%\org.eclipse.core.runtime_3.6.0.*.jar %LIB%
 copy %PLUGINS%\org.eclipse.equinox.common_3.6.0.*.jar %LIB%
 mkdir %DIST%\themes
