@@ -14,23 +14,41 @@ import org.eclipse.swt.graphics.Point;
 
 public class TextStyle
 {
-    private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
+    // ============================================================ Class Fields
 
-    private TextStyle parent;
+    static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
+
+    // ================================================================== Fields
+
     private final Device device;
-    private Font font;
-    private FontMetrics fontMetrics;
-    private GC savedGC;
-    private Color foregroundColor;
-    private boolean transparent;
-    private Color backgroundColor;
 
-    public TextStyle(TextStyle parent, Device device,
-            Properties properties, String keyPrefix)
+    Font font;
+
+    private FontMetrics fontMetrics;
+
+    /**
+     * Not null only if {@link #font} specified.
+     */
+    GC savedGC;
+
+    Color foregroundColor;
+
+    /**
+     * Not null if and only if is specified transparency or background color.
+     */
+    Boolean transparent;
+
+    Color backgroundColor;
+
+    private final String name;
+
+    // ============================================================ Constructors
+
+    public TextStyle(String name, Device device,
+        Properties properties, String keyPrefix)
     {
-        this.parent = parent;
+        this.name = name;
         this.device = device;
-        savedGC = new GC(device);
         try {
             final String fontVal = properties.getProperty(keyPrefix + ".font");
             System.out.println("fontVal: " + fontVal);
@@ -44,18 +62,19 @@ public class TextStyle
 
             final String backVal =
                     properties.getProperty(keyPrefix + ".background");
-            if (backVal == null) {
-                transparent = parent.transparent;
-            } else if ("none".equals(backVal) || "transparent".equals(backVal)) {
+            if ("none".equals(backVal) || "transparent".equals(backVal)) {
                 transparent = true;
             } else {
                 backgroundColor = ColorUtil.parse(device, backVal);
+                transparent = false;
             }
         } catch (RuntimeException e) {
             dispose();
             throw e;
         }
     }
+
+    // ================================================================= Methods
 
     public void dispose() {
         if (font != null) {
@@ -76,45 +95,34 @@ public class TextStyle
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
     private void createFont(FontData fontData) {
         if (fontData == null) {
             return;
         }
         font = new Font(device, fontData);
+        savedGC = new GC(device);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
     }
 
-    private Font getFont() {
-        if (font != null) {
-            return font;
-        } else {
-            return parent.getFont();
-        }
+    Font getFont() {
+        return font;
     }
 
     private FontMetrics getFontMetrics() {
-        if (font != null) {
-            return fontMetrics;
-        } else {
-            return parent.getFontMetrics();
-        }
+        return fontMetrics;
     }
 
-    private Color getForegroundColor() {
-        if (foregroundColor != null) {
-            return foregroundColor;
-        } else {
-            return parent.getForegroundColor();
-        }
+    Color getForegroundColor() {
+        return foregroundColor;
     }
 
-    private Color getBackgroundColor() {
-        if (backgroundColor != null) {
-            return backgroundColor;
-        } else {
-            return parent.getBackgroundColor();
-        }
+    Color getBackgroundColor() {
+        return backgroundColor;
     }
 
     public int getTextAscent() {
@@ -173,11 +181,7 @@ public class TextStyle
     }
 
     public Point getTextExtent(String text) {
-        if (font != null) {
-            return savedGC.textExtent(text, TEXT_FLAGS);
-        } else {
-            return parent.getTextExtent(text);
-        }
+        return savedGC.textExtent(text, TEXT_FLAGS);
     }
 
     void changeFont(FontData fontData) {

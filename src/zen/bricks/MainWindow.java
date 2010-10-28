@@ -100,6 +100,15 @@ public class MainWindow extends ApplicationWindow
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
 
+        final Action editStylesAction = new Action("&Edit styles...") {
+            public void run() {
+                final EditStylesDialog dialog =
+                        new EditStylesDialog(getShell(), editor.ui);
+                dialog.open();
+            }
+        };
+        viewMenu.add(editStylesAction);
+
         final Action fontAction = new Action("&Font...") {
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());

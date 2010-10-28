@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -66,6 +66,8 @@ public class UI
 
     private TextStyle textStyle;
     private TextStyle listTextStyle;
+    private StyleChain basicChain;
+    private StyleChain listChain;
 
     // ============================================================ Constructors
 
@@ -104,8 +106,11 @@ public class UI
         textAntialias = parseState(props, "text.antialias");
         textMargin.parse(props, "text.margin");
 
-        textStyle = new TextStyle(null, device, props, "text");
-        listTextStyle = new TextStyle(textStyle, device, props, "list.text");
+        textStyle = new TextStyle("Basic", device, props, "text");
+        listTextStyle = new TextStyle("List", device, props, "list.text");
+
+        basicChain = new StyleChain(textStyle, null);
+        listChain = new StyleChain(listTextStyle, basicChain);
     }
 
     void dispose() {
@@ -259,15 +264,23 @@ public class UI
         gc.setTextAntialias(textAntialias);
     }
 
-    public TextStyle getTextStyle(TextBrick brick) {
-        if (brick.isAtom()) {
-            return textStyle;
+    public StyleChain getStyleChain(TextBrick brick) {
+        if (!brick.isAtom()) {
+            return listChain;
         } else {
-            return listTextStyle;
+            return basicChain;
         }
     }
 
+//    public TextStyle getTextStyle(TextBrick brick) {
+//        if (brick.isAtom()) {
+//            return textStyle;
+//        } else {
+//            return listTextStyle;
+//        }
+//    }
+
     public List<TextStyle> getTextStyles() {
-        return Collections.singletonList(textStyle); // todo
+        return Arrays.asList(textStyle, listTextStyle);
     }
 }

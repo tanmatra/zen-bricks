@@ -11,7 +11,7 @@ public class SimpleLayout extends TupleLayout
         final Margin brickPadding = ui.getBrickPadding();
 
         brick.textY = textMargin.getTop();
-        brick.textExtent = ui.getTextStyle(brick).getTextExtent(brick.text);
+        brick.textExtent = ui.getStyleChain(brick).getTextExtent(brick.text);
         brick.width = textMargin.getLeft() + brick.textExtent.x;
 
         int currX = brick.width + ui.getSpacing();
