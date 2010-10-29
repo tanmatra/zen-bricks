@@ -53,7 +53,6 @@ public class TextStyle
         this.device = device;
         try {
             final String fontVal = properties.getProperty(keyPrefix + ".font");
-            System.out.println("fontVal: " + fontVal);
             if (!"inherit".equals(fontVal)) {
                 FontData fontData = parseFontData(fontVal);
                 createFont(fontData);
@@ -109,11 +108,6 @@ public class TextStyle
         savedGC = new GC(device);
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
-    }
-
-    private static FontData parseFontData(Properties properties, String key) {
-        final String value = properties.getProperty(key);
-        return parseFontData(value);
     }
 
     private static FontData parseFontData(String str) {
