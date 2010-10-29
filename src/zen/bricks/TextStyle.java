@@ -24,7 +24,10 @@ public class TextStyle
 
     Font font;
 
-    private FontMetrics fontMetrics;
+    /**
+     * Not null only if {@link #font} specified.
+     */
+    FontMetrics fontMetrics;
 
     /**
      * Not null only if {@link #font} specified.
@@ -113,21 +116,12 @@ public class TextStyle
         return font;
     }
 
-    private FontMetrics getFontMetrics() {
-        return fontMetrics;
-    }
-
     Color getForegroundColor() {
         return foregroundColor;
     }
 
     Color getBackgroundColor() {
         return backgroundColor;
-    }
-
-    public int getTextAscent() {
-        final FontMetrics fm = getFontMetrics();
-        return fm.getAscent() + fm.getLeading();
     }
 
     public void paintText(GC gc, int x, int y, String text) {

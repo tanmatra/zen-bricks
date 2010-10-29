@@ -3,6 +3,7 @@ package zen.bricks;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 
@@ -98,7 +99,20 @@ public class StyleChain
     }
 
     public int getTextAscent() {
-        // TODO Auto-generated method stub
-        return 0;
+        final TextStyle st = findFont();
+        final FontMetrics fm = st.fontMetrics;
+        return fm.getAscent() + fm.getLeading();
+    }
+
+    private TextStyle findFont() {
+        StyleChain chain = this;
+        do {
+            final TextStyle st = chain.style;
+            if (st.font != null) {
+                return st;
+            }
+            chain = chain.parent;
+        } while (chain != null);
+        throw new Error("Font not found in style chain");
     }
 }
