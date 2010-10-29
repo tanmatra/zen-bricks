@@ -128,7 +128,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
                 final UI ui = editor.ui;
-//                dialog.fontData = ui.fontData; // TODO
+                dialog.fontData = ui.getBasicStyle().font.getFontData()[0];
                 if (dialog.open() != Window.OK) {
                     return;
                 }
@@ -136,7 +136,6 @@ public class MainWindow extends ApplicationWindow
                 editor.setUI(ui);
             }
         };
-        adjustFontAction.setEnabled(false); // TODO
         viewMenu.add(adjustFontAction);
 
         viewMenu.add(new Separator());
