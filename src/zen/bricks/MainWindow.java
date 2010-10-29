@@ -84,7 +84,7 @@ public class MainWindow extends ApplicationWindow
         mainMenu.add(fileMenu);
 
         final Action importXmlAction =
-                new ImportXMLAction(this, "Import XML...");
+                new ImportXMLAction(this, "Import XML...\tF3");
         fileMenu.add(importXmlAction);
 
         fileMenu.add(new Separator());
