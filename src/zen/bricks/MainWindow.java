@@ -113,16 +113,15 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
                 final UI ui = editor.ui;
-//                fontDialog.setFontList(new FontData[] { ui.fontData }); // TODO
+                fontDialog.setFontList(ui.getBasicStyle().font.getFontData());
                 final FontData data = fontDialog.open();
                 if (data == null) {
                     return;
                 }
-                ui.changeFont(data);
+                ui.changeBasicFont(data);
                 editor.setUI(ui);
             }
         };
-        fontAction.setEnabled(false); // TODO
         viewMenu.add(fontAction);
 
         final Action adjustFontAction = new Action("&Adjust font...") {
@@ -133,7 +132,7 @@ public class MainWindow extends ApplicationWindow
                 if (dialog.open() != Window.OK) {
                     return;
                 }
-                ui.changeFont(dialog.fontData);
+                ui.changeBasicFont(dialog.fontData);
                 editor.setUI(ui);
             }
         };

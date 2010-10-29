@@ -10,7 +10,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 
 public class TextStyle
 {
@@ -154,6 +153,8 @@ public class TextStyle
         if (font != null) {
             font.dispose();
             fontMetrics = null;
+            savedGC.dispose();
+            savedGC = null;
         }
         createFont(fontData);
     }

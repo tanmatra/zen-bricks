@@ -64,8 +64,9 @@ public class UI
     private int textAntialias;
     private final Margin textMargin = new Margin();
 
-    private TextStyle textStyle;
-    private TextStyle listTextStyle;
+    private TextStyle basicStyle;
+    private TextStyle listStyle;
+
     private StyleChain basicChain;
     private StyleChain listChain;
 
@@ -106,11 +107,11 @@ public class UI
         textAntialias = parseState(props, "text.antialias");
         textMargin.parse(props, "text.margin");
 
-        textStyle = new TextStyle("Basic", device, props, "text");
-        listTextStyle = new TextStyle("List", device, props, "list.text");
+        basicStyle = new TextStyle("Basic", device, props, "text");
+        listStyle = new TextStyle("List", device, props, "list.text");
 
-        basicChain = new StyleChain(textStyle, null);
-        listChain = new StyleChain(listTextStyle, basicChain);
+        basicChain = new StyleChain(basicStyle, null);
+        listChain = new StyleChain(listStyle, basicChain);
     }
 
     void dispose() {
@@ -126,13 +127,13 @@ public class UI
             savedGC.dispose();
             savedGC = null;
         }
-        if (textStyle != null) {
-            textStyle.dispose();
-            textStyle = null;
+        if (basicStyle != null) {
+            basicStyle.dispose();
+            basicStyle = null;
         }
-        if (listTextStyle != null) {
-            listTextStyle.dispose();
-            listTextStyle = null;
+        if (listStyle != null) {
+            listStyle.dispose();
+            listStyle = null;
         }
     }
 
@@ -199,9 +200,8 @@ public class UI
         }
     }
 
-    @Deprecated
-    void changeFont(FontData data) {
-        textStyle.changeFont(data);
+    void changeBasicFont(FontData data) {
+        basicStyle.changeFont(data);
     }
 
     private Device getDevice() {
@@ -252,8 +252,8 @@ public class UI
         return lineSpacing;
     }
 
-    public TextStyle getTextStyle() {
-        return textStyle;
+    public TextStyle getBasicStyle() {
+        return basicStyle;
     }
 
     public void preparePaint(GC gc) {
@@ -281,6 +281,6 @@ public class UI
 //    }
 
     public List<TextStyle> getTextStyles() {
-        return Arrays.asList(textStyle, listTextStyle);
+        return Arrays.asList(basicStyle, listStyle);
     }
 }
