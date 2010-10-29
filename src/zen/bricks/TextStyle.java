@@ -112,30 +112,6 @@ public class TextStyle
         fontMetrics = savedGC.getFontMetrics();
     }
 
-    Font getFont() {
-        return font;
-    }
-
-    Color getForegroundColor() {
-        return foregroundColor;
-    }
-
-    Color getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public void paintText(GC gc, int x, int y, String text) {
-        gc.setFont(getFont());
-        gc.setForeground(getForegroundColor());
-        int flags = TEXT_FLAGS;
-        if (transparent) {
-            flags |= SWT.DRAW_TRANSPARENT;
-        } else {
-            gc.setBackground(getBackgroundColor());
-        }
-        gc.drawText(text, x, y, flags);
-    }
-
     private static FontData parseFontData(Properties properties, String key) {
         final String value = properties.getProperty(key);
         return parseFontData(value);
@@ -172,10 +148,6 @@ public class TextStyle
             data.height = height;
         }
         return data;
-    }
-
-    public Point getTextExtent(String text) {
-        return savedGC.textExtent(text, TEXT_FLAGS);
     }
 
     void changeFont(FontData fontData) {
