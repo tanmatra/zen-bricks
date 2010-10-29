@@ -19,53 +19,28 @@ public class StyleChain
         this.parent = parent;
     }
 
-    public Font getFont() {
-        StyleChain chain = this;
-        do {
-            final Font font = chain.style.font;
-            if (font != null) {
-                return font;
-            }
-            chain = chain.parent;
-        } while (chain != null);
-        return null;
-
-    }
-
-    public Color getForegroundColor() {
-        StyleChain chain = this;
-        do {
-            final Color color = chain.style.foregroundColor;
-            if (color != null) {
-                return color;
-            }
-            chain = chain.parent;
-        } while (chain != null);
-        return null;
-    }
-
-    public Color getBackgroundColor() {
-        StyleChain chain = this;
-        do {
-            final Color color = chain.style.backgroundColor;
-            if (color != null) {
-                return color;
-            }
-            chain = chain.parent;
-        } while (chain != null);
-        return null;
-    }
-
-    public Point getTextExtent(String text) {
+    private TextStyle findFont() {
         StyleChain chain = this;
         do {
             final TextStyle st = chain.style;
             if (st.font != null) {
-                return st.savedGC.textExtent(text, TEXT_FLAGS);
+                return st;
             }
             chain = chain.parent;
         } while (chain != null);
-        throw new Error("No font found in style chain");
+        throw new Error("Font not found in style chain");
+    }
+
+    private TextStyle findForeground() {
+        StyleChain chain = this;
+        do {
+            final TextStyle st = chain.style;
+            if (st.foregroundColor != null) {
+                return st;
+            }
+            chain = chain.parent;
+        } while (chain != null);
+        throw new Error("No foreground found in style chain");
     }
 
     private TextStyle findBackground() {
@@ -78,6 +53,22 @@ public class StyleChain
             chain = chain.parent;
         } while (chain != null);
         throw new Error("No background found in style chain");
+    }
+
+    public Color getForegroundColor() {
+        return findForeground().foregroundColor;
+    }
+
+    public Color getBackgroundColor() {
+        return findBackground().backgroundColor;
+    }
+
+    public Font getFont() {
+        return findFont().font;
+    }
+
+    public Point getTextExtent(String text) {
+        return findFont().savedGC.textExtent(text, TEXT_FLAGS);
     }
 
     public void paintText(GC gc, int x, int y, String text) {
@@ -102,17 +93,5 @@ public class StyleChain
         final TextStyle st = findFont();
         final FontMetrics fm = st.fontMetrics;
         return fm.getAscent() + fm.getLeading();
-    }
-
-    private TextStyle findFont() {
-        StyleChain chain = this;
-        do {
-            final TextStyle st = chain.style;
-            if (st.font != null) {
-                return st;
-            }
-            chain = chain.parent;
-        } while (chain != null);
-        throw new Error("Font not found in style chain");
     }
 }
