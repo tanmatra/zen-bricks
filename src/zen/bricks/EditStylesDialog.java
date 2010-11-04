@@ -1,10 +1,13 @@
 package zen.bricks;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -14,6 +17,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 public class EditStylesDialog extends Dialog
@@ -46,35 +50,42 @@ public class EditStylesDialog extends Dialog
     }
 
     protected Control createDialogArea(Composite parent) {
-        final Composite area = (Composite) super.createDialogArea(parent);
-        final GridLayout layout = (GridLayout) area.getLayout();
-        layout.numColumns = 2;
-        layout.horizontalSpacing = 15;
-        GridData gd;
-        Group group;
+        final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+        sashForm.setSashWidth(10);
+        
+        //================================
+        final Composite listPanel = new Composite(sashForm, SWT.NONE);
+        GridLayoutFactory.fillDefaults().extendedMargins(5, 0, 5, 5)
+            .applyTo(listPanel);
 
-//        final Label label = new Label(area, SWT.NONE);
-//        label.setText("Styles:");
+        final Label stylesLabel = new Label(listPanel, SWT.NONE);
+        stylesLabel.setText("Styles:");
 
-        group = new Group(area, SWT.NONE);
-        group.setText("Styles");
-        final RowLayout rowLayout = new RowLayout();
-        group.setLayout(rowLayout);
-
-        final TableViewer tableViewer =
-                new TableViewer(group, SWT.BORDER | SWT.SINGLE);
-        tableViewer.getTable().setLayoutData(new RowData(150, 100));
+        final TableViewer tableViewer = new TableViewer(listPanel, 
+            SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
+        GridDataFactory.fillDefaults().grab(true, true)
+            .applyTo(tableViewer.getTable());
         tableViewer.setLabelProvider(new StyleLabelProvider());
         tableViewer.setContentProvider(ArrayContentProvider.getInstance());
         tableViewer.setInput(ui.getTextStyles());
 
-        group = new Group(area, SWT.NONE);
-        group.setText("Style properties");
-        gd = new GridData(300, 200);
-        gd.verticalAlignment = SWT.TOP;
-        gd.verticalSpan = 2;
-        group.setLayoutData(gd);
+        //================================
+        final Composite propertiesPanel = new Composite(sashForm, SWT.NONE);
+        GridLayoutFactory.fillDefaults().extendedMargins(0, 5, 5, 5)
+            .applyTo(propertiesPanel);
+        
+        final Label propsLabel = new Label(propertiesPanel, SWT.NONE);
+        propsLabel.setText("Properties:");
+        GridDataFactory.fillDefaults().applyTo(propsLabel);
+        
+        final Composite scrollPanel = new Composite(propertiesPanel, 
+            SWT.BORDER | SWT.V_SCROLL);
+        GridDataFactory.fillDefaults().hint(600, 400).grab(true, true)
+            .applyTo(scrollPanel);
+        
+        //================================
+        sashForm.setWeights(new int[] { 20, 80 });
 
-        return area;
+        return sashForm;
     }
 }
