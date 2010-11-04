@@ -272,14 +272,6 @@ public class UI
         }
     }
 
-//    public TextStyle getTextStyle(TextBrick brick) {
-//        if (brick.isAtom()) {
-//            return textStyle;
-//        } else {
-//            return listTextStyle;
-//        }
-//    }
-
     public List<TextStyle> getTextStyles() {
         return Arrays.asList(basicStyle, listStyle);
     }
