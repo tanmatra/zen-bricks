@@ -10,6 +10,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 public class TextStyle
 {
@@ -151,5 +154,30 @@ public class TextStyle
             savedGC = null;
         }
         createFont(fontData);
+    }
+
+    public ITextStyleEditor getEditor() {
+        // TODO Auto-generated method stub
+        return new ITextStyleEditor() 
+        {
+            private Button button;
+
+            public Control getControl() {
+                return button;
+            }
+            
+            public void createControl(Composite parent) {
+                button = new Button(parent, SWT.PUSH);
+                button.setText("[ " + getName() + " ]");
+            }
+            
+            public void cancel() {
+                System.out.println(getName() + " style editor cancelled");
+            }
+            
+            public void apply() {
+                System.out.println(getName() + " style editor applied");
+            }
+        };
     }
 }
