@@ -23,7 +23,7 @@ public class StyleChain
         StyleChain chain = this;
         do {
             final TextStyle st = chain.style;
-            if (st.font != null) {
+            if (st.getFont() != null) {
                 return st;
             }
             chain = chain.parent;
@@ -35,7 +35,7 @@ public class StyleChain
         StyleChain chain = this;
         do {
             final TextStyle st = chain.style;
-            if (st.foregroundColor != null) {
+            if (st.getForegroundColor() != null) {
                 return st;
             }
             chain = chain.parent;
@@ -56,15 +56,15 @@ public class StyleChain
     }
 
     public Color getForegroundColor() {
-        return findForeground().foregroundColor;
+        return findForeground().getForegroundColor();
     }
 
     public Color getBackgroundColor() {
-        return findBackground().backgroundColor;
+        return findBackground().getBackgroundColor();
     }
 
     public Font getFont() {
-        return findFont().font;
+        return findFont().getFont();
     }
 
     public Point getTextExtent(String text) {
@@ -80,7 +80,7 @@ public class StyleChain
         if (background.transparent) {
             flags |= SWT.DRAW_TRANSPARENT;
         } else {
-            final Color backgroundColor = background.backgroundColor;
+            final Color backgroundColor = background.getBackgroundColor();
             if (backgroundColor != null) {
                 gc.setBackground(backgroundColor);
             }

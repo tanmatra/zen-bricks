@@ -113,7 +113,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
                 final UI ui = editor.ui;
-                fontDialog.setFontList(ui.getBasicStyle().font.getFontData());
+                fontDialog.setFontList(ui.getBasicStyle().getFont().getFontData());
                 final FontData data = fontDialog.open();
                 if (data == null) {
                     return;
@@ -128,7 +128,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
                 final UI ui = editor.ui;
-                dialog.fontData = ui.getBasicStyle().font.getFontData()[0];
+                dialog.fontData = ui.getBasicStyle().getFont().getFontData()[0];
                 if (dialog.open() != Window.OK) {
                     return;
                 }

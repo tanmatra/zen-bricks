@@ -10,9 +10,12 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
+import zen.bricks.styleeditor.TextStyleEditor;
 
 public class TextStyle
 {
@@ -24,7 +27,7 @@ public class TextStyle
 
     private final Device device;
 
-    Font font;
+    private Font font;
 
     /**
      * Not null only if {@link #font} specified.
@@ -36,14 +39,14 @@ public class TextStyle
      */
     GC savedGC;
 
-    Color foregroundColor;
+    private Color foregroundColor;
 
     /**
      * Not null if and only if is specified transparency or background color.
      */
     Boolean transparent;
 
-    Color backgroundColor;
+    private Color backgroundColor;
 
     private final String name;
 
@@ -146,7 +149,7 @@ public class TextStyle
         return data;
     }
 
-    void changeFont(FontData fontData) {
+    public void changeFont(FontData fontData) {
         if (font != null) {
             font.dispose();
             fontMetrics = null;
@@ -156,28 +159,49 @@ public class TextStyle
         createFont(fontData);
     }
 
-    public ITextStyleEditor getEditor() {
-        // TODO Auto-generated method stub
-        return new ITextStyleEditor() 
-        {
-            private Button button;
+    public Font getFont() {
+        return font;
+    }
 
-            public Control getControl() {
-                return button;
-            }
-            
-            public void createControl(Composite parent) {
-                button = new Button(parent, SWT.PUSH);
-                button.setText("[ " + getName() + " ]");
-            }
-            
-            public void cancel() {
-                System.out.println(getName() + " style editor cancelled");
-            }
-            
-            public void apply() {
-                System.out.println(getName() + " style editor applied");
-            }
-        };
+    public ITextStyleEditor getEditor() {
+        return new TextStyleEditor(this);
+    }
+
+    public void setForegroundColor(RGB rgb) {
+        if (foregroundColor != null) {
+            foregroundColor.dispose();
+        }
+        if (rgb != null) {
+            foregroundColor = new Color(device, rgb);
+        } else {
+            foregroundColor = null;
+        }
+    }
+
+    public void setForegroundColor(Color foregroundColor) {
+        this.foregroundColor = foregroundColor;
+    }
+
+    public Color getForegroundColor() {
+        return foregroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(RGB rgb) {
+        if (backgroundColor != null) {
+            backgroundColor.dispose();
+        }
+        if (rgb != null) {
+            backgroundColor = new Color(device, rgb);
+        } else {
+            backgroundColor = null;
+        }
     }
 }
