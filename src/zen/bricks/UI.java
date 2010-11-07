@@ -200,8 +200,8 @@ public class UI
         }
     }
 
-    void changeBasicFont(FontData data) {
-        basicStyle.changeFont(data);
+    void changeBasicFont(FontData[] fontList) {
+        basicStyle.setFont(fontList);
     }
 
     private Device getDevice() {

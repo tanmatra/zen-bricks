@@ -23,11 +23,14 @@ import org.eclipse.swt.widgets.Text;
 public class AdjustFontDialog extends Dialog
 {
     private static final String SAMPLE_TEXT =
-            "Quick Brown Fox Jumps Over The Lazy Dog.";
+        "Quick Brown Fox Jumps Over The Lazy Dog.";
+
     private static final float SCALE = 10.0f;
 
-    FontData fontData;
-    Font font;
+    FontData[] fontList;
+
+    private Font exampleFont;
+
     private Spinner spinner;
 
     protected AdjustFontDialog(Shell shell) {
@@ -39,8 +42,8 @@ public class AdjustFontDialog extends Dialog
         shell.setText("Adjust font size");
         shell.addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
-                if (font != null) {
-                    font.dispose();
+                if (exampleFont != null) {
+                    exampleFont.dispose();
                 }
             }
         });
@@ -66,8 +69,8 @@ public class AdjustFontDialog extends Dialog
 
         final Text exampleText = new Text(group, SWT.MULTI | SWT.BORDER);
         exampleText.setText(SAMPLE_TEXT);
-        font = new Font(exampleText.getDisplay(), fontData);
-        exampleText.setFont(font);
+        exampleFont = new Font(exampleText.getDisplay(), fontList);
+        exampleText.setFont(exampleFont);
 
         final Label label = new Label(area, SWT.NONE);
         label.setText("Font size");
@@ -76,18 +79,18 @@ public class AdjustFontDialog extends Dialog
         spinner.setDigits(1);
         spinner.setMinimum(70);
         spinner.setMaximum(360);
-        spinner.setSelection((int) (fontData.height * SCALE));
+        spinner.setSelection((int) (fontList[0].height * SCALE));
         spinner.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                font = exampleText.getFont();
-                final FontData[] fontDatas = font.getFontData();
-                for (int i = 0; i < fontDatas.length; i++) {
-                    final FontData data = fontDatas[i];
+                exampleFont = exampleText.getFont();
+                final FontData[] fontList = exampleFont.getFontData();
+                for (int i = 0; i < fontList.length; i++) {
+                    final FontData data = fontList[i];
                     data.height = spinner.getSelection() / SCALE;
                 }
-                font.dispose();
-                font = new Font(exampleText.getDisplay(), fontDatas);
-                exampleText.setFont(font);
+                exampleFont.dispose();
+                exampleFont = new Font(exampleText.getDisplay(), fontList);
+                exampleText.setFont(exampleFont);
             }
         });
         spinner.setFocus();
@@ -96,7 +99,7 @@ public class AdjustFontDialog extends Dialog
     }
 
     protected void okPressed() {
-        fontData.height = spinner.getSelection() / SCALE;
+        fontList = exampleFont.getFontData();
         super.okPressed();
     }
 }

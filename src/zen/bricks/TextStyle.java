@@ -11,9 +11,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 import zen.bricks.styleeditor.TextStyleEditor;
 
@@ -159,6 +156,27 @@ public class TextStyle
         createFont(fontData);
     }
 
+    public void setFont(FontData[] fontList) {
+        if (font != null) {
+            font.dispose();
+            fontMetrics = null;
+            savedGC.dispose();
+            savedGC = null;
+        }
+        if (fontList == null) {
+            return;
+        }
+        font = new Font(device, fontList);
+        savedGC = new GC(device);
+        savedGC.setFont(font);
+        fontMetrics = savedGC.getFontMetrics();
+    }
+
+    public FontData[] getFontList() {
+        return font.getFontData();
+    }
+
+    @Deprecated
     public Font getFont() {
         return font;
     }

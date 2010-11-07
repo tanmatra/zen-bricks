@@ -14,7 +14,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -50,7 +49,7 @@ public class MainWindow extends ApplicationWindow
 
     Editor editor;
 
-    private Properties defaultTheme;
+    private final Properties defaultTheme;
 
     private String themeFileName;
 
@@ -102,9 +101,12 @@ public class MainWindow extends ApplicationWindow
 
         final Action editStylesAction = new Action("&Edit styles...") {
             public void run() {
+                final UI ui = editor.ui;
                 final EditStylesDialog dialog =
-                        new EditStylesDialog(getShell(), editor.ui);
-                dialog.open();
+                        new EditStylesDialog(getShell(), ui);
+                if (dialog.open() == Window.OK) {
+                    editor.setUI(ui);
+                }
             }
         };
         viewMenu.add(editStylesAction);
@@ -113,12 +115,11 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
                 final UI ui = editor.ui;
-                fontDialog.setFontList(ui.getBasicStyle().getFont().getFontData());
-                final FontData data = fontDialog.open();
-                if (data == null) {
+                fontDialog.setFontList(ui.getBasicStyle().getFontList());
+                if (fontDialog.open() == null) {
                     return;
                 }
-                ui.changeBasicFont(data);
+                ui.changeBasicFont(fontDialog.getFontList());
                 editor.setUI(ui);
             }
         };
@@ -128,11 +129,11 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
                 final UI ui = editor.ui;
-                dialog.fontData = ui.getBasicStyle().getFont().getFontData()[0];
+                dialog.fontList = ui.getBasicStyle().getFontList();
                 if (dialog.open() != Window.OK) {
                     return;
                 }
-                ui.changeBasicFont(dialog.fontData);
+                ui.changeBasicFont(dialog.fontList);
                 editor.setUI(ui);
             }
         };
