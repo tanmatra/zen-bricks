@@ -165,7 +165,7 @@ public class TextStyle
     }
 
     public FontData[] getFontList() {
-        return font.getFontData();
+        return (font != null) ? font.getFontData() : null;
     }
 
     public Font getFont() {
