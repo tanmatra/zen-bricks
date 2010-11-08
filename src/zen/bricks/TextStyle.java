@@ -103,6 +103,7 @@ public class TextStyle
         return name;
     }
 
+    @Deprecated
     private void createFont(FontData fontData) {
         if (fontData == null) {
             return;
@@ -146,19 +147,10 @@ public class TextStyle
         return data;
     }
 
-    public void changeFont(FontData fontData) {
-        if (font != null) {
-            font.dispose();
-            fontMetrics = null;
-            savedGC.dispose();
-            savedGC = null;
-        }
-        createFont(fontData);
-    }
-
     public void setFont(FontData[] fontList) {
         if (font != null) {
             font.dispose();
+            font = null;
             fontMetrics = null;
             savedGC.dispose();
             savedGC = null;
@@ -176,7 +168,6 @@ public class TextStyle
         return font.getFontData();
     }
 
-    @Deprecated
     public Font getFont() {
         return font;
     }

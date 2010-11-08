@@ -18,7 +18,7 @@ public class TextStyleEditor implements ITextStyleEditor
 
     private Composite composite;
 
-    private ArrayList<StyleEditorPart> parts = new ArrayList<StyleEditorPart>();
+    private final ArrayList<StyleEditorPart> parts = new ArrayList<StyleEditorPart>();
 
     // ============================================================ Constructors
 
@@ -52,10 +52,10 @@ public class TextStyleEditor implements ITextStyleEditor
             }
         });
 
-        addPart(new FontEditor(textStyle.getFont(), "Font")
+        addPart(new FontEditor(textStyle.getFontList(), "Font")
         {
             protected void apply() {
-                textStyle.changeFont(getFontList()[0]); // TODO
+                textStyle.setFont(getFontList());
             }
         });
     }

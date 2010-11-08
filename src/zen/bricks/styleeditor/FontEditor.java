@@ -3,7 +3,6 @@ package zen.bricks.styleeditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -15,14 +14,10 @@ class FontEditor extends StyleEditorPart
     private Button fontSelectButton;
     FontData[] fontList;
     private final String title;
-    private final Font font;
 
-    FontEditor(final Font font, String title) {
-        this.font = font;
+    FontEditor(FontData[] fontList, String title) {
+        this.fontList = fontList;
         this.title = title;
-        if (font != null) {
-            fontList = font.getFontData();
-        }
     }
 
     int getNumColumns() {
@@ -53,7 +48,7 @@ class FontEditor extends StyleEditorPart
         });
         gridData().applyTo(fontSelectButton);
 
-        if (font != null) {
+        if (fontList != null) {
             fontCheck.setSelection(true);
         } else {
             fontSelectButton.setEnabled(false);
