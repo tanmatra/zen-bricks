@@ -195,28 +195,12 @@ public class TextStyle
         return foregroundColor;
     }
 
-    @Deprecated
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
     public boolean isBackgroundDefined() {
         return transparent != null;
     }
 
     public Color getBackgroundColor() {
         return backgroundColor;
-    }
-
-    public void setBackgroundColor(RGB rgb) {
-        if (backgroundColor != null) {
-            backgroundColor.dispose();
-        }
-        if (rgb != null) {
-            backgroundColor = new Color(device, rgb);
-        } else {
-            backgroundColor = null;
-        }
     }
 
     public void setBackgroundColor(boolean defined, RGB rgb, boolean transparent) {
