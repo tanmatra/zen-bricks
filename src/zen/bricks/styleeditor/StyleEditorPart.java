@@ -1,5 +1,6 @@
 package zen.bricks.styleeditor;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
 
 abstract class StyleEditorPart
@@ -11,4 +12,12 @@ abstract class StyleEditorPart
     abstract void apply();
 
     abstract void cancel();
+
+    protected static GridDataFactory gridData() {
+        return GridDataFactory.fillDefaults();
+    }
+
+    protected static GridDataFactory gridData(int span) {
+        return gridData().span(span, 1);
+    }
 }

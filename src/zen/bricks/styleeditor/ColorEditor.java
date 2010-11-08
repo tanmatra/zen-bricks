@@ -33,8 +33,10 @@ class ColorEditor extends StyleEditorPart
                 colorSelector.setEnabled(check.getSelection());
             }
         });
+        gridData(numColumns - 1).applyTo(check);
 
         colorSelector = new ColorSelector(parent);
+        gridData().applyTo(colorSelector.getButton());
 
         if (color != null) {
             check.setSelection(true);

@@ -37,6 +37,7 @@ class FontEditor extends StyleEditorPart
                 fontSelectButton.setEnabled(fontCheck.getSelection());
             }
         });
+        gridData(numColumns - 1).applyTo(fontCheck);
 
         fontSelectButton = new Button(parent, SWT.PUSH);
         fontSelectButton.setText("Select...");
@@ -50,6 +51,7 @@ class FontEditor extends StyleEditorPart
                 }
             }
         });
+        gridData().applyTo(fontSelectButton);
 
         if (font != null) {
             fontCheck.setSelection(true);
