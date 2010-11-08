@@ -77,6 +77,10 @@ public class ColorUtil
         if (sysId != null) {
             return copySystemColor(device, sysId);
         }
+        return new Color(device, parse(str));
+    }
+
+    public static RGB parse(String str) {
         if (str.charAt(0) == '#') {
             final int r;
             final int g;
@@ -92,7 +96,7 @@ public class ColorUtil
             } else {
                 throw new IllegalArgumentException("Misformed color: " + str);
             }
-            return new Color(device, r, g, b);
+            return new RGB(r, g, b);
         }
         throw new IllegalArgumentException("Misformed color: " + str);
     }
