@@ -47,7 +47,7 @@ public class StyleChain
         StyleChain chain = this;
         do {
             final TextStyle style = chain.style;
-            if (style.transparent != null) {
+            if (style.isBackgroundDefined()) {
                 return style;
             }
             chain = chain.parent;

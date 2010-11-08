@@ -15,14 +15,23 @@ class ColorEditor extends StyleEditorPart
     private final String title;
     Button check;
     ColorSelector colorSelector;
+    private final boolean allowTransparent;
+    private Button transparentCheck;
 
     ColorEditor(Color color, String title) {
         this.color = color;
         this.title = title;
+        allowTransparent = false;
+    }
+
+    ColorEditor(Color color, String title, boolean allowTransparent) {
+        this.color = color;
+        this.title = title;
+        this.allowTransparent = allowTransparent;
     }
 
     int getNumColumns() {
-        return 2;
+        return allowTransparent ? 3 : 2;
     }
 
     void createWidgets(Composite parent, int numColumns) {
@@ -30,24 +39,66 @@ class ColorEditor extends StyleEditorPart
         check.setText(title);
         check.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                colorSelector.setEnabled(check.getSelection());
+                testTransparentCheckEnabled();
+                testColorSelectorEnabled();
             }
         });
-        gridData(numColumns - 1).applyTo(check);
+        gridData(numColumns - (allowTransparent ? 2 : 1)).applyTo(check);
+
+        if (allowTransparent) {
+            transparentCheck = new Button(parent, SWT.CHECK);
+            transparentCheck.setText("Transparent");
+            transparentCheck.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent e) {
+                    testColorSelectorEnabled();
+                }
+            });
+            gridData().applyTo(transparentCheck);
+        }
 
         colorSelector = new ColorSelector(parent);
         gridData().applyTo(colorSelector.getButton());
 
+        check.setSelection(color != null);
         if (color != null) {
-            check.setSelection(true);
             colorSelector.setColorValue(color.getRGB());
-        } else {
-            colorSelector.setEnabled(false);
+        }
+        testTransparentCheckEnabled();
+        testColorSelectorEnabled();
+    }
+
+    void testTransparentCheckEnabled() {
+        if (transparentCheck != null) {
+            transparentCheck.setEnabled(check.getSelection());
         }
     }
 
+    void testColorSelectorEnabled() {
+        final boolean enabled;
+        if (check.getSelection()) {
+            if (transparentCheck == null) {
+                enabled = true;
+            } else {
+                enabled = !transparentCheck.getSelection();
+            }
+        } else {
+            enabled = false;
+        }
+        colorSelector.setEnabled(enabled);
+    }
+
+    protected boolean isDefined() {
+        return check.getSelection();
+    }
+
     protected RGB getRGB() {
-        return check.getSelection() ? colorSelector.getColorValue() : null;
+        return isDefined() ? colorSelector.getColorValue() : null;
+    }
+
+    protected boolean isTransparent() {
+        return (transparentCheck != null) ?
+            transparentCheck.getSelection() :
+            false;
     }
 
     void apply() {

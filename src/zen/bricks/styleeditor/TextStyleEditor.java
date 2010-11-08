@@ -44,10 +44,11 @@ public class TextStyleEditor implements ITextStyleEditor
         });
 
         addPart(new ColorEditor(textStyle.getBackgroundColor(),
-            "Background color")
+            "Background color", true)
         {
             protected void apply() {
-                textStyle.setBackgroundColor(getRGB());
+                textStyle.setBackgroundColor(
+                    isDefined(), getRGB(), isTransparent());
             }
         });
 
