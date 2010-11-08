@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -41,8 +42,8 @@ public class EditStylesDialog extends Dialog
     private Composite stackPanel;
 
     private StackLayout stackLayout;
-    
-    private final Map<TextStyle, ITextStyleEditor> editors = 
+
+    private final Map<TextStyle, ITextStyleEditor> editors =
         new HashMap<TextStyle, ITextStyleEditor>();
 
     // ============================================================ Constructors
@@ -112,6 +113,8 @@ public class EditStylesDialog extends Dialog
         //================================
         sashForm.setWeights(new int[] { 20, 80 });
 
+        tableViewer.setSelection(new StructuredSelection(ui.getBasicStyle()));
+
         return sashForm;
     }
 
@@ -133,7 +136,7 @@ public class EditStylesDialog extends Dialog
         }
         super.okPressed();
     }
-    
+
     @Override
     protected void cancelPressed() {
         cancelEditors();
