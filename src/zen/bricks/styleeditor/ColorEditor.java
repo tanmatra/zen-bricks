@@ -16,20 +16,26 @@ class ColorEditor extends StyleEditorPart
     Button check;
     ColorSelector colorSelector;
 
-    ColorEditor(Composite parent, Color color, String title) {
+    ColorEditor(Color color, String title) {
         this.color = color;
         this.title = title;
+    }
 
+    int getNumColumns() {
+        return 2;
+    }
+
+    void createWidgets(Composite parent, int numColumns) {
         check = new Button(parent, SWT.CHECK);
         check.setText(title);
         check.addSelectionListener(new SelectionAdapter() {
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 colorSelector.setEnabled(check.getSelection());
             }
         });
-        
+
         colorSelector = new ColorSelector(parent);
+
         if (color != null) {
             check.setSelection(true);
             colorSelector.setColorValue(color.getRGB());
@@ -37,13 +43,12 @@ class ColorEditor extends StyleEditorPart
             colorSelector.setEnabled(false);
         }
     }
-    
+
     protected RGB getRGB() {
         return check.getSelection() ? colorSelector.getColorValue() : null;
     }
-    
+
     void apply() {
-        // TODO Auto-generated method stub
     }
 
     void cancel() {
