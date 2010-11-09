@@ -1,19 +1,25 @@
 package zen.bricks.styleeditor;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
+import org.eclipse.swt.widgets.Text;
 
 class FontEditor extends StyleEditorPart
 {
     private Button fontCheck;
     private Button fontSelectButton;
-    FontData[] fontList;
+    private FontData[] fontList;
     private final String title;
+    private Text previewText;
+    private Font previewFont;
 
     FontEditor(FontData[] fontList, String title) {
         this.fontList = fontList;
@@ -21,7 +27,7 @@ class FontEditor extends StyleEditorPart
     }
 
     int getNumColumns() {
-        return 2;
+        return 3;
     }
 
     void createWidgets(final Composite parent, int numColumns) {
@@ -29,10 +35,24 @@ class FontEditor extends StyleEditorPart
         fontCheck.setText(title);
         fontCheck.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                fontSelectButton.setEnabled(fontCheck.getSelection());
+                final boolean selected = fontCheck.getSelection();
+                fontSelectButton.setEnabled(selected);
+                if (!selected) {
+                    fontList = null;
+                    showPreview();
+                }
             }
         });
-        gridData(numColumns - 1).applyTo(fontCheck);
+        gridData(numColumns - 2).applyTo(fontCheck);
+
+        previewText = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
+        previewText.addDisposeListener(new DisposeListener() {
+            public void widgetDisposed(DisposeEvent e) {
+                disposePreviewFont();
+            }
+        });
+        showPreview();
+        gridData().hint(150, SWT.DEFAULT).applyTo(previewText);
 
         fontSelectButton = new Button(parent, SWT.PUSH);
         fontSelectButton.setText("Select...");
@@ -40,9 +60,9 @@ class FontEditor extends StyleEditorPart
             public void widgetSelected(SelectionEvent e) {
                 final FontDialog fontDialog = new FontDialog(parent.getShell());
                 fontDialog.setFontList(fontList);
-                FontData newFontList = fontDialog.open();
-                if (newFontList != null) {
+                if (fontDialog.open() != null) {
                     fontList = fontDialog.getFontList();
+                    showPreview();
                 }
             }
         });
@@ -52,6 +72,26 @@ class FontEditor extends StyleEditorPart
             fontCheck.setSelection(true);
         } else {
             fontSelectButton.setEnabled(false);
+        }
+    }
+
+    private void disposePreviewFont() {
+        if (previewFont != null) {
+            previewFont.dispose();
+            previewFont = null;
+        }
+    }
+
+    private void showPreview() {
+        disposePreviewFont();
+        if (fontList != null) {
+            previewFont = new Font(previewText.getDisplay(), fontList);
+            previewText.setFont(previewFont);
+            final FontData fd = fontList[0];
+            previewText.setText(fd.getName() + " " + fd.getHeight() + "pt");
+        } else {
+            previewText.setFont(null);
+            previewText.setText("");
         }
     }
 
