@@ -8,7 +8,7 @@ public class BaselineLayout extends TupleLayout
         super(ui);
     }
 
-    void doLayout(TextBrick brick) {
+    void doLayout(TupleBrick brick) {
         final StyleChain style = ui.getStyleChain(brick);
         final Point textExtent = style.getTextExtent(brick.text);
         brick.textExtent = textExtent;

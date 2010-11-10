@@ -6,7 +6,7 @@ public class SimpleLayout extends TupleLayout
         super(ui);
     }
 
-    void doLayout(TextBrick brick) {
+    void doLayout(TupleBrick brick) {
         final Margin textMargin = ui.getTextMargin();
         final Margin brickPadding = ui.getBrickPadding();
 

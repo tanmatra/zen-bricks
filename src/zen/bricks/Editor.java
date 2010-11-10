@@ -40,7 +40,7 @@ public class Editor
         refresh();
     }
 
-    public void setRoot(TextBrick rootBrick) {
+    public void setRoot(TupleBrick rootBrick) {
         if (root != null) {
             root.dispose();
         }
@@ -61,16 +61,16 @@ public class Editor
         canvas.redraw();
     }
 
-    static TextBrick makeSample() {
-        TextBrick rootBrick = new TextBrick(null,
+    static TupleBrick makeSample() {
+        TupleBrick rootBrick = new TupleBrick(null,
                 "Quick brown fox\njumps over the lazy dog");
 
         final ColorBrick color1 = new ColorBrick(rootBrick, 200, 50,
                 new RGB(192, 64, 64),
                 new RGB(255, 128, 128));
         color1.lineBreak = false;
-        final TextBrick b1 = new TextBrick(rootBrick, "Jumps over");
-        final Brick text2 = new TextBrick(b1, "the lazy dog.");
+        final TupleBrick b1 = new TupleBrick(rootBrick, "Jumps over");
+        final Brick text2 = new TupleBrick(b1, "the lazy dog.");
         text2.lineBreak = false;
         new ColorBrick(rootBrick, 50, 100,
                 new RGB(64, 192, 64),

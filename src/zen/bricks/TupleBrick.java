@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 
-public class TextBrick extends Brick
+public class TupleBrick extends Brick
 {
     // ================================================================== Fields
 
@@ -19,11 +19,11 @@ public class TextBrick extends Brick
 
     // ============================================================ Constructors
 
-    TextBrick(TextBrick parent) {
+    TupleBrick(TupleBrick parent) {
         super(parent);
     }
 
-    TextBrick(TextBrick parent, String text) {
+    TupleBrick(TupleBrick parent, String text) {
         super(parent);
         this.text = text;
     }

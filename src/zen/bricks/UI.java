@@ -216,7 +216,7 @@ public class UI
         return backgroundColor;
     }
 
-    public void layout(TextBrick brick) {
+    public void layout(TupleBrick brick) {
         layout.doLayout(brick);
     }
 
@@ -264,7 +264,7 @@ public class UI
         gc.setTextAntialias(textAntialias);
     }
 
-    public StyleChain getStyleChain(TextBrick brick) {
+    public StyleChain getStyleChain(TupleBrick brick) {
         if (!brick.isAtom()) {
             return listChain;
         } else {

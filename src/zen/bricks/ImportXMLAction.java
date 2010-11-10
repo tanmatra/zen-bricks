@@ -27,7 +27,7 @@ class ImportXMLAction extends Action
 
         private final StringBuilder buffer = new StringBuilder(128);
 
-        TextBrick brick;
+        TupleBrick brick;
 
         BrickHandler() { }
 
@@ -62,14 +62,14 @@ class ImportXMLAction extends Action
                 String qName, Attributes attributes) throws SAXException
         {
             handleString();
-            TextBrick elementBrick = new TextBrick(brick, qName);
+            TupleBrick elementBrick = new TupleBrick(brick, qName);
 
             final int attLen = attributes.getLength();
             if (attLen > 0) {
-                final TextBrick attrParent;
+                final TupleBrick attrParent;
                 if (GROUP_ATTRIBUTES) {
-                    TextBrick allAttrsBrick =
-                            new TextBrick(elementBrick, ALL_ATTRS_TEXT);
+                    TupleBrick allAttrsBrick =
+                            new TupleBrick(elementBrick, ALL_ATTRS_TEXT);
                     allAttrsBrick.lineBreak = false;
                     attrParent = allAttrsBrick;
                 } else {
@@ -77,14 +77,14 @@ class ImportXMLAction extends Action
                 }
                 for (int i = 0; i < attLen; i++) {
                     final String attName = attributes.getQName(i);
-                    final TextBrick attNameBrick =
-                            new TextBrick(attrParent, attName + ATTR_SUFFIX);
+                    final TupleBrick attNameBrick =
+                            new TupleBrick(attrParent, attName + ATTR_SUFFIX);
                     if (i == 0) {
                         attNameBrick.lineBreak = false;
                     }
                     final String attValue = removeCRs(attributes.getValue(i));
-                    final TextBrick attValueBrick =
-                            new TextBrick(attNameBrick, attValue);
+                    final TupleBrick attValueBrick =
+                            new TupleBrick(attNameBrick, attValue);
                     attValueBrick.lineBreak = false;
                 }
             }
@@ -97,7 +97,7 @@ class ImportXMLAction extends Action
                 if (str.length() != 0) {
                     if (brick != null) {
                         @SuppressWarnings("unused")
-                        final Brick plainText = new TextBrick(brick, str);
+                        final Brick plainText = new TupleBrick(brick, str);
                     }
                 }
                 buffer.setLength(0);
@@ -114,7 +114,7 @@ class ImportXMLAction extends Action
                 throws SAXException
         {
             handleString();
-            final TextBrick parent = brick.getParent();
+            final TupleBrick parent = brick.getParent();
             if (parent != null) {
                 brick = parent;
             }
@@ -149,7 +149,7 @@ class ImportXMLAction extends Action
         path = new File(fileName).getParent();
         try {
             final Editor editor = mainWindow.editor;
-            final TextBrick root = parse(fileName);
+            final TupleBrick root = parse(fileName);
             editor.setRoot(root);
             mainWindow.setTitle(fileName);
         } catch (Exception e) {
@@ -157,7 +157,7 @@ class ImportXMLAction extends Action
         }
     }
 
-    private TextBrick parse(String fileName) throws Exception {
+    private TupleBrick parse(String fileName) throws Exception {
         final SAXParserFactory saxFactory = SAXParserFactory.newInstance();
         saxFactory.setValidating(false);
         final SAXParser saxParser = saxFactory.newSAXParser();

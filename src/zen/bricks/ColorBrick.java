@@ -13,7 +13,7 @@ public class ColorBrick extends Brick
     private Color foreColor;
     private Color backColor;
 
-    public ColorBrick(TextBrick parent, int width, int height,
+    public ColorBrick(TupleBrick parent, int width, int height,
             RGB fore, RGB back)
     {
         super(parent);

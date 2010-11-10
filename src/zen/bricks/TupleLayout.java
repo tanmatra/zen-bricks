@@ -8,5 +8,5 @@ public abstract class TupleLayout
         this.ui = ui;
     }
 
-    abstract void doLayout(TextBrick brick);
+    abstract void doLayout(TupleBrick brick);
 }
