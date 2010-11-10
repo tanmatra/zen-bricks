@@ -14,7 +14,7 @@ public class StyleChain
     StyleChain parent;
     TextStyle style;
 
-    public StyleChain(TextStyle style, StyleChain parent) {
+    protected StyleChain(TextStyle style, StyleChain parent) {
         this.style = style;
         this.parent = parent;
     }

@@ -219,4 +219,8 @@ public class TextStyle
             backgroundColor = null;
         }
     }
+
+    public StyleChain createChain(StyleChain parent) {
+        return new StyleChain(this, parent);
+    }
 }

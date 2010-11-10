@@ -110,8 +110,8 @@ public class UI
         basicStyle = new TextStyle("Basic", device, props, "text");
         listStyle = new TextStyle("List", device, props, "list.text");
 
-        basicChain = new StyleChain(basicStyle, null);
-        listChain = new StyleChain(listStyle, basicChain);
+        basicChain = basicStyle.createChain(null);
+        listChain = listStyle.createChain(basicChain);
     }
 
     void dispose() {
