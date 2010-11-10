@@ -29,6 +29,8 @@ class ImportXMLAction extends Action
 
         TextBrick brick;
 
+        BrickHandler() { }
+
         public InputSource resolveEntity(String publicId, String systemId)
                 throws IOException, SAXException
         {

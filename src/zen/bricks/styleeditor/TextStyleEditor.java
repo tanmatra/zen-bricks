@@ -14,7 +14,7 @@ public class TextStyleEditor implements ITextStyleEditor
 {
     // ================================================================== Fields
 
-    private final TextStyle textStyle;
+    final TextStyle textStyle;
 
     private Composite composite;
 

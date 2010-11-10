@@ -29,9 +29,9 @@ public class AdjustFontDialog extends Dialog
 
     FontData[] fontList;
 
-    private Font exampleFont;
+    Font exampleFont;
 
-    private Spinner spinner;
+    Spinner spinner;
 
     protected AdjustFontDialog(Shell shell) {
         super(shell);

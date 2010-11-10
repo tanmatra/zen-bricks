@@ -14,9 +14,9 @@ import org.eclipse.swt.widgets.Text;
 
 class FontEditor extends StyleEditorPart
 {
-    private Button fontCheck;
-    private Button fontSelectButton;
-    private FontData[] fontList;
+    Button fontCheck;
+    Button fontSelectButton;
+    FontData[] fontList;
     private final String title;
     private Text previewText;
     private Font previewFont;
@@ -75,14 +75,14 @@ class FontEditor extends StyleEditorPart
         }
     }
 
-    private void disposePreviewFont() {
+    void disposePreviewFont() {
         if (previewFont != null) {
             previewFont.dispose();
             previewFont = null;
         }
     }
 
-    private void showPreview() {
+    void showPreview() {
         disposePreviewFont();
         if (fontList != null) {
             previewFont = new Font(previewText.getDisplay(), fontList);

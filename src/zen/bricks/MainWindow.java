@@ -51,7 +51,7 @@ public class MainWindow extends ApplicationWindow
 
     private final Properties defaultTheme;
 
-    private String themeFileName;
+    String themeFileName;
 
     private Action reloadThemeAction;
 
