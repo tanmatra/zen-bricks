@@ -12,17 +12,17 @@ public class StyleChain
     private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
 
     StyleChain parent;
-    TextStyle style;
+    TupleStyle style;
 
-    protected StyleChain(TextStyle style, StyleChain parent) {
+    protected StyleChain(TupleStyle style, StyleChain parent) {
         this.style = style;
         this.parent = parent;
     }
 
-    private TextStyle findFont() {
+    private TupleStyle findFont() {
         StyleChain chain = this;
         do {
-            final TextStyle st = chain.style;
+            final TupleStyle st = chain.style;
             if (st.getFont() != null) {
                 return st;
             }
@@ -31,10 +31,10 @@ public class StyleChain
         throw new Error("Font not found in style chain");
     }
 
-    private TextStyle findForeground() {
+    private TupleStyle findForeground() {
         StyleChain chain = this;
         do {
-            final TextStyle st = chain.style;
+            final TupleStyle st = chain.style;
             if (st.getForegroundColor() != null) {
                 return st;
             }
@@ -43,10 +43,10 @@ public class StyleChain
         throw new Error("No foreground found in style chain");
     }
 
-    private TextStyle findBackground() {
+    private TupleStyle findBackground() {
         StyleChain chain = this;
         do {
-            final TextStyle style = chain.style;
+            final TupleStyle style = chain.style;
             if (style.isBackgroundDefined()) {
                 return style;
             }
@@ -75,7 +75,7 @@ public class StyleChain
         gc.setFont(getFont());
         gc.setForeground(getForegroundColor());
 
-        final TextStyle background = findBackground();
+        final TupleStyle background = findBackground();
         int flags = TEXT_FLAGS;
         if (background.transparent) {
             flags |= SWT.DRAW_TRANSPARENT;
@@ -90,7 +90,7 @@ public class StyleChain
     }
 
     public int getTextAscent() {
-        final TextStyle st = findFont();
+        final TupleStyle st = findFont();
         final FontMetrics fm = st.fontMetrics;
         return fm.getAscent() + fm.getLeading();
     }

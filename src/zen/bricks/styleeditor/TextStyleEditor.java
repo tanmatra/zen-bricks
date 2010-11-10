@@ -8,13 +8,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import zen.bricks.ITextStyleEditor;
-import zen.bricks.TextStyle;
+import zen.bricks.TupleStyle;
 
 public class TextStyleEditor implements ITextStyleEditor
 {
     // ================================================================== Fields
 
-    final TextStyle textStyle;
+    final TupleStyle tupleStyle;
 
     private Composite composite;
 
@@ -22,8 +22,8 @@ public class TextStyleEditor implements ITextStyleEditor
 
     // ============================================================ Constructors
 
-    public TextStyleEditor(TextStyle textStyle) {
-        this.textStyle = textStyle;
+    public TextStyleEditor(TupleStyle tupleStyle) {
+        this.tupleStyle = tupleStyle;
 
         createParts();
     }
@@ -35,27 +35,27 @@ public class TextStyleEditor implements ITextStyleEditor
     }
 
     private void createParts() {
-        addPart(new ColorEditor(textStyle.getForegroundColor(),
+        addPart(new ColorEditor(tupleStyle.getForegroundColor(),
             "Foreground color")
         {
             protected void apply() {
-                textStyle.setForegroundColor(getRGB());
+                tupleStyle.setForegroundColor(getRGB());
             }
         });
 
-        addPart(new ColorEditor(textStyle.getBackgroundColor(),
+        addPart(new ColorEditor(tupleStyle.getBackgroundColor(),
             "Background color", true)
         {
             protected void apply() {
-                textStyle.setBackgroundColor(
+                tupleStyle.setBackgroundColor(
                     isDefined(), getRGB(), isTransparent());
             }
         });
 
-        addPart(new FontEditor(textStyle.getFontList(), "Font")
+        addPart(new FontEditor(tupleStyle.getFontList(), "Font")
         {
             protected void apply() {
-                textStyle.setFont(getFontList());
+                tupleStyle.setFont(getFontList());
             }
         });
     }

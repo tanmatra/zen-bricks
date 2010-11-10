@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.RGB;
 
 import zen.bricks.styleeditor.TextStyleEditor;
 
-public class TextStyle
+public class TupleStyle
 {
     // ============================================================ Class Fields
 
@@ -49,7 +49,7 @@ public class TextStyle
 
     // ============================================================ Constructors
 
-    public TextStyle(String name, Device device,
+    public TupleStyle(String name, Device device,
         Properties properties, String keyPrefix)
     {
         this.name = name;

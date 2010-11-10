@@ -64,8 +64,8 @@ public class UI
     private int textAntialias;
     private final Margin textMargin = new Margin();
 
-    private TextStyle basicStyle;
-    private TextStyle listStyle;
+    private TupleStyle basicStyle;
+    private TupleStyle listStyle;
 
     private StyleChain basicChain;
     private StyleChain listChain;
@@ -107,8 +107,8 @@ public class UI
         textAntialias = parseState(props, "text.antialias");
         textMargin.parse(props, "text.margin");
 
-        basicStyle = new TextStyle("Basic", device, props, "text");
-        listStyle = new TextStyle("List", device, props, "list.text");
+        basicStyle = new TupleStyle("Basic", device, props, "text");
+        listStyle = new TupleStyle("List", device, props, "list.text");
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
@@ -252,7 +252,7 @@ public class UI
         return lineSpacing;
     }
 
-    public TextStyle getBasicStyle() {
+    public TupleStyle getBasicStyle() {
         return basicStyle;
     }
 
@@ -272,7 +272,7 @@ public class UI
         }
     }
 
-    public List<TextStyle> getTextStyles() {
+    public List<TupleStyle> getTupleStyles() {
         return Arrays.asList(basicStyle, listStyle);
     }
 }

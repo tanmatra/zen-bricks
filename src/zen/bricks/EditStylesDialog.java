@@ -28,7 +28,7 @@ public class EditStylesDialog extends Dialog
     static class StyleLabelProvider extends LabelProvider
     {
         public String getText(Object element) {
-            return ((TextStyle) element).getName();
+            return ((TupleStyle) element).getName();
         }
     }
 
@@ -43,8 +43,8 @@ public class EditStylesDialog extends Dialog
 
     private StackLayout stackLayout;
 
-    private final Map<TextStyle, ITextStyleEditor> editors =
-        new HashMap<TextStyle, ITextStyleEditor>();
+    private final Map<TupleStyle, ITextStyleEditor> editors =
+        new HashMap<TupleStyle, ITextStyleEditor>();
 
     // ============================================================ Constructors
 
@@ -83,14 +83,14 @@ public class EditStylesDialog extends Dialog
             .applyTo(tableViewer.getTable());
         tableViewer.setLabelProvider(new StyleLabelProvider());
         tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-        tableViewer.setInput(ui.getTextStyles());
+        tableViewer.setInput(ui.getTupleStyles());
         tableViewer.addPostSelectionChangedListener(
             new ISelectionChangedListener()
         {
             public void selectionChanged(SelectionChangedEvent event) {
                 final IStructuredSelection selection =
                     (IStructuredSelection) event.getSelection();
-                styleSelected((TextStyle) selection.getFirstElement());
+                styleSelected((TupleStyle) selection.getFirstElement());
             }
         });
 
@@ -118,7 +118,7 @@ public class EditStylesDialog extends Dialog
         return sashForm;
     }
 
-    void styleSelected(TextStyle style) {
+    void styleSelected(TupleStyle style) {
         ITextStyleEditor editor = editors.get(style);
         if (editor == null) {
             editor = style.getEditor();
