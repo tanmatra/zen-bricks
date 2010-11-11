@@ -1,7 +1,7 @@
 package zen.bricks;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -10,21 +10,42 @@ import org.eclipse.swt.widgets.Event;
 
 public class TupleBrick extends Brick
 {
+    // ========================================================== Nested Classes
+
+    class Line implements Iterable<Brick>
+    {
+        int y;
+        int height;
+        int startIndex;
+        int endIndex;
+
+        Line(int startIndex, int endIndex) {
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+        }
+
+        public Iterator<Brick> iterator() {
+            return children.subList(startIndex, endIndex).iterator();
+        }
+    }
+
     // ================================================================== Fields
 
     String text;
     Point textExtent;
     int textY;
-    final private List<Brick> children = new ArrayList<Brick>();
+    final ArrayList<Brick> children = new ArrayList<Brick>();
+    final private ArrayList<Line> lines = new ArrayList<Line>(1);
 
     // ============================================================ Constructors
 
     TupleBrick(TupleBrick parent) {
         super(parent);
+        lines.add(new Line(0, 0));
     }
 
     TupleBrick(TupleBrick parent, String text) {
-        super(parent);
+        this(parent);
         this.text = text;
     }
 
@@ -49,8 +70,21 @@ public class TupleBrick extends Brick
     }
 
     void addChild(Brick child) {
-        child.index = children.size();
+        int endIndex = children.size();
+        child.index = endIndex;
         children.add(child);
+        endIndex++;
+
+        final Line lastLine = lines.get(lines.size() - 1);
+        lastLine.endIndex = endIndex;
+    }
+
+    void newLine() {
+        final Line prevLine = lines.get(lines.size() - 1);
+        final int endIndex = prevLine.endIndex;
+        final Line line = new Line(endIndex, endIndex);
+        lines.add(line);
+        // ???
     }
 
     int childrenCount() {
@@ -59,6 +93,10 @@ public class TupleBrick extends Brick
 
     Brick getChild(int i) {
         return children.get(i);
+    }
+
+    public ArrayList<Line> getLines() {
+        return lines;
     }
 
     public boolean isList() {

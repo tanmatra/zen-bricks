@@ -14,6 +14,8 @@ public abstract class Brick
     int width;
     int height;
     int ascent;
+
+    @Deprecated
     boolean lineBreak = true;
 
     Brick(TupleBrick parent) {
@@ -62,6 +64,7 @@ public abstract class Brick
         return height;
     }
 
+    @Deprecated
     boolean isLineBreak() {
         return lineBreak;
     }

@@ -18,28 +18,25 @@ public class SimpleLayout extends TupleLayout
         int currY = brickPadding.getTop();
         int currLineHeight = textMargin.getTop() + brick.textExtent.y;
 
-        final int count = brick.childrenCount();
-        for (int i = 0; i < count; i++) {
-            final Brick child = brick.getChild(i);
-            child.calculateSize(ui);
-            if (child.isLineBreak()) {
-                currX = brickPadding.getLeft();
-                currY += currLineHeight + ui.getLineSpacing();
+        for (final TupleBrick.Line line : brick.getLines()) {
+            for (final Brick child : line) {
+                child.calculateSize(ui);
                 child.x = currX;
                 child.y = currY;
-                currLineHeight = child.height;
-            } else {
                 currLineHeight = Math.max(currLineHeight, child.height);
-                currX += ui.getSpacing();
-                // currY is unchanged
-                child.x = currX;
-                child.y = currY;
-                currX += child.width;
+                currX += child.width + ui.getSpacing();
             }
-            brick.width = Math.max(brick.width, child.x + child.width);
+            // line ended
+            line.height = currLineHeight;
+            line.y = currY;
+            brick.width = Math.max(brick.width, currX - ui.getSpacing());
+            // prepare new line
+            currX = brickPadding.getLeft();
+            currY += currLineHeight + ui.getLineSpacing();
+            currLineHeight = 0;
         }
 
         brick.width += brickPadding.getRight();
-        brick.height = currY + currLineHeight + brickPadding.getBottom();
+        brick.height = currY - ui.getLineSpacing() + brickPadding.getBottom();
     }
 }

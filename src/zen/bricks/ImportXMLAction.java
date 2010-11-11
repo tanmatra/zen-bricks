@@ -72,6 +72,9 @@ class ImportXMLAction extends Action
                 String qName, Attributes attributes) throws SAXException
         {
             handleString();
+            if (brick != null) {
+                brick.newLine();
+            }
             TupleBrick elementBrick = new TupleBrick(brick, qName);
 
             final int attLen = attributes.getLength();
@@ -84,8 +87,12 @@ class ImportXMLAction extends Action
                     attrParent = allAttrsBrick;
                 } else {
                     attrParent = elementBrick;
+                    elementBrick.newLine();
                 }
                 for (int i = 0; i < attLen; i++) {
+                    if (i != 0) {
+                        attrParent.newLine();
+                    }
                     final String attName = attributes.getQName(i);
                     final TupleBrick attNameBrick =
                         new TupleBrick(attrParent, prefix + attName + suffix);
@@ -106,6 +113,7 @@ class ImportXMLAction extends Action
                 final String str = removeCRs(buffer.toString().trim());
                 if (str.length() != 0) {
                     if (brick != null) {
+                        brick.newLine();
                         @SuppressWarnings("unused")
                         final Brick plainText = new TupleBrick(brick, str);
                     }

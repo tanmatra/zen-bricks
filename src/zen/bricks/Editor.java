@@ -69,12 +69,15 @@ public class Editor
                 new RGB(192, 64, 64),
                 new RGB(255, 128, 128));
         color1.lineBreak = false;
+        rootBrick.newLine();
         final TupleBrick b1 = new TupleBrick(rootBrick, "Jumps over");
         final Brick text2 = new TupleBrick(b1, "the lazy dog.");
         text2.lineBreak = false;
+        rootBrick.newLine();
         new ColorBrick(rootBrick, 50, 100,
                 new RGB(64, 192, 64),
                 new RGB(128, 255, 128));
+        rootBrick.newLine();
         new ColorBrick(rootBrick, 100, 100,
                 new RGB(64, 64, 192),
                 new RGB(128, 128, 255));
