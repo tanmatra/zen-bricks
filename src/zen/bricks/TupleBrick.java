@@ -61,8 +61,8 @@ public class TupleBrick extends Brick
         return children.get(i);
     }
 
-    public boolean isAtom() {
-        return children.isEmpty();
+    public boolean isList() {
+        return !children.isEmpty();
     }
 
     @Override

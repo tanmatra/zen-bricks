@@ -265,7 +265,7 @@ public class UI
     }
 
     public StyleChain getStyleChain(TupleBrick brick) {
-        if (!brick.isAtom()) {
+        if (brick.isList()) {
             return listChain;
         } else {
             return basicChain;
