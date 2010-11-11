@@ -31,17 +31,7 @@ public class BaselineLayout extends TupleLayout
         int lineEnd = 0;
 
         while (true) {
-            // найти очередной конец строки или конец списка
-            for (;;) {
-                if (lineEnd == count) {
-                    break;
-                }
-                final Brick child = brick.getChild(lineEnd);
-                if (child.isLineBreak()) {
-                    break;
-                }
-                lineEnd++;
-            }
+            lineEnd = findLineEnd(brick, lineEnd);
 
             // обработать строку
             if (line != 0) {
@@ -92,5 +82,21 @@ public class BaselineLayout extends TupleLayout
 
         brick.width = width + brickPadding.getRight();
         brick.height = bottom + brickPadding.getBottom();
+    }
+
+    // найти очередной конец строки или конец списка
+    private static int findLineEnd(TupleBrick brick, int lineEnd) {
+        final int count = brick.childrenCount();
+        for (;;) {
+            if (lineEnd == count) {
+                break;
+            }
+            final Brick child = brick.getChild(lineEnd);
+            if (child.isLineBreak()) {
+                break;
+            }
+            lineEnd++;
+        }
+        return lineEnd;
     }
 }
