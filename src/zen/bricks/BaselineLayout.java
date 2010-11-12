@@ -10,93 +10,49 @@ public class BaselineLayout extends TupleLayout
 
     void doLayout(TupleBrick brick) {
         final StyleChain style = ui.getStyleChain(brick);
+        final Margin textMargin = ui.getTextMargin();
+        final Margin brickPadding = ui.getBrickPadding(); // style.getPadding()
+        final int paddingLeft = brickPadding.getLeft();
+        final int lineSpacing = ui.getLineSpacing();
+
         final Point textExtent = style.getTextExtent(brick.text);
         brick.textExtent = textExtent;
-        final Margin brickPadding = ui.getBrickPadding();
-        final int paddingLeft = brickPadding.getLeft();
-        int width = paddingLeft;
-        int bottom = brickPadding.getTop();
-
-        int line = 0;
         final int textAscent = style.getTextAscent();
         int lineAscent = textAscent;
-        int lineWidth = ui.getTextMargin().getLeft() + textExtent.x;
-        if (lineWidth < paddingLeft) { // for narrow text
-            lineWidth = paddingLeft;
+
+        int lineY = brickPadding.getTop();
+        int currX = textMargin.getLeft() + textExtent.x + textMargin.getRight();
+        if (currX < paddingLeft) { // for narrow text
+            currX = paddingLeft;
         }
-
-        final int count = brick.childrenCount();
-
-        int lineStart = 0;
-        int lineEnd = 0;
-
-        while (true) {
-            lineEnd = findLineEnd(brick, lineEnd);
-
-            // обработать строку
-            if (line != 0) {
-                bottom += ui.getLineSpacing();
-            }
-            for (int i = lineStart; i < lineEnd; i++) {
-                final Brick child = brick.getChild(i);
-//                if (i != lineStart) {
-                    lineWidth += ui.getSpacing();
-//                }
+        int width = currX;
+        boolean firstLine = true;
+        int lineHeight = textExtent.y + textMargin.getBottom();
+        for (final TupleBrick.Line line : brick.getLines()) {
+            for (final Brick child : line) {
                 child.calculateSize(ui);
-                child.x = lineWidth;
-                lineWidth += child.width;
+                child.x = currX;
+                currX += child.width + ui.getSpacing();
+                lineHeight = Math.max(lineHeight, child.height);
                 lineAscent = Math.max(lineAscent, child.ascent);
             }
-            int lineHeight; // textExtent.y; // ???
-            if (line == 0) {
-                brick.textY = bottom + (lineAscent - textAscent); // ???
-                lineHeight = brick.textY + textExtent.y;
-            } else {
-                lineHeight = 0;
+            for (final Brick child : line) {
+                child.y = lineY + (lineAscent - child.ascent);
             }
-            for (int i = lineStart; i < lineEnd; i++) {
-                final Brick child = brick.getChild(i);
-                final int margin = lineAscent - child.ascent;
-                child.y = bottom + margin;
-                lineHeight = Math.max(lineHeight, margin + child.height);
+            if (firstLine) {
+                brick.textY = lineY + (lineAscent - textAscent);
+                brick.ascent = lineY + lineAscent;
+                firstLine = false;
             }
-
-            // строка закончена
-            if (line == 0) {
-                brick.ascent = bottom + lineAscent;
-            }
-            bottom += lineHeight;
-            width = Math.max(width, lineWidth);
-            // можно ли двигаться дальше?
-            if (lineEnd == count) {
-                break;
-            }
-            // переход на следующую строку
-            lineStart = lineEnd;
-            lineEnd++;
-            line++;
-//            lineHeight = 0;
-            lineWidth = paddingLeft;
+            width = Math.max(width, currX - ui.getSpacing());
+            lineY += lineHeight + lineSpacing;
+            // next line
+            currX = paddingLeft;
+            lineHeight = 0;
             lineAscent = 0;
         }
 
         brick.width = width + brickPadding.getRight();
-        brick.height = bottom + brickPadding.getBottom();
-    }
-
-    // найти очередной конец строки или конец списка
-    private static int findLineEnd(TupleBrick brick, int lineEnd) {
-        final int count = brick.childrenCount();
-        for (;;) {
-            if (lineEnd == count) {
-                break;
-            }
-            final Brick child = brick.getChild(lineEnd);
-            if (child.isLineBreak()) {
-                break;
-            }
-            lineEnd++;
-        }
-        return lineEnd;
+        brick.height = lineY - lineSpacing + brickPadding.getBottom();
     }
 }
