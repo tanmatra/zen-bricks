@@ -1,6 +1,7 @@
 package zen.bricks;
 
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 public class Margin
 {
@@ -15,6 +16,30 @@ public class Margin
             return 0;
         }
         return Integer.parseInt(value);
+    }
+
+    public Margin() {
+    }
+
+    public Margin(int left, int top, int right, int bottom) {
+        this.left = left;
+        this.top = top;
+        this.right = right;
+        this.bottom = bottom;
+    }
+
+    public static Margin parseMargin(Properties props, String key) {
+        final String string = props.getProperty(key);
+        if (string == null) {
+            return null;
+        }
+        final StringTokenizer tokenizer = new StringTokenizer(string, ", ");
+        final Margin margin = new Margin();
+        margin.left   = Integer.parseInt(tokenizer.nextToken());
+        margin.top    = Integer.parseInt(tokenizer.nextToken());
+        margin.right  = Integer.parseInt(tokenizer.nextToken());
+        margin.bottom = Integer.parseInt(tokenizer.nextToken());
+        return margin;
     }
 
     public void parse(Properties props, String keyPrefix) {

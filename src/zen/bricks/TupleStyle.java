@@ -46,6 +46,8 @@ public class TupleStyle
 
     private Color backgroundColor;
 
+    Margin padding = new Margin();
+
     private final String name;
 
     // ============================================================ Constructors
@@ -73,6 +75,8 @@ public class TupleStyle
                 backgroundColor = ColorUtil.parse(device, backVal);
                 transparent = false;
             }
+
+            padding = Margin.parseMargin(properties, keyPrefix + ".padding");
         } catch (RuntimeException e) {
             dispose();
             throw e;
@@ -219,6 +223,14 @@ public class TupleStyle
             this.transparent = null;
             backgroundColor = null;
         }
+    }
+
+    public Margin getPadding() {
+        return padding;
+    }
+
+    public void setPadding(Margin padding) {
+        this.padding = padding;
     }
 
     public StyleChain createChain(StyleChain parent) {

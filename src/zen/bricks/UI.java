@@ -29,7 +29,7 @@ public class UI
         } finally {
             try {
                 inputStream.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 // ignore
             }
         }
@@ -56,7 +56,6 @@ public class UI
     private int antialias;
     private Color backgroundColor;
     private Border border;
-    private final Margin brickPadding = new Margin();
     private Color canvasBackgroundColor;
     private TupleLayout layout;
     private int lineSpacing;
@@ -82,7 +81,7 @@ public class UI
             }
             savedGC.setAntialias(antialias);
             // TODO: pass antialias to all text styles
-        } catch (Exception e) {
+        } catch (final Exception e) {
             dispose();
             throw e;
         }
@@ -99,7 +98,6 @@ public class UI
         antialias = parseState(props, "antialias");
         initBorder(props);
         backgroundColor = parseColor(props, "background.color");
-        brickPadding.parse(props, "brick.padding");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         initLayout(props);
         lineSpacing = parseInt(props, "line.spacing");
@@ -234,10 +232,6 @@ public class UI
         gc.fillRectangle(baseX, baseY, brick.getWidth(), brick.getHeight());
 
         border.paint(gc, baseX, baseY, brick, clipping);
-    }
-
-    public Margin getBrickPadding() {
-        return brickPadding;
     }
 
     public Margin getTextMargin() {

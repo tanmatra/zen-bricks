@@ -55,6 +55,18 @@ public class StyleChain
         throw new Error("No background found in style chain");
     }
 
+    TupleStyle findPadding() {
+        StyleChain chain = this;
+        do {
+            final TupleStyle style = chain.style;
+            if (style.padding != null) {
+                return style;
+            }
+            chain = chain.parent;
+        } while (chain != null);
+        throw new Error("No padding found in style chain");
+    }
+
     public Color getForegroundColor() {
         return findForeground().getForegroundColor();
     }
@@ -93,5 +105,9 @@ public class StyleChain
         final TupleStyle st = findFont();
         final FontMetrics fm = st.fontMetrics;
         return fm.getAscent() + fm.getLeading();
+    }
+
+    public Margin getPadding() {
+        return findPadding().getPadding();
     }
 }

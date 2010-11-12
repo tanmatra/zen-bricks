@@ -57,6 +57,13 @@ public class TupleStyleEditor implements IBrickStyleEditor
                 tupleStyle.setFont(getFontList());
             }
         });
+
+        addPart(new MarginEditorPart("Brick margins", tupleStyle.getPadding())
+        {
+            void apply() {
+                tupleStyle.setPadding(getMargin());
+            }
+        });
     }
 
     public void createControl(Composite parent) {
