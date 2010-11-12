@@ -12,38 +12,24 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
 
-class FontEditorPart extends StyleEditorPart
+class FontEditorPart extends CheckedEditorPart
 {
-    Button fontCheck;
     Button fontSelectButton;
     FontData[] fontList;
-    private final String title;
     private Text previewText;
     private Font previewFont;
 
     FontEditorPart(FontData[] fontList, String title) {
+        super(title);
         this.fontList = fontList;
-        this.title = title;
     }
 
     int getNumColumns() {
         return 3;
     }
 
-    void createWidgets(final Composite parent, int numColumns) {
-        fontCheck = new Button(parent, SWT.CHECK);
-        fontCheck.setText(title);
-        fontCheck.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                final boolean selected = fontCheck.getSelection();
-                fontSelectButton.setEnabled(selected);
-                if (!selected) {
-                    fontList = null;
-                    showPreview();
-                }
-            }
-        });
-        gridData(numColumns - 2).applyTo(fontCheck);
+    protected void createWidgets(final Composite parent, int numColumns) {
+        createEnabledCheck(parent);
 
         previewText = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
         previewText.addDisposeListener(new DisposeListener() {
@@ -66,12 +52,20 @@ class FontEditorPart extends StyleEditorPart
                 }
             }
         });
-        gridData().applyTo(fontSelectButton);
+        gridData(numColumns - 2).applyTo(fontSelectButton);
 
         if (fontList != null) {
-            fontCheck.setSelection(true);
+            setEnabled(true);
         } else {
             fontSelectButton.setEnabled(false);
+        }
+    }
+
+    protected void enabledCheckSelected(boolean selected) {
+        fontSelectButton.setEnabled(selected);
+        if (!selected) {
+            fontList = null;
+            showPreview();
         }
     }
 
