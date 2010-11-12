@@ -35,7 +35,7 @@ public class TextStyleEditor implements ITextStyleEditor
     }
 
     private void createParts() {
-        addPart(new ColorEditor(tupleStyle.getForegroundColor(),
+        addPart(new ColorEditorPart(tupleStyle.getForegroundColor(),
             "Foreground color")
         {
             protected void apply() {
@@ -43,7 +43,7 @@ public class TextStyleEditor implements ITextStyleEditor
             }
         });
 
-        addPart(new ColorEditor(tupleStyle.getBackgroundColor(),
+        addPart(new ColorEditorPart(tupleStyle.getBackgroundColor(),
             "Background color", true)
         {
             protected void apply() {
@@ -52,7 +52,7 @@ public class TextStyleEditor implements ITextStyleEditor
             }
         });
 
-        addPart(new FontEditor(tupleStyle.getFontList(), "Font")
+        addPart(new FontEditorPart(tupleStyle.getFontList(), "Font")
         {
             protected void apply() {
                 tupleStyle.setFont(getFontList());

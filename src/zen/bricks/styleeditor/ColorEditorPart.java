@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-class ColorEditor extends StyleEditorPart
+class ColorEditorPart extends StyleEditorPart
 {
     private final Color color;
     private final String title;
@@ -18,13 +18,13 @@ class ColorEditor extends StyleEditorPart
     private final boolean allowTransparent;
     private Button transparentCheck;
 
-    ColorEditor(Color color, String title) {
+    ColorEditorPart(Color color, String title) {
         this.color = color;
         this.title = title;
         allowTransparent = false;
     }
 
-    ColorEditor(Color color, String title, boolean allowTransparent) {
+    ColorEditorPart(Color color, String title, boolean allowTransparent) {
         this.color = color;
         this.title = title;
         this.allowTransparent = allowTransparent;

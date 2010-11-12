@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
 
-class FontEditor extends StyleEditorPart
+class FontEditorPart extends StyleEditorPart
 {
     Button fontCheck;
     Button fontSelectButton;
@@ -21,7 +21,7 @@ class FontEditor extends StyleEditorPart
     private Text previewText;
     private Font previewFont;
 
-    FontEditor(FontData[] fontList, String title) {
+    FontEditorPart(FontData[] fontList, String title) {
         this.fontList = fontList;
         this.title = title;
     }
