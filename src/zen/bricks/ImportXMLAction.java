@@ -84,7 +84,6 @@ class ImportXMLAction extends Action
                 if (groupText != null) {
                     TupleBrick allAttrsBrick =
                             new TupleBrick(elementBrick, groupText);
-                    allAttrsBrick.lineBreak = false;
                     attrParent = allAttrsBrick;
                 } else {
                     attrParent = elementBrick;
@@ -98,12 +97,10 @@ class ImportXMLAction extends Action
                     final TupleBrick attNameBrick =
                         new TupleBrick(attrParent, prefix + attName + suffix);
                     if (i == 0) {
-                        attNameBrick.lineBreak = false;
                     }
                     final String attValue = removeCRs(attributes.getValue(i));
                     final TupleBrick attValueBrick =
                             new TupleBrick(attNameBrick, attValue);
-                    attValueBrick.lineBreak = false;
                 }
             }
             brick = elementBrick;

@@ -15,9 +15,6 @@ public abstract class Brick
     int height;
     int ascent;
 
-    @Deprecated
-    boolean lineBreak = true;
-
     Brick(TupleBrick parent) {
         this.parent = parent;
         if (parent != null) {
@@ -62,11 +59,6 @@ public abstract class Brick
 
     public int getHeight() {
         return height;
-    }
-
-    @Deprecated
-    boolean isLineBreak() {
-        return lineBreak;
     }
 
     @Deprecated
