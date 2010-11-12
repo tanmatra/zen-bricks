@@ -38,6 +38,7 @@ class ImportXMLAction extends Action
         String groupText;
         String prefix;
         String suffix;
+        boolean fillEmpty;
 
         BrickHandler() { }
 
@@ -132,6 +133,10 @@ class ImportXMLAction extends Action
                 throws SAXException
         {
             handleString();
+            if (brick.childrenCount() == 0 && fillEmpty) {
+                brick.newLine();
+                new TupleBrick(brick, "");
+            }
             final TupleBrick parent = brick.getParent();
             if (parent != null) {
                 brick = parent;
@@ -148,6 +153,7 @@ class ImportXMLAction extends Action
         private final BrickHandler handler;
         private Text prefixText;
         private Text suffixText;
+        private Button fillEmptyCheck;
 
         protected ImportOptionsDialog(Shell parentShell, BrickHandler handler) {
             super(parentShell);
@@ -165,12 +171,12 @@ class ImportXMLAction extends Action
             layout.numColumns = 2;
 
             groupCheck = new Button(area, SWT.CHECK);
-            groupCheck.setText("Group attributes under single brick");
+            groupCheck.setText("&Group attributes under single brick");
             groupCheck.setSelection(true);
             GridDataFactory.fillDefaults().span(2, 1).applyTo(groupCheck);
 
             final Label attrGroupLabel = new Label(area, SWT.NONE);
-            attrGroupLabel.setText("Attribute brick text:");
+            attrGroupLabel.setText("&Attribute brick text:");
             GridDataFactory.swtDefaults().indent(20, 0).applyTo(attrGroupLabel);
             attrGroupText = new Text(area, SWT.SINGLE | SWT.BORDER);
             attrGroupText.setText("@");
@@ -185,16 +191,21 @@ class ImportXMLAction extends Action
                 }
             });
 
-            new Label(area, SWT.NONE).setText("Attribute prefix:");
+            new Label(area, SWT.NONE).setText("Attribute &prefix:");
             prefixText = new Text(area, SWT.SINGLE | SWT.BORDER);
             GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT)
                 .applyTo(prefixText);
 
-            new Label(area, SWT.NONE).setText("Attribute suffix:");
+            new Label(area, SWT.NONE).setText("Attribute &suffix:");
             suffixText = new Text(area, SWT.SINGLE | SWT.BORDER);
             suffixText.setText(":");
             GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT)
                 .applyTo(suffixText);
+
+            fillEmptyCheck = new Button(area, SWT.CHECK);
+            fillEmptyCheck.setText("Add &empty text to empty elements");
+            GridDataFactory.swtDefaults().span(2, 1).applyTo(fillEmptyCheck);
+            fillEmptyCheck.setSelection(true);
 
             return area;
         }
@@ -205,6 +216,7 @@ class ImportXMLAction extends Action
             }
             handler.prefix = prefixText.getText();
             handler.suffix = suffixText.getText();
+            handler.fillEmpty = fillEmptyCheck.getSelection();
             super.okPressed();
         }
     }
