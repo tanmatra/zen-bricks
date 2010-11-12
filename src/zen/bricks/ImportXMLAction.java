@@ -99,8 +99,7 @@ class ImportXMLAction extends Action
                     if (i == 0) {
                     }
                     final String attValue = removeCRs(attributes.getValue(i));
-                    final TupleBrick attValueBrick =
-                            new TupleBrick(attNameBrick, attValue);
+                    new TupleBrick(attNameBrick, attValue);
                 }
             }
             brick = elementBrick;
