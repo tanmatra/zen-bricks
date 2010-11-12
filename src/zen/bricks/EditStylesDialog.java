@@ -43,8 +43,8 @@ public class EditStylesDialog extends Dialog
 
     private StackLayout stackLayout;
 
-    private final Map<TupleStyle, ITextStyleEditor> editors =
-        new HashMap<TupleStyle, ITextStyleEditor>();
+    private final Map<TupleStyle, IBrickStyleEditor> editors =
+        new HashMap<TupleStyle, IBrickStyleEditor>();
 
     // ============================================================ Constructors
 
@@ -119,7 +119,7 @@ public class EditStylesDialog extends Dialog
     }
 
     void styleSelected(TupleStyle style) {
-        ITextStyleEditor editor = editors.get(style);
+        IBrickStyleEditor editor = editors.get(style);
         if (editor == null) {
             editor = style.getEditor();
             editors.put(style, editor);
@@ -131,7 +131,7 @@ public class EditStylesDialog extends Dialog
 
     @Override
     protected void okPressed() {
-        for (ITextStyleEditor editor : editors.values()) {
+        for (IBrickStyleEditor editor : editors.values()) {
             editor.apply();
         }
         super.okPressed();
@@ -144,7 +144,7 @@ public class EditStylesDialog extends Dialog
     }
 
     void cancelEditors() {
-        for (ITextStyleEditor editor : editors.values()) {
+        for (IBrickStyleEditor editor : editors.values()) {
             editor.cancel();
         }
     }

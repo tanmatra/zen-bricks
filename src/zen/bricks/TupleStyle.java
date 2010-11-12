@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
-import zen.bricks.styleeditor.TextStyleEditor;
+import zen.bricks.styleeditor.TupleStyleEditor;
 
 public class TupleStyle
 {
@@ -172,8 +172,8 @@ public class TupleStyle
         return font;
     }
 
-    public ITextStyleEditor getEditor() {
-        return new TextStyleEditor(this);
+    public IBrickStyleEditor getEditor() {
+        return new TupleStyleEditor(this);
     }
 
     public void setForegroundColor(RGB rgb) {

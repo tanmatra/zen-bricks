@@ -3,7 +3,7 @@ package zen.bricks;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-public interface ITextStyleEditor
+public interface IBrickStyleEditor
 {
     public void createControl(Composite parent);
     

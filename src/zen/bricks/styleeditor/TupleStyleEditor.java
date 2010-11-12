@@ -7,10 +7,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import zen.bricks.ITextStyleEditor;
+import zen.bricks.IBrickStyleEditor;
 import zen.bricks.TupleStyle;
 
-public class TextStyleEditor implements ITextStyleEditor
+public class TupleStyleEditor implements IBrickStyleEditor
 {
     // ================================================================== Fields
 
@@ -22,7 +22,7 @@ public class TextStyleEditor implements ITextStyleEditor
 
     // ============================================================ Constructors
 
-    public TextStyleEditor(TupleStyle tupleStyle) {
+    public TupleStyleEditor(TupleStyle tupleStyle) {
         this.tupleStyle = tupleStyle;
 
         createParts();
