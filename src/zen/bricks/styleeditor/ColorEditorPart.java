@@ -9,24 +9,22 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-class ColorEditorPart extends StyleEditorPart
+class ColorEditorPart extends CheckedEditorPart
 {
     private final Color color;
-    private final String title;
-    Button check;
     ColorSelector colorSelector;
     private final boolean allowTransparent;
     private Button transparentCheck;
 
     ColorEditorPart(Color color, String title) {
+        super(title);
         this.color = color;
-        this.title = title;
         allowTransparent = false;
     }
 
     ColorEditorPart(Color color, String title, boolean allowTransparent) {
+        super(title);
         this.color = color;
-        this.title = title;
         this.allowTransparent = allowTransparent;
     }
 
@@ -35,15 +33,8 @@ class ColorEditorPart extends StyleEditorPart
     }
 
     void createWidgets(Composite parent, int numColumns) {
-        check = new Button(parent, SWT.CHECK);
-        check.setText(title);
-        check.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                testTransparentCheckEnabled();
-                testColorSelectorEnabled();
-            }
-        });
-        gridData(numColumns - (allowTransparent ? 2 : 1)).applyTo(check);
+        createEnabledCheck(parent,
+            allowTransparent ? numColumns - 2 : numColumns - 1);
 
         if (allowTransparent) {
             transparentCheck = new Button(parent, SWT.CHECK);
@@ -59,7 +50,7 @@ class ColorEditorPart extends StyleEditorPart
         colorSelector = new ColorSelector(parent);
         gridData().applyTo(colorSelector.getButton());
 
-        check.setSelection(color != null);
+        setEnabled(color != null);
         if (color != null) {
             colorSelector.setColorValue(color.getRGB());
         }
@@ -67,15 +58,20 @@ class ColorEditorPart extends StyleEditorPart
         testColorSelectorEnabled();
     }
 
+    protected void enabledCheckSelected(boolean selected) {
+        testTransparentCheckEnabled();
+        testColorSelectorEnabled();
+    }
+
     void testTransparentCheckEnabled() {
         if (transparentCheck != null) {
-            transparentCheck.setEnabled(check.getSelection());
+            transparentCheck.setEnabled(isEnabled());
         }
     }
 
     void testColorSelectorEnabled() {
         final boolean enabled;
-        if (check.getSelection()) {
+        if (isEnabled()) {
             if (transparentCheck == null) {
                 enabled = true;
             } else {
@@ -87,12 +83,8 @@ class ColorEditorPart extends StyleEditorPart
         colorSelector.setEnabled(enabled);
     }
 
-    protected boolean isDefined() {
-        return check.getSelection();
-    }
-
     protected RGB getRGB() {
-        return isDefined() ? colorSelector.getColorValue() : null;
+        return isEnabled() ? colorSelector.getColorValue() : null;
     }
 
     protected boolean isTransparent() {

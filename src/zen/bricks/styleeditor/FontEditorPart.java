@@ -29,7 +29,7 @@ class FontEditorPart extends CheckedEditorPart
     }
 
     protected void createWidgets(final Composite parent, int numColumns) {
-        createEnabledCheck(parent);
+        createEnabledCheck(parent, numColumns - 2);
 
         previewText = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
         previewText.addDisposeListener(new DisposeListener() {
@@ -52,7 +52,7 @@ class FontEditorPart extends CheckedEditorPart
                 }
             }
         });
-        gridData(numColumns - 2).applyTo(fontSelectButton);
+        gridData().applyTo(fontSelectButton);
 
         if (fontList != null) {
             setEnabled(true);

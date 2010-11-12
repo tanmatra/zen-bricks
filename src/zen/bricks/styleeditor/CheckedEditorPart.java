@@ -16,7 +16,7 @@ public abstract class CheckedEditorPart extends StyleEditorPart
         this.title = title;
     }
 
-    protected void createEnabledCheck(final Composite parent) {
+    protected void createEnabledCheck(final Composite parent, int span) {
         enabledCheck = new Button(parent, SWT.CHECK);
         enabledCheck.setText(title);
         enabledCheck.addSelectionListener(new SelectionAdapter() {
@@ -24,7 +24,7 @@ public abstract class CheckedEditorPart extends StyleEditorPart
                 enabledCheckSelected(isEnabled());
             }
         });
-        gridData().applyTo(enabledCheck);
+        gridData().span(span, 1).applyTo(enabledCheck);
     }
 
     protected abstract void enabledCheckSelected(boolean selected);

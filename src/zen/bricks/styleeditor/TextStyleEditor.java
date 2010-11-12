@@ -48,7 +48,7 @@ public class TextStyleEditor implements ITextStyleEditor
         {
             protected void apply() {
                 tupleStyle.setBackgroundColor(
-                    isDefined(), getRGB(), isTransparent());
+                    isEnabled(), getRGB(), isTransparent());
             }
         });
 
