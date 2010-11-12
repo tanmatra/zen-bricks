@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import zen.bricks.styleeditor.EditStylesDialog;
+
 public class MainWindow extends ApplicationWindow
 {
     // ============================================================ Class Fields
@@ -103,7 +105,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final UI ui = editor.ui;
                 final EditStylesDialog dialog =
-                        new EditStylesDialog(getShell(), ui);
+                    new EditStylesDialog(getShell(), ui);
                 if (dialog.open() == Window.OK) {
                     editor.setUI(ui);
                 }

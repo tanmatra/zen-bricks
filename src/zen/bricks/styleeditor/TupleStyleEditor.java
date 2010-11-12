@@ -7,7 +7,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import zen.bricks.IBrickStyleEditor;
 import zen.bricks.TupleStyle;
 
 public class TupleStyleEditor implements IBrickStyleEditor

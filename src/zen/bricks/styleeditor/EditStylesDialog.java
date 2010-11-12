@@ -1,4 +1,4 @@
-package zen.bricks;
+package zen.bricks.styleeditor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +22,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
+import zen.bricks.TupleStyle;
+import zen.bricks.UI;
 
 public class EditStylesDialog extends Dialog
 {
@@ -48,7 +51,7 @@ public class EditStylesDialog extends Dialog
 
     // ============================================================ Constructors
 
-    protected EditStylesDialog(Shell shell, UI ui) {
+    public EditStylesDialog(Shell shell, UI ui) {
         super(shell);
         this.ui = ui;
     }

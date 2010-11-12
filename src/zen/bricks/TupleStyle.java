@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
+import zen.bricks.styleeditor.IBrickStyleEditor;
 import zen.bricks.styleeditor.TupleStyleEditor;
 
 public class TupleStyle
