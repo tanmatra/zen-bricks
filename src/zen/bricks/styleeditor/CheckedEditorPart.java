@@ -3,6 +3,7 @@ package zen.bricks.styleeditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -16,7 +17,11 @@ public abstract class CheckedEditorPart extends StyleEditorPart
         this.title = title;
     }
 
-    protected void createEnabledCheck(final Composite parent, int span) {
+    protected int getNumColumns() {
+        return 2;
+    }
+
+    protected void createEnabledCheck(Composite parent) {
         enabledCheck = new Button(parent, SWT.CHECK);
         enabledCheck.setText(title);
         enabledCheck.addSelectionListener(new SelectionAdapter() {
@@ -24,7 +29,17 @@ public abstract class CheckedEditorPart extends StyleEditorPart
                 enabledCheckSelected(isEnabled());
             }
         });
-        gridData().span(span, 1).applyTo(enabledCheck);
+    }
+
+    protected Composite createValuesPanel(Composite parent, int numColumns) {
+        final Composite panel = new Composite(parent, SWT.NONE);
+        final RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
+        rowLayout.marginLeft = rowLayout.marginTop
+            = rowLayout.marginRight = rowLayout.marginBottom = 0;
+        rowLayout.center = true;
+        panel.setLayout(rowLayout);
+        gridData(numColumns - 1).applyTo(panel);
+        return panel;
     }
 
     protected abstract void enabledCheckSelected(boolean selected);

@@ -28,27 +28,22 @@ class ColorEditorPart extends CheckedEditorPart
         this.allowTransparent = allowTransparent;
     }
 
-    int getNumColumns() {
-        return allowTransparent ? 3 : 2;
-    }
-
     void createWidgets(Composite parent, int numColumns) {
-        createEnabledCheck(parent,
-            allowTransparent ? numColumns - 2 : numColumns - 1);
+        createEnabledCheck(parent);
+
+        final Composite panel = createValuesPanel(parent, numColumns);
+
+        colorSelector = new ColorSelector(panel);
 
         if (allowTransparent) {
-            transparentCheck = new Button(parent, SWT.CHECK);
+            transparentCheck = new Button(panel, SWT.CHECK);
             transparentCheck.setText("Transparent");
             transparentCheck.addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
                     testColorSelectorEnabled();
                 }
             });
-            gridData().applyTo(transparentCheck);
         }
-
-        colorSelector = new ColorSelector(parent);
-        gridData().applyTo(colorSelector.getButton());
 
         setEnabled(color != null);
         if (color != null) {

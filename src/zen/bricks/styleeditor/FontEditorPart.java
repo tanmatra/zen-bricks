@@ -7,6 +7,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
@@ -24,27 +25,25 @@ class FontEditorPart extends CheckedEditorPart
         this.fontList = fontList;
     }
 
-    int getNumColumns() {
-        return 3;
-    }
-
     protected void createWidgets(final Composite parent, int numColumns) {
-        createEnabledCheck(parent, numColumns - 2);
+        createEnabledCheck(parent);
 
-        previewText = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
+        final Composite panel = createValuesPanel(parent, numColumns);
+
+        previewText = new Text(panel, SWT.BORDER | SWT.READ_ONLY);
         previewText.addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                 disposePreviewFont();
             }
         });
+        previewText.setLayoutData(new RowData(150, 20));
         showPreview();
-        gridData().hint(150, SWT.DEFAULT).applyTo(previewText);
 
-        fontSelectButton = new Button(parent, SWT.PUSH);
+        fontSelectButton = new Button(panel, SWT.PUSH);
         fontSelectButton.setText("Select...");
         fontSelectButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                final FontDialog fontDialog = new FontDialog(parent.getShell());
+                final FontDialog fontDialog = new FontDialog(panel.getShell());
                 fontDialog.setFontList(fontList);
                 if (fontDialog.open() != null) {
                     fontList = fontDialog.getFontList();
@@ -52,7 +51,6 @@ class FontEditorPart extends CheckedEditorPart
                 }
             }
         });
-        gridData().applyTo(fontSelectButton);
 
         if (fontList != null) {
             setEnabled(true);
