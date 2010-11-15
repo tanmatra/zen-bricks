@@ -27,28 +27,31 @@ public class BaselineLayout extends TupleLayout
         }
         int width = currX;
         boolean firstLine = true;
-        int lineHeight = textExtent.y + textMargin.getBottom();
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {
                 child.calculateSize(ui);
                 child.x = currX;
                 currX += child.width + ui.getSpacing();
-                lineHeight = Math.max(lineHeight, child.height);
                 lineAscent = Math.max(lineAscent, child.ascent);
             }
-            for (final Brick child : line) {
-                child.y = lineY + (lineAscent - child.ascent);
-            }
+            int lineHeight;
             if (firstLine) {
                 brick.textY = lineY + (lineAscent - textAscent);
                 brick.ascent = lineY + lineAscent;
+                lineHeight = brick.textY + textExtent.y + textMargin.getBottom();
                 firstLine = false;
+            } else {
+                lineHeight = 0;
+            }
+            for (final Brick child : line) {
+                final int margin = lineAscent - child.ascent;
+                child.y = lineY + margin;
+                lineHeight = Math.max(lineHeight, child.height + margin);
             }
             width = Math.max(width, currX - ui.getSpacing());
             lineY += lineHeight + lineSpacing;
             // next line
             currX = paddingLeft;
-            lineHeight = 0;
             lineAscent = 0;
         }
 
