@@ -33,6 +33,7 @@ public class TupleBrick extends Brick
 
     String text;
     Point textExtent;
+    int textX;
     int textY;
     final ArrayList<Brick> children = new ArrayList<Brick>();
     final private ArrayList<Line> lines = new ArrayList<Line>(1);
@@ -111,12 +112,11 @@ public class TupleBrick extends Brick
     }
 
     private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        final int textX = baseX + ui.getTextMargin().getLeft();
+        final int textX = baseX + this.textX;
         final int textY = baseY + this.textY;
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
-//        ui.getTextStyle(this).paintText(gc, textX, textY, text); // ???
         ui.getStyleChain(this).paintText(gc, textX, textY, text); // ???
     }
 

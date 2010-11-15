@@ -8,9 +8,10 @@ public class SimpleLayout extends TupleLayout
 
     void doLayout(TupleBrick brick) {
         final StyleChain chain = ui.getStyleChain(brick);
-        final Margin textMargin = ui.getTextMargin();
+        final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();
 
+        brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
         brick.textExtent = ui.getStyleChain(brick).getTextExtent(brick.text);
         brick.width = textMargin.getLeft() + brick.textExtent.x;

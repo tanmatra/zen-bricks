@@ -67,6 +67,18 @@ public class StyleChain
         throw new Error("No padding found in style chain");
     }
 
+    TupleStyle findTextMargin() {
+        StyleChain chain = this;
+        do {
+            final TupleStyle style = chain.style;
+            if (style.textMargin != null) {
+                return style;
+            }
+            chain = chain.parent;
+        } while (chain != null);
+        throw new Error("No text margin found in style chain");
+    }
+
     public Color getForegroundColor() {
         return findForeground().getForegroundColor();
     }
@@ -109,5 +121,9 @@ public class StyleChain
 
     public Margin getPadding() {
         return findPadding().getPadding();
+    }
+
+    public Margin getTextMargin() {
+        return findTextMargin().getTextMargin();
     }
 }

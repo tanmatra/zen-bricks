@@ -61,7 +61,6 @@ public class UI
     private int lineSpacing;
     private int spacing;
     private int textAntialias;
-    private final Margin textMargin = new Margin();
 
     private TupleStyle basicStyle;
     private TupleStyle listStyle;
@@ -103,7 +102,6 @@ public class UI
         lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textAntialias = parseState(props, "text.antialias");
-        textMargin.parse(props, "text.margin");
 
         basicStyle = new TupleStyle("Basic", device, props, "basic_style");
         listStyle = new TupleStyle("List", device, props, "list_style");
@@ -232,10 +230,6 @@ public class UI
         gc.fillRectangle(baseX, baseY, brick.getWidth(), brick.getHeight());
 
         border.paint(gc, baseX, baseY, brick, clipping);
-    }
-
-    public Margin getTextMargin() {
-        return textMargin;
     }
 
     public int getSpacing() {

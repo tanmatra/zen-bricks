@@ -46,7 +46,9 @@ public class TupleStyle
 
     private Color backgroundColor;
 
-    Margin padding = new Margin();
+    Margin padding;
+
+    Margin textMargin;
 
     private final String name;
 
@@ -77,6 +79,7 @@ public class TupleStyle
             }
 
             padding = Margin.parseMargin(properties, keyPrefix + ".padding");
+            textMargin = Margin.parseMargin(properties, keyPrefix + ".textMargin");
         } catch (RuntimeException e) {
             dispose();
             throw e;
@@ -231,6 +234,14 @@ public class TupleStyle
 
     public void setPadding(Margin padding) {
         this.padding = padding;
+    }
+
+    public Margin getTextMargin() {
+        return textMargin;
+    }
+
+    public void setTextMargin(Margin textMargin) {
+        this.textMargin = textMargin;
     }
 
     public StyleChain createChain(StyleChain parent) {

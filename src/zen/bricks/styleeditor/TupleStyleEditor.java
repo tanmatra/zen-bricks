@@ -58,10 +58,17 @@ public class TupleStyleEditor implements IBrickStyleEditor
             }
         });
 
-        addPart(new MarginEditorPart("Brick margins", tupleStyle.getPadding())
+        addPart(new MarginEditorPart("Brick padding", tupleStyle.getPadding())
         {
             void apply() {
                 tupleStyle.setPadding(getMargin());
+            }
+        });
+
+        addPart(new MarginEditorPart("Text margin", tupleStyle.getTextMargin())
+        {
+            void apply() {
+                tupleStyle.setTextMargin(getMargin());
             }
         });
     }
