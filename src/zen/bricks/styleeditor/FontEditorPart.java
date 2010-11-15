@@ -25,10 +25,10 @@ class FontEditorPart extends CheckedEditorPart
         this.fontList = fontList;
     }
 
-    protected void createWidgets(final Composite parent, int numColumns) {
+    protected void createWidgets(final Composite parent, int columns) {
         createEnabledCheck(parent);
 
-        final Composite panel = createValuesPanel(parent, numColumns);
+        final Composite panel = createValuesPanel(parent, columns - 1);
 
         previewText = new Text(panel, SWT.BORDER | SWT.READ_ONLY);
         previewText.addDisposeListener(new DisposeListener() {

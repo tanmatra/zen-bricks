@@ -28,10 +28,10 @@ class ColorEditorPart extends CheckedEditorPart
         this.allowTransparent = allowTransparent;
     }
 
-    void createWidgets(Composite parent, int numColumns) {
+    void createWidgets(Composite parent, int columns) {
         createEnabledCheck(parent);
 
-        final Composite panel = createValuesPanel(parent, numColumns);
+        final Composite panel = createValuesPanel(parent, columns - 1);
 
         colorSelector = new ColorSelector(panel);
 
