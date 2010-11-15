@@ -52,6 +52,8 @@ public class TupleStyle
 
     Integer lineSpacing;
 
+    Integer spacing;
+
     private final String name;
 
     // ============================================================ Constructors
@@ -83,7 +85,7 @@ public class TupleStyle
             padding = Margin.parseMargin(properties, keyPrefix + ".padding");
             textMargin = Margin.parseMargin(properties, keyPrefix + ".textMargin");
             lineSpacing = parseInt(properties, keyPrefix + ".lineSpacing");
-            System.out.println("lineSpacing: " + lineSpacing);
+            spacing = parseInt(properties, keyPrefix + ".spacing");
         } catch (RuntimeException e) {
             dispose();
             throw e;
@@ -267,5 +269,13 @@ public class TupleStyle
 
     public void setLineSpacing(Integer value) {
         lineSpacing = value;
+    }
+
+    public Integer getSpacing() {
+        return spacing;
+    }
+
+    public void setSpacing(Integer spacing) {
+        this.spacing = spacing;
     }
 }

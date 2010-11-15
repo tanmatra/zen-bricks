@@ -58,7 +58,6 @@ public class UI
     private Border border;
     private Color canvasBackgroundColor;
     private TupleLayout layout;
-    private int spacing;
     private int textAntialias;
 
     private TupleStyle basicStyle;
@@ -98,7 +97,6 @@ public class UI
         backgroundColor = parseColor(props, "background.color");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         initLayout(props);
-        spacing = parseInt(props, "spacing");
         textAntialias = parseState(props, "text.antialias");
 
         basicStyle = new TupleStyle("Basic", device, props, "basic_style");
@@ -228,10 +226,6 @@ public class UI
         gc.fillRectangle(baseX, baseY, brick.getWidth(), brick.getHeight());
 
         border.paint(gc, baseX, baseY, brick, clipping);
-    }
-
-    public int getSpacing() {
-        return spacing;
     }
 
     public TupleStyle getBasicStyle() {

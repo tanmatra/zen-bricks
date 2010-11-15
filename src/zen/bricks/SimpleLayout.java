@@ -11,13 +11,14 @@ public class SimpleLayout extends TupleLayout
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();
         final int lineSpacing = chain.getLineSpacing();
+        final int spacing = chain.getSpacing();
 
         brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
         brick.textExtent = ui.getStyleChain(brick).getTextExtent(brick.text);
         brick.width = textMargin.getLeft() + brick.textExtent.x;
 
-        int currX = brick.width + ui.getSpacing();
+        int currX = brick.width + spacing;
         int currY = brickPadding.getTop();
         int currLineHeight = textMargin.getTop() + brick.textExtent.y;
 
@@ -27,12 +28,12 @@ public class SimpleLayout extends TupleLayout
                 child.x = currX;
                 child.y = currY;
                 currLineHeight = Math.max(currLineHeight, child.height);
-                currX += child.width + ui.getSpacing();
+                currX += child.width + spacing;
             }
             // line ended
             line.height = currLineHeight;
             line.y = currY;
-            brick.width = Math.max(brick.width, currX - ui.getSpacing());
+            brick.width = Math.max(brick.width, currX - spacing);
             // prepare new line
             currX = brickPadding.getLeft();
             currY += currLineHeight + lineSpacing;

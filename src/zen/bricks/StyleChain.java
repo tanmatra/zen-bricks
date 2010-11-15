@@ -91,6 +91,18 @@ public class StyleChain
         throw new Error("No line spacing found in style chain");
     }
 
+    TupleStyle findSpacing() {
+        StyleChain chain = this;
+        do {
+            final TupleStyle style = chain.style;
+            if (style.spacing != null) {
+                return style;
+            }
+            chain = chain.parent;
+        } while (chain != null);
+        throw new Error("No spacing found in style chain");
+    }
+
     public Color getForegroundColor() {
         return findForeground().getForegroundColor();
     }
@@ -141,5 +153,9 @@ public class StyleChain
 
     public int getLineSpacing() {
         return findLineSpacing().getLineSpacing();
+    }
+
+    public int getSpacing() {
+        return findSpacing().getSpacing();
     }
 }

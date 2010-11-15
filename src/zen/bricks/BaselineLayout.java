@@ -14,6 +14,7 @@ public class BaselineLayout extends TupleLayout
         final Margin brickPadding = chain.getPadding();
         final int paddingLeft = brickPadding.getLeft();
         final int lineSpacing = chain.getLineSpacing();
+        final int spacing = chain.getSpacing();
 
         final Point textExtent = chain.getTextExtent(brick.text);
         brick.textX = textMargin.getLeft();
@@ -32,7 +33,7 @@ public class BaselineLayout extends TupleLayout
             for (final Brick child : line) {
                 child.calculateSize(ui);
                 child.x = currX;
-                currX += child.width + ui.getSpacing();
+                currX += child.width + spacing;
                 lineAscent = Math.max(lineAscent, child.ascent);
             }
             int lineHeight;
@@ -49,7 +50,7 @@ public class BaselineLayout extends TupleLayout
                 child.y = lineY + margin;
                 lineHeight = Math.max(lineHeight, child.height + margin);
             }
-            width = Math.max(width, currX - ui.getSpacing());
+            width = Math.max(width, currX - spacing);
             lineY += lineHeight + lineSpacing;
             // next line
             currX = paddingLeft;

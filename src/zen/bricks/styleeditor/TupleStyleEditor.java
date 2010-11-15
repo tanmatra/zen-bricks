@@ -77,6 +77,12 @@ public class TupleStyleEditor implements IBrickStyleEditor
                 tupleStyle.setLineSpacing(getValue());
             }
         });
+
+        addPart(new SpacingEditorPart("Children spacing", tupleStyle.getSpacing()) {
+            void apply() {
+                tupleStyle.setSpacing(getValue());
+            }
+        });
     }
 
     public void createControl(Composite parent) {
