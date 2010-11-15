@@ -13,7 +13,7 @@ public class BaselineLayout extends TupleLayout
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();
         final int paddingLeft = brickPadding.getLeft();
-        final int lineSpacing = ui.getLineSpacing();
+        final int lineSpacing = chain.getLineSpacing();
 
         final Point textExtent = chain.getTextExtent(brick.text);
         brick.textX = textMargin.getLeft();

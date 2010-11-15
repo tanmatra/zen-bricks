@@ -10,6 +10,7 @@ public class SimpleLayout extends TupleLayout
         final StyleChain chain = ui.getStyleChain(brick);
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();
+        final int lineSpacing = chain.getLineSpacing();
 
         brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
@@ -34,11 +35,11 @@ public class SimpleLayout extends TupleLayout
             brick.width = Math.max(brick.width, currX - ui.getSpacing());
             // prepare new line
             currX = brickPadding.getLeft();
-            currY += currLineHeight + ui.getLineSpacing();
+            currY += currLineHeight + lineSpacing;
             currLineHeight = 0;
         }
 
         brick.width += brickPadding.getRight();
-        brick.height = currY - ui.getLineSpacing() + brickPadding.getBottom();
+        brick.height = currY - lineSpacing + brickPadding.getBottom();
     }
 }

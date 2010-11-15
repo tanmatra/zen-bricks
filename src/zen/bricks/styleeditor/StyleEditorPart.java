@@ -11,7 +11,8 @@ abstract class StyleEditorPart
 
     abstract void apply();
 
-    abstract void cancel();
+    void cancel() {
+    }
 
     protected static GridDataFactory gridData() {
         return GridDataFactory.swtDefaults();

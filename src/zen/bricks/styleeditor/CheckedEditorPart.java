@@ -8,7 +8,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class CheckedEditorPart extends StyleEditorPart
+abstract class CheckedEditorPart extends StyleEditorPart
 {
     private Button enabledCheck;
 

@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-class ColorEditorPart extends CheckedEditorPart
+abstract class ColorEditorPart extends CheckedEditorPart
 {
     private final Color color;
     ColorSelector colorSelector;
@@ -86,11 +86,5 @@ class ColorEditorPart extends CheckedEditorPart
         return (transparentCheck != null) ?
             transparentCheck.getSelection() :
             false;
-    }
-
-    void apply() {
-    }
-
-    void cancel() {
     }
 }

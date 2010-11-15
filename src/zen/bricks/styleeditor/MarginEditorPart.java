@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.Margin;
 
-public class MarginEditorPart extends CheckedEditorPart
+abstract class MarginEditorPart extends CheckedEditorPart
 {
     private final Margin margin;
     private LabelSpinnerPair leftValue;
@@ -58,11 +58,5 @@ public class MarginEditorPart extends CheckedEditorPart
             topValue.getSelection(),
             rightValue.getSelection(),
             bottomValue.getSelection());
-    }
-
-    void apply() {
-    }
-
-    void cancel() {
     }
 }

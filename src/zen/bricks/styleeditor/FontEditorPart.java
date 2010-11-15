@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
 
-class FontEditorPart extends CheckedEditorPart
+abstract class FontEditorPart extends CheckedEditorPart
 {
     Button fontSelectButton;
     FontData[] fontList;
@@ -89,11 +89,5 @@ class FontEditorPart extends CheckedEditorPart
 
     protected FontData[] getFontList() {
         return fontList;
-    }
-
-    void apply() {
-    }
-
-    void cancel() {
     }
 }

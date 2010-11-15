@@ -50,6 +50,8 @@ public class TupleStyle
 
     Margin textMargin;
 
+    Integer lineSpacing;
+
     private final String name;
 
     // ============================================================ Constructors
@@ -80,6 +82,8 @@ public class TupleStyle
 
             padding = Margin.parseMargin(properties, keyPrefix + ".padding");
             textMargin = Margin.parseMargin(properties, keyPrefix + ".textMargin");
+            lineSpacing = parseInt(properties, keyPrefix + ".lineSpacing");
+            System.out.println("lineSpacing: " + lineSpacing);
         } catch (RuntimeException e) {
             dispose();
             throw e;
@@ -153,6 +157,15 @@ public class TupleStyle
             data.height = height;
         }
         return data;
+    }
+
+    private static Integer parseInt(Properties properties, String key) {
+        final String string = properties.getProperty(key);
+        if (string == null) {
+            return null;
+        } else {
+            return Integer.parseInt(string);
+        }
     }
 
     public void setFont(FontData[] fontList) {
@@ -246,5 +259,13 @@ public class TupleStyle
 
     public StyleChain createChain(StyleChain parent) {
         return new StyleChain(this, parent);
+    }
+
+    public Integer getLineSpacing() {
+        return lineSpacing;
+    }
+
+    public void setLineSpacing(Integer value) {
+        lineSpacing = value;
     }
 }

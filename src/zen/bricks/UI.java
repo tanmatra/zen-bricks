@@ -58,7 +58,6 @@ public class UI
     private Border border;
     private Color canvasBackgroundColor;
     private TupleLayout layout;
-    private int lineSpacing;
     private int spacing;
     private int textAntialias;
 
@@ -99,7 +98,6 @@ public class UI
         backgroundColor = parseColor(props, "background.color");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         initLayout(props);
-        lineSpacing = parseInt(props, "line.spacing");
         spacing = parseInt(props, "spacing");
         textAntialias = parseState(props, "text.antialias");
 
@@ -234,10 +232,6 @@ public class UI
 
     public int getSpacing() {
         return spacing;
-    }
-
-    public int getLineSpacing() {
-        return lineSpacing;
     }
 
     public TupleStyle getBasicStyle() {
