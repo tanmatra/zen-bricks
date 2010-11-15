@@ -105,8 +105,8 @@ public class UI
         textAntialias = parseState(props, "text.antialias");
         textMargin.parse(props, "text.margin");
 
-        basicStyle = new TupleStyle("Basic", device, props, "text");
-        listStyle = new TupleStyle("List", device, props, "list.text");
+        basicStyle = new TupleStyle("Basic", device, props, "basic_style");
+        listStyle = new TupleStyle("List", device, props, "list_style");
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
