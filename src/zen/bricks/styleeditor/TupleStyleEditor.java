@@ -7,7 +7,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 
 /*
@@ -38,13 +37,13 @@ public class TupleStyleEditor implements IBrickStyleEditor
     }
 
     private void createParts() {
-        addPart(new ColorEditorPart(StyleProperty.FOREGROUND, tupleStyle));
-        addPart(new ColorEditorPart(StyleProperty.BACKGROUND, tupleStyle));
-        addPart(new FontEditorPart(StyleProperty.FONT, tupleStyle));
-        addPart(new MarginEditorPart(StyleProperty.PADDING, tupleStyle));
-        addPart(new MarginEditorPart(StyleProperty.TEXT_MARGIN, tupleStyle));
-        addPart(new IntegerEditorPart(StyleProperty.LINE_SPACING, tupleStyle));
-        addPart(new IntegerEditorPart(StyleProperty.CHILD_SPACING, tupleStyle));
+        addPart(new ColorEditorPart(TupleStyle.FOREGROUND, tupleStyle));
+        addPart(new ColorEditorPart(TupleStyle.BACKGROUND, tupleStyle));
+        addPart(new FontEditorPart(TupleStyle.FONT, tupleStyle));
+        addPart(new MarginEditorPart(TupleStyle.PADDING, tupleStyle));
+        addPart(new MarginEditorPart(TupleStyle.TEXT_MARGIN, tupleStyle));
+        addPart(new IntegerEditorPart(TupleStyle.LINE_SPACING, tupleStyle));
+        addPart(new IntegerEditorPart(TupleStyle.CHILD_SPACING, tupleStyle));
     }
 
     public void createControl(Composite parent) {
