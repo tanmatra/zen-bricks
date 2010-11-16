@@ -4,8 +4,10 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.Margin;
+import zen.bricks.StyleProperty;
+import zen.bricks.TupleStyle;
 
-abstract class MarginEditorPart extends CheckedEditorPart
+public class MarginEditorPart extends CheckedEditorPart<Margin>
 {
     private final Margin margin;
     private LabelSpinnerPair leftValue;
@@ -13,9 +15,9 @@ abstract class MarginEditorPart extends CheckedEditorPart
     private LabelSpinnerPair rightValue;
     private LabelSpinnerPair bottomValue;
 
-    public MarginEditorPart(String title, Margin margin) {
-        super(title);
-        this.margin = margin;
+    public MarginEditorPart(StyleProperty<Margin> property, TupleStyle style) {
+        super(property, style);
+        this.margin = property.get(style);
     }
 
     protected void enabledCheckSelected(boolean selected) {
@@ -52,7 +54,10 @@ abstract class MarginEditorPart extends CheckedEditorPart
         enabledCheckSelected(margin != null);
     }
 
-    Margin getMargin() {
+    public Margin getValue() {
+        if (!isEnabled()) {
+            return null;
+        }
         return new Margin(
             leftValue.getSelection(),
             topValue.getSelection(),

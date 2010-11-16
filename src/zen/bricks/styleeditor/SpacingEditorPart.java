@@ -2,14 +2,17 @@ package zen.bricks.styleeditor;
 
 import org.eclipse.swt.widgets.Composite;
 
-abstract class SpacingEditorPart extends CheckedEditorPart
+import zen.bricks.StyleProperty;
+import zen.bricks.TupleStyle;
+
+public class SpacingEditorPart extends CheckedEditorPart<Integer>
 {
     private final Integer spacing;
     private LabelSpinnerPair pair;
 
-    public SpacingEditorPart(String title, Integer spacing) {
-        super(title);
-        this.spacing = spacing;
+    public SpacingEditorPart(StyleProperty<Integer> property, TupleStyle style) {
+        super(property, style);
+        spacing = property.get(style);
     }
 
     protected void enabledCheckSelected(boolean selected) {

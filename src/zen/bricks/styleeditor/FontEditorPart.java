@@ -13,16 +13,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
 
-abstract class FontEditorPart extends CheckedEditorPart
+import zen.bricks.StyleProperty;
+import zen.bricks.TupleStyle;
+
+public class FontEditorPart extends CheckedEditorPart<FontData[]>
 {
     Button fontSelectButton;
     FontData[] fontList;
     private Text previewText;
     private Font previewFont;
 
-    FontEditorPart(FontData[] fontList, String title) {
-        super(title);
-        this.fontList = fontList;
+    public FontEditorPart(StyleProperty<FontData[]> property, TupleStyle style) {
+        super(property, style);
+        fontList = property.get(style);
     }
 
     protected void createWidgets(final Composite parent, int columns) {
@@ -87,7 +90,7 @@ abstract class FontEditorPart extends CheckedEditorPart
         }
     }
 
-    protected FontData[] getFontList() {
+    protected FontData[] getValue() {
         return fontList;
     }
 }

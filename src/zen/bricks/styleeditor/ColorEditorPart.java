@@ -4,29 +4,35 @@ import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-abstract class ColorEditorPart extends CheckedEditorPart
+import zen.bricks.StyleProperty;
+import zen.bricks.TupleStyle;
+
+public class ColorEditorPart extends CheckedEditorPart<RGB>
 {
-    private final Color color;
+//    private final RGB color;
     ColorSelector colorSelector;
-    private final boolean allowTransparent;
+    private boolean allowTransparent;
     private Button transparentCheck;
 
-    ColorEditorPart(Color color, String title) {
-        super(title);
-        this.color = color;
-        allowTransparent = false;
+    public ColorEditorPart(StyleProperty<RGB> property, TupleStyle style) {
+        super(property, style);
     }
 
-    ColorEditorPart(Color color, String title, boolean allowTransparent) {
-        super(title);
-        this.color = color;
-        this.allowTransparent = allowTransparent;
-    }
+//    public ColorEditorPart(RGB color, String title) {
+//        super(title);
+//        this.color = color;
+//        allowTransparent = false;
+//    }
+//
+//    public ColorEditorPart(RGB color, String title, boolean allowTransparent) {
+//        super(title);
+//        this.color = color;
+//        this.allowTransparent = allowTransparent;
+//    }
 
     void createWidgets(Composite parent, int columns) {
         createEnabledCheck(parent);
@@ -45,9 +51,10 @@ abstract class ColorEditorPart extends CheckedEditorPart
             });
         }
 
+        final RGB color = property.get(style);
         setEnabled(color != null);
         if (color != null) {
-            colorSelector.setColorValue(color.getRGB());
+            colorSelector.setColorValue(color);
         }
         testTransparentCheckEnabled();
         testColorSelectorEnabled();
@@ -78,7 +85,7 @@ abstract class ColorEditorPart extends CheckedEditorPart
         colorSelector.setEnabled(enabled);
     }
 
-    protected RGB getRGB() {
+    protected RGB getValue() {
         return isEnabled() ? colorSelector.getColorValue() : null;
     }
 

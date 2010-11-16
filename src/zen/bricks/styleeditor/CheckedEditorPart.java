@@ -8,14 +8,15 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-abstract class CheckedEditorPart extends StyleEditorPart
+import zen.bricks.StyleProperty;
+import zen.bricks.TupleStyle;
+
+abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {
     private Button enabledCheck;
 
-    private final String title;
-
-    public CheckedEditorPart(String title) {
-        this.title = title;
+    public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
+        super(property, style);
     }
 
     protected int getNumColumns() {
@@ -24,7 +25,7 @@ abstract class CheckedEditorPart extends StyleEditorPart
 
     protected void createEnabledCheck(Composite parent) {
         enabledCheck = new Button(parent, SWT.CHECK);
-        enabledCheck.setText(title);
+        enabledCheck.setText(property.getTitle());
         enabledCheck.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 enabledCheckSelected(isEnabled());

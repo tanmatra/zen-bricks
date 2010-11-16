@@ -7,8 +7,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 
+/*
+ * Currently unused. Can be deleted.
+ */
 public class TupleStyleEditor implements IBrickStyleEditor
 {
     // ================================================================== Fields
@@ -34,55 +38,13 @@ public class TupleStyleEditor implements IBrickStyleEditor
     }
 
     private void createParts() {
-        addPart(new ColorEditorPart(tupleStyle.getForegroundColor(),
-            "Foreground color")
-        {
-            protected void apply() {
-                tupleStyle.setForegroundColor(getRGB());
-            }
-        });
-
-        addPart(new ColorEditorPart(tupleStyle.getBackgroundColor(),
-            "Background color", true)
-        {
-            protected void apply() {
-                tupleStyle.setBackgroundColor(
-                    isEnabled(), getRGB(), isTransparent());
-            }
-        });
-
-        addPart(new FontEditorPart(tupleStyle.getFontList(), "Font")
-        {
-            protected void apply() {
-                tupleStyle.setFont(getFontList());
-            }
-        });
-
-        addPart(new MarginEditorPart("Brick padding", tupleStyle.getPadding())
-        {
-            void apply() {
-                tupleStyle.setPadding(getMargin());
-            }
-        });
-
-        addPart(new MarginEditorPart("Text margin", tupleStyle.getTextMargin())
-        {
-            void apply() {
-                tupleStyle.setTextMargin(getMargin());
-            }
-        });
-
-        addPart(new SpacingEditorPart("Line spacing", tupleStyle.getLineSpacing()) {
-            void apply() {
-                tupleStyle.setLineSpacing(getValue());
-            }
-        });
-
-        addPart(new SpacingEditorPart("Children spacing", tupleStyle.getSpacing()) {
-            void apply() {
-                tupleStyle.setSpacing(getValue());
-            }
-        });
+        addPart(new ColorEditorPart(StyleProperty.FOREGROUND, tupleStyle));
+        addPart(new ColorEditorPart(StyleProperty.BACKGROUND, tupleStyle));
+        addPart(new FontEditorPart(StyleProperty.FONT, tupleStyle));
+        addPart(new MarginEditorPart(StyleProperty.PADDING, tupleStyle));
+        addPart(new MarginEditorPart(StyleProperty.TEXT_MARGIN, tupleStyle));
+        addPart(new SpacingEditorPart(StyleProperty.LINE_SPACING, tupleStyle));
+        addPart(new SpacingEditorPart(StyleProperty.CHILD_SPACING, tupleStyle));
     }
 
     public void createControl(Composite parent) {

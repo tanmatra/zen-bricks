@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
 import zen.bricks.styleeditor.IBrickStyleEditor;
-import zen.bricks.styleeditor.TupleStyleEditor;
+import zen.bricks.styleeditor.PropertiesListEditor;
 
 public class TupleStyle
 {
@@ -67,7 +67,7 @@ public class TupleStyle
             final String fontVal = properties.getProperty(keyPrefix + ".font");
             if (!"inherit".equals(fontVal)) {
                 FontData fontData = parseFontData(fontVal);
-                createFont(fontData);
+                setFont(fontData != null ? new FontData[] { fontData } : null);
             }
 
             foregroundColor = ColorUtil.parse(
@@ -115,17 +115,6 @@ public class TupleStyle
 
     public String getName() {
         return name;
-    }
-
-    @Deprecated
-    private void createFont(FontData fontData) {
-        if (fontData == null) {
-            return;
-        }
-        font = new Font(device, fontData);
-        savedGC = new GC(device);
-        savedGC.setFont(font);
-        fontMetrics = savedGC.getFontMetrics();
     }
 
     private static FontData parseFontData(String str) {
@@ -196,10 +185,11 @@ public class TupleStyle
     }
 
     public IBrickStyleEditor getEditor() {
-        return new TupleStyleEditor(this);
+//        return new TupleStyleEditor(this);
+        return new PropertiesListEditor(StyleProperty.TUPLE_PROPERTIES, this);
     }
 
-    public void setForegroundColor(RGB rgb) {
+    public void setForegroundRGB(RGB rgb) {
         if (foregroundColor != null) {
             foregroundColor.dispose();
         }
@@ -210,12 +200,12 @@ public class TupleStyle
         }
     }
 
-    public void setForegroundColor(Color foregroundColor) {
-        this.foregroundColor = foregroundColor;
-    }
-
     public Color getForegroundColor() {
         return foregroundColor;
+    }
+
+    public RGB getForegroundRGB() {
+        return foregroundColor != null ? foregroundColor.getRGB() : null;
     }
 
     public boolean isBackgroundDefined() {
@@ -226,19 +216,19 @@ public class TupleStyle
         return backgroundColor;
     }
 
-    public void setBackgroundColor(boolean defined, RGB rgb, boolean transparent) {
+    public RGB getBackgroundRGB() {
+        return backgroundColor != null ? backgroundColor.getRGB() : null;
+    }
+
+    public void setBackgroundRGB(RGB rgb) { // ???
         if (backgroundColor != null) {
             backgroundColor.dispose();
         }
-        if (defined) {
-            this.transparent = transparent;
-            if (rgb != null) {
-                backgroundColor = new Color(device, rgb);
-            } else {
-                backgroundColor = null;
-            }
+        if (rgb != null) {
+            this.transparent = false;
+            backgroundColor = new Color(device, rgb);
         } else {
-            this.transparent = null;
+            this.transparent = true;
             backgroundColor = null;
         }
     }
