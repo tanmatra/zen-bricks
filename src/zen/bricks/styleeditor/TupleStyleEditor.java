@@ -43,8 +43,8 @@ public class TupleStyleEditor implements IBrickStyleEditor
         addPart(new FontEditorPart(StyleProperty.FONT, tupleStyle));
         addPart(new MarginEditorPart(StyleProperty.PADDING, tupleStyle));
         addPart(new MarginEditorPart(StyleProperty.TEXT_MARGIN, tupleStyle));
-        addPart(new SpacingEditorPart(StyleProperty.LINE_SPACING, tupleStyle));
-        addPart(new SpacingEditorPart(StyleProperty.CHILD_SPACING, tupleStyle));
+        addPart(new IntegerEditorPart(StyleProperty.LINE_SPACING, tupleStyle));
+        addPart(new IntegerEditorPart(StyleProperty.CHILD_SPACING, tupleStyle));
     }
 
     public void createControl(Composite parent) {

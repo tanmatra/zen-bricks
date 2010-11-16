@@ -5,14 +5,14 @@ import org.eclipse.swt.widgets.Composite;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 
-public class SpacingEditorPart extends CheckedEditorPart<Integer>
+public class IntegerEditorPart extends CheckedEditorPart<Integer>
 {
-    private final Integer spacing;
+    private final Integer value;
     private LabelSpinnerPair pair;
 
-    public SpacingEditorPart(StyleProperty<Integer> property, TupleStyle style) {
+    public IntegerEditorPart(StyleProperty<Integer> property, TupleStyle style) {
         super(property, style);
-        spacing = property.get(style);
+        value = property.get(style);
     }
 
     protected void enabledCheckSelected(boolean selected) {
@@ -25,8 +25,8 @@ public class SpacingEditorPart extends CheckedEditorPart<Integer>
         final Composite panel = createValuesPanel(parent, numColumns - 1);
 
         pair = new LabelSpinnerPair(panel, "Value:");
-        if (spacing != null) {
-            pair.setSelection(spacing);
+        if (value != null) {
+            pair.setSelection(value);
             setEnabled(true);
         } else {
             pair.setEnabled(false);

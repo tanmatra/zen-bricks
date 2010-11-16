@@ -5,8 +5,8 @@ import org.eclipse.swt.graphics.RGB;
 
 import zen.bricks.styleeditor.ColorEditorPart;
 import zen.bricks.styleeditor.FontEditorPart;
+import zen.bricks.styleeditor.IntegerEditorPart;
 import zen.bricks.styleeditor.MarginEditorPart;
-import zen.bricks.styleeditor.SpacingEditorPart;
 import zen.bricks.styleeditor.StyleEditorPart;
 
 public abstract class StyleProperty<T>
@@ -44,8 +44,54 @@ public abstract class StyleProperty<T>
 
     // =========================================================================
 
-    public static final StyleProperty<RGB> FOREGROUND =
-        new StyleProperty<RGB>("Foreground color")
+    public static abstract class ColorProperty extends StyleProperty<RGB>
+    {
+        public ColorProperty(String title) {
+            super(title);
+        }
+
+        public StyleEditorPart createEditorPart(TupleStyle style) {
+            return new ColorEditorPart(this, style);
+        }
+    }
+
+    public static abstract class FontProperty extends StyleProperty<FontData[]>
+    {
+        public FontProperty(String title) {
+            super(title);
+        }
+
+        public StyleEditorPart createEditorPart(TupleStyle style) {
+            return new FontEditorPart(this, style);
+        }
+    }
+
+    public static abstract class MarginProperty extends StyleProperty<Margin>
+    {
+        public MarginProperty(String title) {
+            super(title);
+        }
+
+        public StyleEditorPart createEditorPart(TupleStyle style) {
+            return new MarginEditorPart(this, style);
+        }
+    }
+
+    public static abstract class IntegerProperty extends StyleProperty<Integer>
+    {
+        public IntegerProperty(String title) {
+            super(title);
+        }
+
+        public StyleEditorPart createEditorPart(TupleStyle style) {
+            return new IntegerEditorPart(this, style);
+        }
+    }
+
+    // =========================================================================
+
+    public static final ColorProperty FOREGROUND =
+            new ColorProperty("Foreground color")
     {
         public RGB get(TupleStyle style) {
             return style.getForegroundRGB();
@@ -54,14 +100,10 @@ public abstract class StyleProperty<T>
         public void set(TupleStyle style, RGB value) {
             style.setForegroundRGB(value);
         }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new ColorEditorPart(this, style);
-        }
     };
 
-    public static final StyleProperty<RGB> BACKGROUND =
-            new StyleProperty<RGB>("Background color")
+    public static final ColorProperty BACKGROUND =
+            new ColorProperty("Background color")
     {
         public RGB get(TupleStyle style) {
             return style.getBackgroundRGB();
@@ -70,14 +112,10 @@ public abstract class StyleProperty<T>
         public void set(TupleStyle style, RGB value) {
             style.setBackgroundRGB(value); // ??? transparency
         }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new ColorEditorPart(this, style);
-        }
     };
 
-    public static final StyleProperty<FontData[]> FONT =
-            new StyleProperty<FontData[]>("Font")
+    public static final FontProperty FONT =
+            new FontProperty("Font")
     {
         public FontData[] get(TupleStyle style) {
             return style.getFontList();
@@ -86,14 +124,10 @@ public abstract class StyleProperty<T>
         public void set(TupleStyle style, FontData[] value) {
             style.setFont(value);
         }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new FontEditorPart(this, style);
-        }
     };
 
-    public static final StyleProperty<Margin> PADDING =
-            new StyleProperty<Margin>("Brick padding")
+    public static final MarginProperty PADDING =
+            new MarginProperty("Brick padding")
     {
         public Margin get(TupleStyle style) {
             return style.getPadding();
@@ -102,14 +136,10 @@ public abstract class StyleProperty<T>
         public void set(TupleStyle style, Margin value) {
             style.setPadding(value);
         }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new MarginEditorPart(this, style);
-        }
     };
 
-    public static final StyleProperty<Margin> TEXT_MARGIN =
-            new StyleProperty<Margin>("Text margin")
+    public static final MarginProperty TEXT_MARGIN =
+            new MarginProperty("Text margin")
     {
         public Margin get(TupleStyle style) {
             return style.getTextMargin();
@@ -118,14 +148,10 @@ public abstract class StyleProperty<T>
         public void set(TupleStyle style, Margin value) {
             style.setTextMargin(value);
         }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new MarginEditorPart(this, style);
-        }
     };
 
-    public static final StyleProperty<Integer> LINE_SPACING =
-            new StyleProperty<Integer>("Line spacing")
+    public static final IntegerProperty LINE_SPACING =
+            new IntegerProperty("Line spacing")
     {
         public Integer get(TupleStyle style) {
             return style.getLineSpacing();
@@ -134,14 +160,10 @@ public abstract class StyleProperty<T>
         public void set(TupleStyle style, Integer value) {
             style.setLineSpacing(value);
         }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new SpacingEditorPart(this, style);
-        }
     };
 
-    public static final StyleProperty<Integer> CHILD_SPACING =
-            new StyleProperty<Integer>("Children spacing")
+    public static final IntegerProperty CHILD_SPACING =
+            new IntegerProperty("Children spacing")
     {
         public Integer get(TupleStyle style) {
             return style.getSpacing();
@@ -149,10 +171,6 @@ public abstract class StyleProperty<T>
 
         public void set(TupleStyle style, Integer value) {
             style.setSpacing(value);
-        }
-
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            return new SpacingEditorPart(this, style);
         }
     };
 
