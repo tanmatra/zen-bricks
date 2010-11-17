@@ -105,10 +105,21 @@ public class TupleBrick extends Brick
     }
 
     @Override
-    void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        ui.paintBackground(gc, this, baseX, baseY, clipping);
+    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+        paintBackground(gc, baseX, baseY, ui, clipping);
         paintText(gc, baseX, baseY, ui, clipping);
         paintChildren(gc, baseX, baseY, ui, clipping);
+    }
+
+    protected void paintBackground(GC gc, int baseX, int baseY, UI ui,
+                                   Rectangle clipping)
+    {
+        final StyleChain chain = ui.getStyleChain(this);
+        gc.setBackground(chain.getBackgroundColor());
+//        gc.setBackground(ui.getBackgroundColor());
+        gc.fillRectangle(baseX, baseY, this.getWidth(), this.getHeight());
+
+        ui.getBorder().paint(gc, baseX, baseY, this, clipping);
     }
 
     private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
@@ -120,7 +131,9 @@ public class TupleBrick extends Brick
         ui.getStyleChain(this).paintText(gc, textX, textY, text); // ???
     }
 
-    void paintChildren(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+    private void paintChildren(GC gc, int baseX, int baseY, UI ui,
+                               Rectangle clipping)
+    {
         for (final Brick brick : children) {
             final int brickX = baseX + brick.x;
             final int brickY = baseY + brick.y;

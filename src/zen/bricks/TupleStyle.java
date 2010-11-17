@@ -36,7 +36,7 @@ public class TupleStyle
     };
 
     public static final ColorProperty BACKGROUND =
-            new ColorProperty("Background color")
+        new ColorProperty("Background color")
     {
         public RGB get(TupleStyle style) {
             return style.getBackgroundRGB();
@@ -44,6 +44,18 @@ public class TupleStyle
 
         public void set(TupleStyle style, RGB value) {
             style.setBackgroundRGB(value); // ??? transparency
+        }
+    };
+
+    public static final ColorProperty TEXT_BACKGROUND =
+            new ColorProperty("Text background color")
+    {
+        public RGB get(TupleStyle style) {
+            return style.getTextBackgroundRGB();
+        }
+
+        public void set(TupleStyle style, RGB value) {
+            style.setTextBackgroundRGB(value); // ??? transparency
         }
     };
 
@@ -108,9 +120,10 @@ public class TupleStyle
     };
 
     public static final StyleProperty<?>[] ALL_PROPERTIES = {
+        FONT,
         FOREGROUND,
         BACKGROUND,
-        FONT,
+        TEXT_BACKGROUND,
         PADDING,
         TEXT_MARGIN,
         LINE_SPACING,
@@ -135,6 +148,8 @@ public class TupleStyle
      */
     GC savedGC;
 
+    private Color backgroundColor;
+
     private Color foregroundColor;
 
     /**
@@ -142,15 +157,15 @@ public class TupleStyle
      */
     Boolean transparent;
 
-    private Color backgroundColor;
+    private Color textBackgroundColor;
 
-    Margin padding;
+    private Margin padding;
 
-    Margin textMargin;
+    private Margin textMargin;
 
-    Integer lineSpacing;
+    private Integer lineSpacing;
 
-    Integer spacing;
+    private Integer spacing;
 
     private final String name;
 
@@ -168,15 +183,16 @@ public class TupleStyle
                 setFont(fontData != null ? new FontData[] { fontData } : null);
             }
 
-            foregroundColor = ColorUtil.parse(
-                    device, properties, keyPrefix, ".color");
-
+            backgroundColor =
+                    ColorUtil.parse(device, properties, keyPrefix, ".background");
+            foregroundColor =
+                    ColorUtil.parse(device, properties, keyPrefix, ".color");
             final String backVal =
-                    properties.getProperty(keyPrefix + ".background");
+                    properties.getProperty(keyPrefix + ".textBackground");
             if ("none".equals(backVal) || "transparent".equals(backVal)) {
                 transparent = true;
             } else {
-                backgroundColor = ColorUtil.parse(device, backVal);
+                textBackgroundColor = ColorUtil.parse(device, backVal);
                 transparent = false;
             }
 
@@ -201,9 +217,9 @@ public class TupleStyle
             foregroundColor.dispose();
             foregroundColor = null;
         }
-        if (backgroundColor != null) {
-            backgroundColor.dispose();
-            backgroundColor = null;
+        if (textBackgroundColor != null) {
+            textBackgroundColor.dispose();
+            textBackgroundColor = null;
         }
         if (savedGC != null) {
             savedGC.dispose();
@@ -287,6 +303,25 @@ public class TupleStyle
         return new PropertiesListEditor(TupleStyle.ALL_PROPERTIES, this);
     }
 
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public RGB getBackgroundRGB() {
+        return (backgroundColor != null) ? backgroundColor.getRGB() : null;
+    }
+
+    public void setBackgroundRGB(RGB rgb) {
+        if (backgroundColor != null) {
+            backgroundColor.dispose();
+        }
+        if (rgb != null) {
+            backgroundColor = new Color(device, rgb);
+        } else {
+            backgroundColor = null;
+        }
+    }
+
     public void setForegroundRGB(RGB rgb) {
         if (foregroundColor != null) {
             foregroundColor.dispose();
@@ -306,28 +341,24 @@ public class TupleStyle
         return foregroundColor != null ? foregroundColor.getRGB() : null;
     }
 
-    public boolean isBackgroundDefined() {
-        return transparent != null;
+    public Color getTextBackgroundColor() {
+        return textBackgroundColor;
     }
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
+    public RGB getTextBackgroundRGB() {
+        return textBackgroundColor != null ? textBackgroundColor.getRGB() : null;
     }
 
-    public RGB getBackgroundRGB() {
-        return backgroundColor != null ? backgroundColor.getRGB() : null;
-    }
-
-    public void setBackgroundRGB(RGB rgb) { // ???
-        if (backgroundColor != null) {
-            backgroundColor.dispose();
+    public void setTextBackgroundRGB(RGB rgb) { // ???
+        if (textBackgroundColor != null) {
+            textBackgroundColor.dispose();
         }
         if (rgb != null) {
             this.transparent = false;
-            backgroundColor = new Color(device, rgb);
+            textBackgroundColor = new Color(device, rgb);
         } else {
             this.transparent = true;
-            backgroundColor = null;
+            textBackgroundColor = null;
         }
     }
 

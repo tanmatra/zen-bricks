@@ -13,7 +13,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
 
 public class UI
 {
@@ -54,7 +53,6 @@ public class UI
 
     private Boolean advanced;
     private int antialias;
-    private Color backgroundColor;
     private Border border;
     private Color canvasBackgroundColor;
     private TupleLayout layout;
@@ -94,7 +92,6 @@ public class UI
         advanced = parseBoolean(props, "advanced");
         antialias = parseState(props, "antialias");
         initBorder(props);
-        backgroundColor = parseColor(props, "background.color");
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
         initLayout(props);
         textAntialias = parseState(props, "text.antialias");
@@ -110,10 +107,6 @@ public class UI
         if (border != null) {
             border.dispose();
             border = null;
-        }
-        if (backgroundColor != null) {
-            backgroundColor.dispose();
-            backgroundColor = null;
         }
         if (savedGC != null) {
             savedGC.dispose();
@@ -204,28 +197,12 @@ public class UI
         return savedGC;
     }
 
-    Color getBackgroundColor() {
-        return backgroundColor;
-    }
-
     public void layout(TupleBrick brick) {
         layout.doLayout(brick);
     }
 
     public Color getCanvasBackgroundColor() {
         return canvasBackgroundColor;
-    }
-
-    /**
-     * Paint brick background and border.
-     */
-    public void paintBackground(GC gc, Brick brick, int baseX, int baseY,
-            Rectangle clipping)
-    {
-        gc.setBackground(getBackgroundColor());
-        gc.fillRectangle(baseX, baseY, brick.getWidth(), brick.getHeight());
-
-        border.paint(gc, baseX, baseY, brick, clipping);
     }
 
     public TupleStyle getBasicStyle() {
@@ -250,5 +227,9 @@ public class UI
 
     public List<TupleStyle> getTupleStyles() {
         return Arrays.asList(basicStyle, listStyle);
+    }
+
+    public Border getBorder() {
+        return border;
     }
 }

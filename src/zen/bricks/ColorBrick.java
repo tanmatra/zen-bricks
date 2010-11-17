@@ -36,7 +36,7 @@ public class ColorBrick extends Brick
         super.dispose();
     }
 
-    void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
 //        System.out.println("base x, y: " + baseX + ", " + baseY);
         gc.setForeground(foreColor);
         gc.setBackground(backColor);

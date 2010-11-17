@@ -23,8 +23,8 @@ public class StyleChain
         return TupleStyle.FONT.find(this);
     }
 
-    private TupleStyle findBackground() {
-        return TupleStyle.BACKGROUND.find(this);
+    private TupleStyle findTextBackground() {
+        return TupleStyle.TEXT_BACKGROUND.find(this);
     }
 
     public Color getForegroundColor() {
@@ -32,7 +32,11 @@ public class StyleChain
     }
 
     public Color getBackgroundColor() {
-        return findBackground().getBackgroundColor();
+        return TupleStyle.BACKGROUND.find(this).getBackgroundColor();
+    }
+
+    public Color getTextBackgroundColor() {
+        return findTextBackground().getTextBackgroundColor();
     }
 
     public Font getFont() {
@@ -47,12 +51,12 @@ public class StyleChain
         gc.setFont(getFont());
         gc.setForeground(getForegroundColor());
 
-        final TupleStyle background = findBackground();
+        final TupleStyle background = findTextBackground();
         int flags = TEXT_FLAGS;
         if (background.transparent) {
             flags |= SWT.DRAW_TRANSPARENT;
         } else {
-            final Color backgroundColor = background.getBackgroundColor();
+            final Color backgroundColor = background.getTextBackgroundColor();
             if (backgroundColor != null) {
                 gc.setBackground(backgroundColor);
             }

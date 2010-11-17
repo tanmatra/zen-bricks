@@ -37,9 +37,8 @@ public abstract class Brick
                 && (x < (this.x + width)) && (y < (this.y + height));
     }
 
-    void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        ui.paintBackground(gc, this, baseX, baseY, clipping);
-    }
+    public abstract void paint(GC gc, int baseX, int baseY, UI ui,
+                               Rectangle clipping);
 
     void calculateSize(UI ui) {
         // todo
