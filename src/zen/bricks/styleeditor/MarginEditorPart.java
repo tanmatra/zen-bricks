@@ -20,7 +20,7 @@ public class MarginEditorPart extends CheckedEditorPart<Margin>
         this.margin = property.get(style);
     }
 
-    protected void enabledCheckSelected(boolean selected) {
+    protected void definedCheckChanged(boolean selected) {
         leftValue.setEnabled(selected);
         topValue.setEnabled(selected);
         rightValue.setEnabled(selected);
@@ -28,7 +28,7 @@ public class MarginEditorPart extends CheckedEditorPart<Margin>
     }
 
     void createWidgets(Composite parent, int columns) {
-        createEnabledCheck(parent);
+        createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1, 8);
 
@@ -50,12 +50,12 @@ public class MarginEditorPart extends CheckedEditorPart<Margin>
             bottomValue.setSelection(margin.getBottom());
         }
 
-        setEnabled(margin != null);
-        enabledCheckSelected(margin != null);
+        setDefined(margin != null);
+        definedCheckChanged(margin != null);
     }
 
     public Margin getValue() {
-        if (!isEnabled()) {
+        if (!isDefined()) {
             return null;
         }
         return new Margin(

@@ -25,6 +25,12 @@ public abstract class StyleProperty<T>
 
     public abstract void set(TupleStyle style, T value);
 
+    public abstract StyleEditorPart<T> createEditorPart(TupleStyle style);
+
+    public void apply(StyleEditorPart<T> editorPart, TupleStyle style) {
+        set(style, editorPart.getValue());
+    }
+
     public boolean isDefined(TupleStyle style) {
         return get(style) != null;
     }
@@ -40,17 +46,13 @@ public abstract class StyleProperty<T>
         throw new Error("Style property not found in chain");
     }
 
-    public abstract StyleEditorPart createEditorPart(TupleStyle style);
-
-    // =========================================================================
-
     public static abstract class ColorProperty extends StyleProperty<RGB>
     {
         public ColorProperty(String title) {
             super(title);
         }
 
-        public StyleEditorPart createEditorPart(TupleStyle style) {
+        public StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
             return new ColorEditorPart(this, style);
         }
     }

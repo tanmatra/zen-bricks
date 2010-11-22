@@ -13,29 +13,29 @@ import zen.bricks.TupleStyle;
 
 public class ColorEditorPart extends CheckedEditorPart<RGB>
 {
-//    private final RGB color;
+    private RGB color;
     ColorSelector colorSelector;
-    private boolean allowTransparent;
+    private final boolean allowTransparent;
     private Button transparentCheck;
+    private final Boolean background;
 
     public ColorEditorPart(StyleProperty<RGB> property, TupleStyle style) {
         super(property, style);
+        this.allowTransparent = false;
+        color = property.get(style);
+        background = (color == null) ? null : true;
     }
 
-//    public ColorEditorPart(RGB color, String title) {
-//        super(title);
-//        this.color = color;
-//        allowTransparent = false;
-//    }
-//
-//    public ColorEditorPart(RGB color, String title, boolean allowTransparent) {
-//        super(title);
-//        this.color = color;
-//        this.allowTransparent = allowTransparent;
-//    }
+    public ColorEditorPart(StyleProperty<RGB> property, TupleStyle style,
+                           Boolean textBackground) {
+        super(property, style);
+        this.background = textBackground;
+        this.allowTransparent = true;
+        color = property.get(style);
+    }
 
     void createWidgets(Composite parent, int columns) {
-        createEnabledCheck(parent);
+        createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1);
 
@@ -49,31 +49,33 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
                     testColorSelectorEnabled();
                 }
             });
+            transparentCheck.setSelection(Boolean.FALSE.equals(background));
         }
 
-        final RGB color = property.get(style);
-        setEnabled(color != null);
+        final boolean defined = (background != null);
+        setDefined(defined);
         if (color != null) {
             colorSelector.setColorValue(color);
         }
-        testTransparentCheckEnabled();
+        testTransparentCheckEnabled(defined);
         testColorSelectorEnabled();
     }
 
-    protected void enabledCheckSelected(boolean selected) {
-        testTransparentCheckEnabled();
+    @Override
+    protected void definedCheckChanged(boolean defined) {
+        testTransparentCheckEnabled(defined);
         testColorSelectorEnabled();
     }
 
-    void testTransparentCheckEnabled() {
+    void testTransparentCheckEnabled(boolean defined) {
         if (transparentCheck != null) {
-            transparentCheck.setEnabled(isEnabled());
+            transparentCheck.setEnabled(defined);
         }
     }
 
     void testColorSelectorEnabled() {
         final boolean enabled;
-        if (isEnabled()) {
+        if (isDefined()) {
             if (transparentCheck == null) {
                 enabled = true;
             } else {
@@ -85,13 +87,12 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
         colorSelector.setEnabled(enabled);
     }
 
-    protected RGB getValue() {
-        return isEnabled() ? colorSelector.getColorValue() : null;
+    public RGB getValue() {
+        return isDefined() ? colorSelector.getColorValue() : null;
     }
 
-    protected boolean isTransparent() {
-        return (transparentCheck != null) ?
-            transparentCheck.getSelection() :
-            false;
+    public Boolean getBackground() {
+        return !isDefined() ? null :
+                transparentCheck.getSelection() ? false : true;
     }
 }

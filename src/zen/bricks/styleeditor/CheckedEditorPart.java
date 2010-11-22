@@ -13,7 +13,7 @@ import zen.bricks.TupleStyle;
 
 abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {
-    private Button enabledCheck;
+    private Button definedCheck;
 
     public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
         super(property, style);
@@ -23,12 +23,12 @@ abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
         return 2;
     }
 
-    protected void createEnabledCheck(Composite parent) {
-        enabledCheck = new Button(parent, SWT.CHECK);
-        enabledCheck.setText(property.getTitle());
-        enabledCheck.addSelectionListener(new SelectionAdapter() {
+    protected void createDefinedCheck(Composite parent) {
+        definedCheck = new Button(parent, SWT.CHECK);
+        definedCheck.setText(property.getTitle());
+        definedCheck.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                enabledCheckSelected(isEnabled());
+                definedCheckChanged(isDefined());
             }
         });
     }
@@ -55,13 +55,13 @@ abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
         return panel;
     }
 
-    protected abstract void enabledCheckSelected(boolean selected);
+    protected abstract void definedCheckChanged(boolean defined);
 
-    protected boolean isEnabled() {
-        return enabledCheck.getSelection();
+    public boolean isDefined() {
+        return definedCheck.getSelection();
     }
 
-    protected void setEnabled(boolean enabled) {
-        enabledCheck.setSelection(enabled);
+    protected void setDefined(boolean defined) {
+        definedCheck.setSelection(defined);
     }
 }

@@ -10,7 +10,7 @@ public abstract class StyleEditorPart<T>
 {
     protected final StyleProperty<T> property;
 
-    protected final TupleStyle style;
+    private final TupleStyle style;
 
     public StyleEditorPart(StyleProperty<T> property, TupleStyle style) {
         this.property = property;
@@ -21,10 +21,10 @@ public abstract class StyleEditorPart<T>
 
     abstract void createWidgets(Composite parent, int numColumns);
 
-    protected abstract T getValue();
+    public abstract T getValue();
 
     public void apply() {
-        property.set(style, getValue());
+        property.apply(this, style);
     }
 
     public void cancel() {

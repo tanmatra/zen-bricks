@@ -29,7 +29,7 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
     }
 
     protected void createWidgets(final Composite parent, int columns) {
-        createEnabledCheck(parent);
+        createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1);
 
@@ -56,13 +56,13 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
         });
 
         if (fontList != null) {
-            setEnabled(true);
+            setDefined(true);
         } else {
             fontSelectButton.setEnabled(false);
         }
     }
 
-    protected void enabledCheckSelected(boolean selected) {
+    protected void definedCheckChanged(boolean selected) {
         fontSelectButton.setEnabled(selected);
         if (!selected) {
             fontList = null;
@@ -90,7 +90,7 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
         }
     }
 
-    protected FontData[] getValue() {
+    public FontData[] getValue() {
         return fontList;
     }
 }

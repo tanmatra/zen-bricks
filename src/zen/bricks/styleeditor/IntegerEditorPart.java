@@ -15,25 +15,25 @@ public class IntegerEditorPart extends CheckedEditorPart<Integer>
         value = property.get(style);
     }
 
-    protected void enabledCheckSelected(boolean selected) {
+    protected void definedCheckChanged(boolean selected) {
         pair.setEnabled(selected);
     }
 
     void createWidgets(Composite parent, int numColumns) {
-        createEnabledCheck(parent);
+        createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, numColumns - 1);
 
         pair = new LabelSpinnerPair(panel, "Value:");
         if (value != null) {
             pair.setSelection(value);
-            setEnabled(true);
+            setDefined(true);
         } else {
             pair.setEnabled(false);
         }
     }
 
-    protected Integer getValue() {
-        return isEnabled() ? pair.getSelection() : null;
+    public Integer getValue() {
+        return isDefined() ? pair.getSelection() : null;
     }
 }

@@ -38,7 +38,9 @@ public class TupleStyleEditor implements IBrickStyleEditor
 
     private void createParts() {
         addPart(new ColorEditorPart(TupleStyle.FOREGROUND, tupleStyle));
-        addPart(new ColorEditorPart(TupleStyle.TEXT_BACKGROUND, tupleStyle));
+        addPart(new ColorEditorPart(TupleStyle.BACKGROUND, tupleStyle));
+        addPart(new ColorEditorPart(TupleStyle.TEXT_BACKGROUND, tupleStyle,
+                tupleStyle.getTextBackground()));
         addPart(new FontEditorPart(TupleStyle.FONT, tupleStyle));
         addPart(new MarginEditorPart(TupleStyle.PADDING, tupleStyle));
         addPart(new MarginEditorPart(TupleStyle.TEXT_MARGIN, tupleStyle));

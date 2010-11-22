@@ -16,8 +16,10 @@ import zen.bricks.StyleProperty.ColorProperty;
 import zen.bricks.StyleProperty.FontProperty;
 import zen.bricks.StyleProperty.IntegerProperty;
 import zen.bricks.StyleProperty.MarginProperty;
+import zen.bricks.styleeditor.ColorEditorPart;
 import zen.bricks.styleeditor.IBrickStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
+import zen.bricks.styleeditor.StyleEditorPart;
 
 public class TupleStyle
 {
@@ -43,19 +45,36 @@ public class TupleStyle
         }
 
         public void set(TupleStyle style, RGB value) {
-            style.setBackgroundRGB(value); // ??? transparency
+            style.setBackgroundRGB(value);
         }
     };
 
     public static final ColorProperty TEXT_BACKGROUND =
             new ColorProperty("Text background color")
     {
+        public boolean isDefined(TupleStyle style) {
+            return style.textBackground != null;
+        }
+
+        public StyleEditorPart createEditorPart(TupleStyle style) {
+            final ColorEditorPart editorPart =
+                    new ColorEditorPart(this, style, style.textBackground);
+            return editorPart;
+        }
+
+        @Override
+        public void apply(StyleEditorPart<RGB> editorPart, TupleStyle style) {
+            final ColorEditorPart colorEditorPart = (ColorEditorPart) editorPart;
+            style.setTextBackgroundRGB(colorEditorPart.getBackground(),
+                    colorEditorPart.getValue());
+        }
+
         public RGB get(TupleStyle style) {
             return style.getTextBackgroundRGB();
         }
 
         public void set(TupleStyle style, RGB value) {
-            style.setTextBackgroundRGB(value); // ??? transparency
+            // do nothing, as it never called
         }
     };
 
@@ -153,10 +172,15 @@ public class TupleStyle
     private Color foregroundColor;
 
     /**
-     * Not null if and only if is specified transparency or background color.
+     * null  - not defined<br/>
+     * false - transparent<br/>
+     * true  - opaque
      */
-    Boolean transparent;
+    Boolean textBackground;
 
+    /**
+     * Valid (not null) only if textBackground == true
+     */
     private Color textBackgroundColor;
 
     private Margin padding;
@@ -187,13 +211,18 @@ public class TupleStyle
                     ColorUtil.parse(device, properties, keyPrefix, ".background");
             foregroundColor =
                     ColorUtil.parse(device, properties, keyPrefix, ".color");
-            final String backVal =
+
+            final String textBackStr =
                     properties.getProperty(keyPrefix + ".textBackground");
-            if ("none".equals(backVal) || "transparent".equals(backVal)) {
-                transparent = true;
+            if ("transparent".equals(textBackStr)) {
+                textBackground = false; // transparent
             } else {
-                textBackgroundColor = ColorUtil.parse(device, backVal);
-                transparent = false;
+                textBackgroundColor = ColorUtil.parse(device, textBackStr);
+                if (textBackgroundColor == null) {
+                    textBackground = null; // not defined
+                } else {
+                    textBackground = true; // opaque
+                }
             }
 
             padding = Margin.parseMargin(properties, keyPrefix + ".padding");
@@ -341,6 +370,10 @@ public class TupleStyle
         return foregroundColor != null ? foregroundColor.getRGB() : null;
     }
 
+    public Boolean getTextBackground() {
+        return textBackground;
+    }
+
     public Color getTextBackgroundColor() {
         return textBackgroundColor;
     }
@@ -349,15 +382,14 @@ public class TupleStyle
         return textBackgroundColor != null ? textBackgroundColor.getRGB() : null;
     }
 
-    public void setTextBackgroundRGB(RGB rgb) { // ???
+    public void setTextBackgroundRGB(Boolean textBackground, RGB rgb) {
         if (textBackgroundColor != null) {
             textBackgroundColor.dispose();
         }
-        if (rgb != null) {
-            this.transparent = false;
+        this.textBackground = textBackground;
+        if (Boolean.TRUE.equals(textBackground)) { // if opaque
             textBackgroundColor = new Color(device, rgb);
         } else {
-            this.transparent = true;
             textBackgroundColor = null;
         }
     }

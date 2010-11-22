@@ -4,12 +4,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 
 public class StyleChain
 {
-    private static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
+    static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
 
     final StyleChain parent;
     final TupleStyle style;
@@ -23,7 +22,7 @@ public class StyleChain
         return TupleStyle.FONT.find(this);
     }
 
-    private TupleStyle findTextBackground() {
+    TupleStyle findTextBackground() {
         return TupleStyle.TEXT_BACKGROUND.find(this);
     }
 
@@ -45,24 +44,6 @@ public class StyleChain
 
     public Point getTextExtent(String text) {
         return findFont().savedGC.textExtent(text, TEXT_FLAGS);
-    }
-
-    public void paintText(GC gc, int x, int y, String text) {
-        gc.setFont(getFont());
-        gc.setForeground(getForegroundColor());
-
-        final TupleStyle background = findTextBackground();
-        int flags = TEXT_FLAGS;
-        if (background.transparent) {
-            flags |= SWT.DRAW_TRANSPARENT;
-        } else {
-            final Color backgroundColor = background.getTextBackgroundColor();
-            if (backgroundColor != null) {
-                gc.setBackground(backgroundColor);
-            }
-        }
-
-        gc.drawText(text, x, y, flags);
     }
 
     public int getTextAscent() {

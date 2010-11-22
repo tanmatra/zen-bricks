@@ -3,6 +3,7 @@ package zen.bricks;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -116,7 +117,6 @@ public class TupleBrick extends Brick
     {
         final StyleChain chain = ui.getStyleChain(this);
         gc.setBackground(chain.getBackgroundColor());
-//        gc.setBackground(ui.getBackgroundColor());
         gc.fillRectangle(baseX, baseY, this.getWidth(), this.getHeight());
 
         ui.getBorder().paint(gc, baseX, baseY, this, clipping);
@@ -128,7 +128,20 @@ public class TupleBrick extends Brick
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
-        ui.getStyleChain(this).paintText(gc, textX, textY, text); // ???
+
+        final StyleChain chain = ui.getStyleChain(this);
+        gc.setFont(chain.getFont());
+        gc.setForeground(chain.getForegroundColor());
+
+        final TupleStyle background = chain.findTextBackground();
+        int flags = StyleChain.TEXT_FLAGS;
+        if (background.textBackground) { // garanteed not null here
+            gc.setBackground(background.getTextBackgroundColor());
+        } else {
+            flags |= SWT.DRAW_TRANSPARENT;
+        }
+
+        gc.drawText(text, textX, textY, flags);
     }
 
     private void paintChildren(GC gc, int baseX, int baseY, UI ui,
