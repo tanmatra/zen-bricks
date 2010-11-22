@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -23,11 +24,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import zen.bricks.Editor;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
 
 public class EditStylesDialog extends Dialog
 {
+    // ========================================================== Nested Classes
+
     static class StyleLabelProvider extends LabelProvider
     {
         public String getText(Object element) {
@@ -35,8 +39,9 @@ public class EditStylesDialog extends Dialog
         }
     }
 
-    private static final String SAMPLE_TEXT =
-            "Quick Brown Fox Jumps Over The Lazy Dog.";
+    // ============================================================ Class Fields
+
+    private static final int APPLY_ID = IDialogConstants.CLIENT_ID + 1;
 
     // ================================================================== Fields
 
@@ -49,15 +54,19 @@ public class EditStylesDialog extends Dialog
     private final Map<TupleStyle, IBrickStyleEditor> editors =
         new HashMap<TupleStyle, IBrickStyleEditor>();
 
+    private final Editor editor;
+
     // ============================================================ Constructors
 
-    public EditStylesDialog(Shell shell, UI ui) {
+    public EditStylesDialog(Shell shell, UI ui, Editor editor) {
         super(shell);
         this.ui = ui;
+        this.editor = editor;
     }
 
     // ================================================================= Methods
 
+    @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         shell.setText("Edit styles");
@@ -68,6 +77,7 @@ public class EditStylesDialog extends Dialog
         });
     }
 
+    @Override
     protected Control createDialogArea(Composite parent) {
         final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
@@ -121,6 +131,12 @@ public class EditStylesDialog extends Dialog
         return sashForm;
     }
 
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, APPLY_ID, "Apply", false);
+        super.createButtonsForButtonBar(parent);
+    }
+
     void styleSelected(TupleStyle style) {
         IBrickStyleEditor editor = editors.get(style);
         if (editor == null) {
@@ -133,10 +149,18 @@ public class EditStylesDialog extends Dialog
     }
 
     @Override
-    protected void okPressed() {
-        for (IBrickStyleEditor editor : editors.values()) {
-            editor.apply();
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == APPLY_ID) {
+            applyEditors();
+            editor.setUI(ui);
+            return;
         }
+        super.buttonPressed(buttonId);
+    }
+
+    @Override
+    protected void okPressed() {
+        applyEditors();
         super.okPressed();
     }
 
@@ -144,6 +168,12 @@ public class EditStylesDialog extends Dialog
     protected void cancelPressed() {
         cancelEditors();
         super.cancelPressed();
+    }
+
+    private void applyEditors() {
+        for (IBrickStyleEditor editor : editors.values()) {
+            editor.apply();
+        }
     }
 
     void cancelEditors() {

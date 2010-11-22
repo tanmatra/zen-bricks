@@ -105,7 +105,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final UI ui = editor.ui;
                 final EditStylesDialog dialog =
-                    new EditStylesDialog(getShell(), ui);
+                    new EditStylesDialog(getShell(), ui, editor);
                 if (dialog.open() == Window.OK) {
                     editor.setUI(ui);
                 }
