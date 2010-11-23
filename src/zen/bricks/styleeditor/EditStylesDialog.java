@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import zen.bricks.BrickStyle;
 import zen.bricks.Editor;
-import zen.bricks.TupleStyle;
 import zen.bricks.UI;
 
 public class EditStylesDialog extends Dialog
@@ -35,7 +35,7 @@ public class EditStylesDialog extends Dialog
     static class StyleLabelProvider extends LabelProvider
     {
         public String getText(Object element) {
-            return ((TupleStyle) element).getName();
+            return ((BrickStyle) element).getName();
         }
     }
 
@@ -51,8 +51,8 @@ public class EditStylesDialog extends Dialog
 
     private StackLayout stackLayout;
 
-    private final Map<TupleStyle, IBrickStyleEditor> editors =
-        new HashMap<TupleStyle, IBrickStyleEditor>();
+    private final Map<BrickStyle, IBrickStyleEditor> styleEditors =
+        new HashMap<BrickStyle, IBrickStyleEditor>();
 
     private final Editor editor;
 
@@ -96,14 +96,14 @@ public class EditStylesDialog extends Dialog
             .applyTo(tableViewer.getTable());
         tableViewer.setLabelProvider(new StyleLabelProvider());
         tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-        tableViewer.setInput(ui.getTupleStyles());
+        tableViewer.setInput(ui.getBrickStyles());
         tableViewer.addPostSelectionChangedListener(
-            new ISelectionChangedListener()
+                new ISelectionChangedListener()
         {
             public void selectionChanged(SelectionChangedEvent event) {
                 final IStructuredSelection selection =
                     (IStructuredSelection) event.getSelection();
-                styleSelected((TupleStyle) selection.getFirstElement());
+                styleSelected((BrickStyle) selection.getFirstElement());
             }
         });
 
@@ -116,8 +116,7 @@ public class EditStylesDialog extends Dialog
         propsLabel.setText("Properties:");
         GridDataFactory.fillDefaults().applyTo(propsLabel);
 
-        stackPanel = new Composite(propertiesPanel,
-            SWT.BORDER | SWT.V_SCROLL);
+        stackPanel = new Composite(propertiesPanel, SWT.BORDER | SWT.V_SCROLL);
         GridDataFactory.fillDefaults().hint(600, 400).grab(true, true)
             .applyTo(stackPanel);
         stackLayout = new StackLayout();
@@ -137,14 +136,14 @@ public class EditStylesDialog extends Dialog
         super.createButtonsForButtonBar(parent);
     }
 
-    void styleSelected(TupleStyle style) {
-        IBrickStyleEditor editor = editors.get(style);
-        if (editor == null) {
-            editor = style.getEditor();
-            editors.put(style, editor);
-            editor.createControl(stackPanel);
+    void styleSelected(BrickStyle style) {
+        IBrickStyleEditor styleEditor = styleEditors.get(style);
+        if (styleEditor == null) {
+            styleEditor = style.getEditor();
+            styleEditors.put(style, styleEditor);
+            styleEditor.createControl(stackPanel);
         }
-        stackLayout.topControl = editor.getControl();
+        stackLayout.topControl = styleEditor.getControl();
         stackPanel.layout();
     }
 
@@ -170,15 +169,15 @@ public class EditStylesDialog extends Dialog
     }
 
     private void apply() {
-        for (IBrickStyleEditor editor : editors.values()) {
-            editor.apply();
+        for (IBrickStyleEditor styleEditor : styleEditors.values()) {
+            styleEditor.apply();
         }
         editor.refresh();
     }
 
     void cancelEditors() {
-        for (IBrickStyleEditor editor : editors.values()) {
-            editor.cancel();
+        for (IBrickStyleEditor styleEditor : styleEditors.values()) {
+            styleEditor.cancel();
         }
     }
 }

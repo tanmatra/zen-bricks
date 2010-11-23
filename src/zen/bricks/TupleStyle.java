@@ -21,7 +21,7 @@ import zen.bricks.styleeditor.IBrickStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
 import zen.bricks.styleeditor.StyleEditorPart;
 
-public class TupleStyle
+public class TupleStyle extends BrickStyle
 {
     // ============================================================ Class Fields
 
@@ -191,14 +191,10 @@ public class TupleStyle
 
     private Integer spacing;
 
-    private final String name;
-
-    // ============================================================ Constructors
-
     public TupleStyle(String name, Device device,
-        Properties properties, String keyPrefix)
+                      Properties properties, String keyPrefix)
     {
-        this.name = name;
+        super(name);
         this.device = device;
         try {
             final String fontVal = properties.getProperty(keyPrefix + ".font");
@@ -254,10 +250,6 @@ public class TupleStyle
             savedGC.dispose();
             savedGC = null;
         }
-    }
-
-    public String getName() {
-        return name;
     }
 
     private static FontData parseFontData(String str) {

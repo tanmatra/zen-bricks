@@ -225,7 +225,7 @@ public class UI
         }
     }
 
-    public List<TupleStyle> getTupleStyles() {
+    public List<? extends BrickStyle> getBrickStyles() {
         return Arrays.asList(basicStyle, listStyle);
     }
 
