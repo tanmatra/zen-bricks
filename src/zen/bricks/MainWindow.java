@@ -103,12 +103,7 @@ public class MainWindow extends ApplicationWindow
 
         final Action editStylesAction = new Action("&Edit styles...") {
             public void run() {
-                final UI ui = editor.ui;
-                final EditStylesDialog dialog =
-                    new EditStylesDialog(getShell(), ui, editor);
-                if (dialog.open() == Window.OK) {
-                    editor.setUI(ui);
-                }
+                new EditStylesDialog(getShell(), editor.ui, editor).open();
             }
         };
         viewMenu.add(editStylesAction);

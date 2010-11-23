@@ -151,8 +151,7 @@ public class EditStylesDialog extends Dialog
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == APPLY_ID) {
-            applyEditors();
-            editor.setUI(ui);
+            apply();
             return;
         }
         super.buttonPressed(buttonId);
@@ -160,7 +159,7 @@ public class EditStylesDialog extends Dialog
 
     @Override
     protected void okPressed() {
-        applyEditors();
+        apply();
         super.okPressed();
     }
 
@@ -170,10 +169,11 @@ public class EditStylesDialog extends Dialog
         super.cancelPressed();
     }
 
-    private void applyEditors() {
+    private void apply() {
         for (IBrickStyleEditor editor : editors.values()) {
             editor.apply();
         }
+        editor.refresh();
     }
 
     void cancelEditors() {
