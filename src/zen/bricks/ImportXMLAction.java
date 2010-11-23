@@ -133,7 +133,7 @@ class ImportXMLAction extends Action
                 brick.newLine();
                 new TupleBrick(brick, "");
             }
-            final TupleBrick parent = brick.getParent();
+            final TupleBrick parent = (TupleBrick) brick.getParent();
             if (parent != null) {
                 brick = parent;
             }

@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Event;
 
 public abstract class Brick
 {
-    TupleBrick parent;
+    final ContainerBrick parent;
     int index;
     int x;
     int y;
@@ -15,14 +15,14 @@ public abstract class Brick
     int height;
     int ascent;
 
-    Brick(TupleBrick parent) {
+    protected Brick(ContainerBrick parent) {
         this.parent = parent;
         if (parent != null) {
             parent.addChild(this);
         }
     }
 
-    public TupleBrick getParent() {
+    public ContainerBrick getParent() {
         return parent;
     }
 

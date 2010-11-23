@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 
-public class TupleBrick extends Brick
+public class TupleBrick extends ContainerBrick
 {
     // ========================================================== Nested Classes
 
@@ -71,7 +71,7 @@ public class TupleBrick extends Brick
         super.dispose();
     }
 
-    void addChild(Brick child) {
+    protected void addChild(Brick child) {
         int endIndex = children.size();
         child.index = endIndex;
         children.add(child);
@@ -89,11 +89,11 @@ public class TupleBrick extends Brick
         // ???
     }
 
-    int childrenCount() {
+    protected int childrenCount() {
         return children.size();
     }
 
-    Brick getChild(int i) {
+    protected Brick getChild(int i) {
         return children.get(i);
     }
 
@@ -168,7 +168,7 @@ public class TupleBrick extends Brick
                 this, parent, text, x, y, width, height);
     }
 
-    void childResized(Brick child) {
+    protected void childResized(Brick child) {
         // TODO
     }
 
