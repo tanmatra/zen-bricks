@@ -12,14 +12,19 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public class Editor
 {
-    // ================================================================== Fields
+    // ============================================================ Class Fields
 
     private static final int VERT_SCROLL_INCREMENT = 5;
     private static final int HORIZ_SCROLL_INCREMENT = 5;
 
+    // ================================================================== Fields
+
     final Canvas canvas;
+
     Brick root;
+
     Rectangle clientArea;
+
     UI ui;
 
     // ============================================================ Constructors
@@ -40,11 +45,11 @@ public class Editor
         refresh();
     }
 
-    public void setRoot(TupleBrick rootBrick) {
+    public void setDocument(TupleBrick documentBrick) {
         if (root != null) {
             root.dispose();
         }
-        root = rootBrick;
+        root = documentBrick;
         root.x = 0;
         root.y = 0;
         canvas.getVerticalBar().setSelection(0);

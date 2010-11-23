@@ -182,7 +182,7 @@ public class MainWindow extends ApplicationWindow
 
         editor = new Editor(this, contents);
         setEditorTheme(defaultTheme);
-        editor.setRoot(Editor.makeSample());
+        editor.setDocument(Editor.makeSample());
 
         getStatusLineManager().setMessage("Ready.");
 
