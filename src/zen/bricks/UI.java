@@ -97,6 +97,7 @@ public class UI
         textAntialias = parseState(props, "text.antialias");
 
         basicStyle = new TupleStyle("Basic", device, props, "basic_style");
+        basicStyle.setTopLevel(true);
         listStyle = new TupleStyle("List", device, props, "list_style");
 
         basicChain = basicStyle.createChain(null);

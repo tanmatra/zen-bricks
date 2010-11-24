@@ -24,7 +24,7 @@ public class PropertiesListEditor implements IBrickStyleEditor
         final int count = properties.length;
         parts = new StyleEditorPart<?>[count];
         for (int i = 0; i < count; i++) {
-            parts[i] = properties[i].createEditorPart(style);
+            parts[i] = properties[i].makeEditorPart(style);
         }
 
         composite = new Composite(parent, SWT.NONE);

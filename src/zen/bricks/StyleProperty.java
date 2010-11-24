@@ -11,11 +11,17 @@ import zen.bricks.styleeditor.StyleEditorPart;
 
 public abstract class StyleProperty<T>
 {
+    // ================================================================== Fields
+
     protected final String title;
+
+    // ============================================================ Constructors
 
     public StyleProperty(String title) {
         this.title = title;
     }
+
+    // ================================================================= Methods
 
     public String getTitle() {
         return title;
@@ -25,7 +31,15 @@ public abstract class StyleProperty<T>
 
     public abstract void set(TupleStyle style, T value);
 
-    public abstract StyleEditorPart<T> createEditorPart(TupleStyle style);
+    public StyleEditorPart<T> makeEditorPart(TupleStyle style) {
+        final StyleEditorPart<T> part = createEditorPart(style);
+        if (style.isTopLevel()) {
+            part.setMandatory(true);
+        }
+        return part;
+    }
+
+    protected abstract StyleEditorPart<T> createEditorPart(TupleStyle style);
 
     public void apply(StyleEditorPart<T> editorPart, TupleStyle style) {
         set(style, editorPart.getValue());
@@ -46,13 +60,15 @@ public abstract class StyleProperty<T>
         throw new Error("Style property not found in chain");
     }
 
+    // ========================================================== Nested Classes
+
     public static abstract class ColorProperty extends StyleProperty<RGB>
     {
         public ColorProperty(String title) {
             super(title);
         }
 
-        public StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
             return new ColorEditorPart(this, style);
         }
     }
@@ -63,7 +79,7 @@ public abstract class StyleProperty<T>
             super(title);
         }
 
-        public StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart createEditorPart(TupleStyle style) {
             return new FontEditorPart(this, style);
         }
     }
@@ -74,7 +90,7 @@ public abstract class StyleProperty<T>
             super(title);
         }
 
-        public StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart createEditorPart(TupleStyle style) {
             return new MarginEditorPart(this, style);
         }
     }
@@ -85,7 +101,7 @@ public abstract class StyleProperty<T>
             super(title);
         }
 
-        public StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart createEditorPart(TupleStyle style) {
             return new IntegerEditorPart(this, style);
         }
     }

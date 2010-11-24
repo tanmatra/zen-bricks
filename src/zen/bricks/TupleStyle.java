@@ -52,14 +52,13 @@ public class TupleStyle extends BrickStyle
     public static final ColorProperty TEXT_BACKGROUND =
             new ColorProperty("Text background color")
     {
+        @Override
         public boolean isDefined(TupleStyle style) {
             return style.textBackground != null;
         }
 
-        public StyleEditorPart createEditorPart(TupleStyle style) {
-            final ColorEditorPart editorPart =
-                    new ColorEditorPart(this, style, style.textBackground);
-            return editorPart;
+        protected StyleEditorPart createEditorPart(TupleStyle style) {
+            return new ColorEditorPart(this, style, style.textBackground);
         }
 
         @Override
@@ -73,6 +72,7 @@ public class TupleStyle extends BrickStyle
             return style.getTextBackgroundRGB();
         }
 
+        @Override
         public void set(TupleStyle style, RGB value) {
             // do nothing, as it never called
         }
@@ -153,6 +153,8 @@ public class TupleStyle extends BrickStyle
 
     // ================================================================== Fields
 
+    private boolean topLevel;
+
     private final Device device;
 
     private Font font;
@@ -190,6 +192,8 @@ public class TupleStyle extends BrickStyle
     private Integer lineSpacing;
 
     private Integer spacing;
+
+    // ============================================================ Constructors
 
     public TupleStyle(String name, Device device,
                       Properties properties, String keyPrefix)
@@ -232,6 +236,14 @@ public class TupleStyle extends BrickStyle
     }
 
     // ================================================================= Methods
+
+    public boolean isTopLevel() {
+        return topLevel;
+    }
+
+    public void setTopLevel(boolean topLevel) {
+        this.topLevel = topLevel;
+    }
 
     public void dispose() {
         if (font != null) {

@@ -7,12 +7,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 
 abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {
+    private Label label;
     private Button definedCheck;
 
     public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
@@ -24,13 +26,18 @@ abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     }
 
     protected void createDefinedCheck(Composite parent) {
-        definedCheck = new Button(parent, SWT.CHECK);
-        definedCheck.setText(property.getTitle());
-        definedCheck.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                definedCheckChanged(isDefined());
-            }
-        });
+        if (isMandatory()) {
+            label = new Label(parent, SWT.NONE);
+            label.setText(property.getTitle());
+        } else {
+            definedCheck = new Button(parent, SWT.CHECK);
+            definedCheck.setText(property.getTitle());
+            definedCheck.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent e) {
+                    definedCheckChanged(isDefined());
+                }
+            });
+        }
     }
 
     protected Composite createValuesPanel(Composite parent, int span) {
@@ -58,10 +65,12 @@ abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     protected abstract void definedCheckChanged(boolean defined);
 
     public boolean isDefined() {
-        return definedCheck.getSelection();
+        return isMandatory() ? true : definedCheck.getSelection();
     }
 
     protected void setDefined(boolean defined) {
-        definedCheck.setSelection(defined);
+        if (!isMandatory()) {
+            definedCheck.setSelection(defined);
+        }
     }
 }

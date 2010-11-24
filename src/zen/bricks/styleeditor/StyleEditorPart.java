@@ -12,6 +12,8 @@ public abstract class StyleEditorPart<T>
 
     private final TupleStyle style;
 
+    private boolean mandatory;
+
     public StyleEditorPart(StyleProperty<T> property, TupleStyle style) {
         this.property = property;
         this.style = style;
@@ -36,5 +38,13 @@ public abstract class StyleEditorPart<T>
 
     protected static GridDataFactory gridData(int span) {
         return gridData().span(span, 1);
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    public boolean isMandatory() {
+        return mandatory;
     }
 }
