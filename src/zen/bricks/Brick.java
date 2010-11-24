@@ -67,6 +67,9 @@ public abstract class Brick
 
     public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
         // debugMouseEvent(event);
+        if (event.type == SWT.MouseDown) {
+            editor.setSelection(this);
+        }
         return null;
     }
 

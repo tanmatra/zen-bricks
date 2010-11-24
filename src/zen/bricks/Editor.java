@@ -19,6 +19,8 @@ public class Editor
 
     // ================================================================== Fields
 
+    private final MainWindow mainWindow;
+
     final Canvas canvas;
 
     Brick root;
@@ -27,9 +29,12 @@ public class Editor
 
     UI ui;
 
+    private Brick selection;
+
     // ============================================================ Constructors
 
     public Editor(MainWindow mainWindow, Composite parent) {
+        this.mainWindow = mainWindow;
         canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER
                 | SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND
                 | SWT.NO_REDRAW_RESIZE);
@@ -46,6 +51,7 @@ public class Editor
     }
 
     public void setDocument(TupleBrick documentBrick) {
+        selection = null;
         if (root != null) {
             root.dispose();
         }
@@ -268,5 +274,14 @@ public class Editor
             bar.setSelection(bar.getSelection() + increment);
             vertScroll();
         }
+    }
+
+    public void setSelection(Brick selection) {
+        this.selection = selection;
+        mainWindow.setStatus("Selected: " + selection); // DEBUG
+    }
+
+    public Brick getSelection() {
+        return selection;
     }
 }
