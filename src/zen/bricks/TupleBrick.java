@@ -112,8 +112,8 @@ public class TupleBrick extends ContainerBrick
         paintChildren(gc, baseX, baseY, ui, clipping);
     }
 
-    protected void paintBackground(GC gc, int baseX, int baseY, UI ui,
-                                   Rectangle clipping)
+    private void paintBackground(GC gc, int baseX, int baseY, UI ui,
+                                 Rectangle clipping)
     {
         final StyleChain chain = ui.getStyleChain(this);
         gc.setBackground(chain.getBackgroundColor());
@@ -172,10 +172,10 @@ public class TupleBrick extends ContainerBrick
         // TODO
     }
 
-    public Brick mouseDown(int mouseX, int mouseY, Event event) {
+    public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
         final Brick child = findChildAt(mouseX, mouseY);
         if (child == null) {
-            return super.mouseDown(mouseX, mouseY, event); // TODO
+            return super.mouseEvent(mouseX, mouseY, event, editor); // TODO
         } else {
             return child;
         }

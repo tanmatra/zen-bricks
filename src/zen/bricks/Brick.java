@@ -65,7 +65,7 @@ public abstract class Brick
         return 0;
     }
 
-    public Brick mouseDown(int mouseX, int mouseY, Event event) {
+    public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
         // debugMouseEvent(event);
         return null;
     }

@@ -242,7 +242,7 @@ public class Editor
         while (target != null) {
             x -= target.x;
             y -= target.y;
-            target = target.mouseDown(x, y, event);
+            target = target.mouseEvent(x, y, event, this);
         }
     }
 
