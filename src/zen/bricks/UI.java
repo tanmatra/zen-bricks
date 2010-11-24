@@ -124,9 +124,9 @@ public class UI
         return Boolean.valueOf(value);
     }
 
-    public Color parseColor(Properties properties, String key) {
+    private Color parseColor(Properties properties, String key) {
         final String value = properties.getProperty(key);
-        return ColorUtil.parse(getDevice(), value);
+        return new Color(device, ColorUtil.parse(device, value));
     }
 
     public int parseInt(Properties properties, String key) {
@@ -151,7 +151,7 @@ public class UI
         basicStyle.setFont(fontList);
     }
 
-    private Device getDevice() {
+    Device getDevice() {
         return device;
     }
 

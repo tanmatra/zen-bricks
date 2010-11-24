@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 
 public abstract class Border
@@ -11,7 +12,9 @@ public abstract class Border
     protected Color color;
 
     protected Border(UI ui, Properties properties) {
-        color = ui.parseColor(properties, "border.color");
+        final String string = properties.getProperty("border.color");
+        final RGB rgb = ColorUtil.parse(ui.getDevice(), string);
+        color = new Color(ui.getDevice(), rgb);
     }
 
     public void dispose() {
@@ -27,5 +30,4 @@ public abstract class Border
 
     protected abstract void paintBorder(GC gc, int x, int y, Brick brick,
             Rectangle clipping);
-
 }

@@ -1,7 +1,6 @@
 package zen.bricks;
 
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -26,7 +25,7 @@ public class TupleStyle extends BrickStyle
     // ============================================================ Class Fields
 
     public static final ColorProperty FOREGROUND =
-            new ColorProperty("Foreground color")
+            new ColorProperty("Foreground color", ".color")
     {
         public RGB get(TupleStyle style) {
             return style.getForegroundRGB();
@@ -38,7 +37,7 @@ public class TupleStyle extends BrickStyle
     };
 
     public static final ColorProperty BACKGROUND =
-        new ColorProperty("Background color")
+        new ColorProperty("Background color", ".background")
     {
         public RGB get(TupleStyle style) {
             return style.getBackgroundRGB();
@@ -50,7 +49,7 @@ public class TupleStyle extends BrickStyle
     };
 
     public static final ColorProperty TEXT_BACKGROUND =
-            new ColorProperty("Text background color")
+            new ColorProperty("Text background color", ".textBackground")
     {
         @Override
         public boolean isDefined(TupleStyle style) {
@@ -76,10 +75,30 @@ public class TupleStyle extends BrickStyle
         public void set(TupleStyle style, RGB value) {
             // do nothing, as it never called
         }
+
+        public void parse(TupleStyle style, Properties properties,
+                          String keyPrefix)
+        {
+            final String string =
+                    properties.getProperty(keyPrefix + keySuffix);
+            final Boolean background;
+            final RGB rgb;
+            if (string == null) {
+                background = null;
+                rgb = null;
+            } else if ("transparent".equals(string)) {
+                background = false;
+                rgb = null;
+            } else {
+                background = true;
+                rgb = ColorUtil.parse(style.getDevice(), string);
+            }
+            style.setTextBackgroundRGB(background, rgb);
+        }
     };
 
     public static final FontProperty FONT =
-            new FontProperty("Font")
+            new FontProperty("Font", ".font")
     {
         public FontData[] get(TupleStyle style) {
             return style.getFontList();
@@ -91,7 +110,7 @@ public class TupleStyle extends BrickStyle
     };
 
     public static final MarginProperty PADDING =
-            new MarginProperty("Brick padding")
+            new MarginProperty("Brick padding", ".padding")
     {
         public Margin get(TupleStyle style) {
             return style.getPadding();
@@ -103,7 +122,7 @@ public class TupleStyle extends BrickStyle
     };
 
     public static final MarginProperty TEXT_MARGIN =
-            new MarginProperty("Text margin")
+            new MarginProperty("Text margin", ".textMargin")
     {
         public Margin get(TupleStyle style) {
             return style.getTextMargin();
@@ -115,7 +134,7 @@ public class TupleStyle extends BrickStyle
     };
 
     public static final IntegerProperty LINE_SPACING =
-            new IntegerProperty("Line spacing")
+            new IntegerProperty("Line spacing", ".lineSpacing")
     {
         public Integer get(TupleStyle style) {
             return style.getLineSpacing();
@@ -127,7 +146,7 @@ public class TupleStyle extends BrickStyle
     };
 
     public static final IntegerProperty CHILD_SPACING =
-            new IntegerProperty("Children spacing")
+            new IntegerProperty("Children spacing", ".spacing")
     {
         public Integer get(TupleStyle style) {
             return style.getSpacing();
@@ -201,34 +220,9 @@ public class TupleStyle extends BrickStyle
         super(name);
         this.device = device;
         try {
-            final String fontVal = properties.getProperty(keyPrefix + ".font");
-            if (!"inherit".equals(fontVal)) {
-                FontData fontData = parseFontData(fontVal);
-                setFont(fontData != null ? new FontData[] { fontData } : null);
+            for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
+                styleProperty.parse(this, properties, keyPrefix);
             }
-
-            backgroundColor =
-                    ColorUtil.parse(device, properties, keyPrefix, ".background");
-            foregroundColor =
-                    ColorUtil.parse(device, properties, keyPrefix, ".color");
-
-            final String textBackStr =
-                    properties.getProperty(keyPrefix + ".textBackground");
-            if ("transparent".equals(textBackStr)) {
-                textBackground = false; // transparent
-            } else {
-                textBackgroundColor = ColorUtil.parse(device, textBackStr);
-                if (textBackgroundColor == null) {
-                    textBackground = null; // not defined
-                } else {
-                    textBackground = true; // opaque
-                }
-            }
-
-            padding = Margin.parseMargin(properties, keyPrefix + ".padding");
-            textMargin = Margin.parseMargin(properties, keyPrefix + ".textMargin");
-            lineSpacing = parseInt(properties, keyPrefix + ".lineSpacing");
-            spacing = parseInt(properties, keyPrefix + ".spacing");
         } catch (RuntimeException e) {
             dispose();
             throw e;
@@ -264,46 +258,8 @@ public class TupleStyle extends BrickStyle
         }
     }
 
-    private static FontData parseFontData(String str) {
-        if (str == null) {
-            return null;
-        }
-        String name;
-        float height = 8.0f;
-        int style = SWT.NORMAL;
-        StringTokenizer tokenizer;
-        if (str.charAt(0) == '"') {
-            final int p = str.indexOf('"', 1);
-            name = str.substring(1, p);
-            tokenizer = new StringTokenizer(str.substring(p + 1));
-        } else {
-            tokenizer = new StringTokenizer(str);
-            name = tokenizer.nextToken();
-        }
-        String heightStr = tokenizer.nextToken();
-        height = Float.parseFloat(heightStr);
-        while (tokenizer.hasMoreTokens()) {
-            final String token = tokenizer.nextToken();
-            if ("bold".equals(token)) {
-                style |= SWT.BOLD;
-            } else if ("italic".equals(token)) {
-                style |= SWT.ITALIC;
-            }
-        }
-        final FontData data = new FontData(name, (int) height, style);
-        if (Math.floor(height) != height) {
-            data.height = height;
-        }
-        return data;
-    }
-
-    private static Integer parseInt(Properties properties, String key) {
-        final String string = properties.getProperty(key);
-        if (string == null) {
-            return null;
-        } else {
-            return Integer.parseInt(string);
-        }
+    public Device getDevice() {
+        return device;
     }
 
     public void setFont(FontData[] fontList) {
