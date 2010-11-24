@@ -45,6 +45,9 @@ public class Editor
     // ================================================================= Methods
 
     public void setUI(UI ui) {
+        if (this.ui != null) {
+            this.ui.dispose();
+        }
         this.ui = ui;
         ui.applyTo(this);
         refresh();

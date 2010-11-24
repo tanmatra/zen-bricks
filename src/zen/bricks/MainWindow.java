@@ -1,7 +1,9 @@
 package zen.bricks;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
@@ -26,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.styleeditor.EditStylesDialog;
 
+
 public class MainWindow extends ApplicationWindow
 {
     // ============================================================ Class Fields
@@ -47,11 +50,28 @@ public class MainWindow extends ApplicationWindow
         Display.getCurrent().dispose();
     }
 
+    private static Properties loadProperties(String filePath)
+            throws IOException
+    {
+        final InputStream inputStream = new FileInputStream(filePath);
+        try {
+            final Properties properties = new Properties();
+            properties.load(inputStream);
+            return properties;
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+
     // ================================================================== Fields
 
     Editor editor;
 
-    private final Properties defaultTheme;
+    private final Properties defaultThemeProps;
 
     String themeFileName;
 
@@ -61,7 +81,7 @@ public class MainWindow extends ApplicationWindow
 
     public MainWindow() throws IOException {
         super(null);
-        defaultTheme = UI.loadProperties(DEFAULT_THEME_FILE);
+        defaultThemeProps = loadProperties(DEFAULT_THEME_FILE);
         addMenuBar();
         addStatusLine();
     }
@@ -176,7 +196,7 @@ public class MainWindow extends ApplicationWindow
         contents.setLayout(layout);
 
         editor = new Editor(this, contents);
-        setEditorTheme(defaultTheme);
+        setEditorTheme(defaultThemeProps);
         editor.setDocument(Editor.makeSample());
 
         getStatusLineManager().setMessage("Ready.");
@@ -195,21 +215,21 @@ public class MainWindow extends ApplicationWindow
         getShell().setText("Bricks - " + fileName);
     }
 
-    void setEditorTheme(final Properties props) {
-        UI ui;
+    void setEditorTheme(Properties props) {
+        final UI ui;
         try {
             ui = new UI(getShell().getDisplay(), props);
         } catch (Exception e) {
-            handleException(e, "Error loading theme");
+            handleException(e, "Error setting theme");
             return;
         }
         editor.setUI(ui);
     }
 
     void loadTheme() {
-        final Properties props = new Properties(defaultTheme);
+        final Properties props;
         try {
-            UI.loadProperties(props, themeFileName);
+            props = loadProperties(themeFileName);
         } catch (IOException e) {
             handleException(e, "Error loading theme");
             return;

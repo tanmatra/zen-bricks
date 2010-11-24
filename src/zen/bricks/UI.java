@@ -1,8 +1,5 @@
 package zen.bricks;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
@@ -16,36 +13,6 @@ import org.eclipse.swt.graphics.GC;
 
 public class UI
 {
-    // =========================================================== Class Methods
-
-    static Properties loadProperties(Properties properties, String filePath)
-            throws IOException
-    {
-        final InputStream inputStream = new FileInputStream(filePath);
-        try {
-            properties.load(inputStream);
-            return properties;
-        } finally {
-            try {
-                inputStream.close();
-            } catch (final IOException e) {
-                // ignore
-            }
-        }
-    }
-
-    static Properties loadProperties(String filePath) throws IOException {
-        return loadProperties(new Properties(), filePath);
-    }
-
-    static Properties loadProperties(String filePath, String defaultsFilePath)
-            throws IOException
-    {
-        final Properties defaults = loadProperties(defaultsFilePath);
-        final Properties properties = new Properties(defaults);
-        return loadProperties(properties, filePath);
-    }
-
     // ================================================================== Fields
 
     private final Device device;
@@ -81,12 +48,6 @@ public class UI
             throw e;
         }
     }
-
-    public UI(Device device, String themeFileName) throws Exception {
-        this(device, loadProperties(themeFileName));
-    }
-
-    // ================================================================= Methods
 
     void init(Properties props) throws Exception {
         advanced = parseBoolean(props, "advanced");
