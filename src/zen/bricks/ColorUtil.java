@@ -73,6 +73,7 @@ public class ColorUtil
         if ((str == null) || str.isEmpty()) {
             return null;
         }
+        str = str.trim();
         final Integer sysId = systemColors.get(str.toUpperCase());
         if (sysId != null) {
             return copySystemColor(device, sysId);
