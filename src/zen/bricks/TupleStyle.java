@@ -51,12 +51,11 @@ public class TupleStyle extends BrickStyle
     public static final ColorProperty TEXT_BACKGROUND =
             new ColorProperty("Text background color", ".textBackground")
     {
-        @Override
         public boolean isDefined(TupleStyle style) {
             return style.textBackground != null;
         }
 
-        protected StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
             return new ColorEditorPart(this, style, style.textBackground);
         }
 
@@ -339,7 +338,8 @@ public class TupleStyle extends BrickStyle
     }
 
     public RGB getTextBackgroundRGB() {
-        return textBackgroundColor != null ? textBackgroundColor.getRGB() : null;
+        return textBackgroundColor != null ?
+                textBackgroundColor.getRGB() : null;
     }
 
     public void setTextBackgroundRGB(Boolean textBackground, RGB rgb) {

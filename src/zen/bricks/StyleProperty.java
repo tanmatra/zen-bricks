@@ -18,6 +18,7 @@ public abstract class StyleProperty<T>
     // ================================================================== Fields
 
     protected final String title;
+
     protected final String keySuffix;
 
     // ============================================================ Constructors
@@ -82,7 +83,8 @@ public abstract class StyleProperty<T>
         }
 
         public void parse(TupleStyle style, Properties properties,
-                          String keyPrefix) {
+                          String keyPrefix)
+        {
             final String value = properties.getProperty(keyPrefix + keySuffix);
             set(style, ColorUtil.parse(style.getDevice(), value));
         }
@@ -94,7 +96,8 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<FontData[]> createEditorPart(TupleStyle style)
+        {
             return new FontEditorPart(this, style);
         }
 
@@ -124,7 +127,7 @@ public abstract class StyleProperty<T>
                 tokenizer = new StringTokenizer(str);
                 name = tokenizer.nextToken();
             }
-            String heightStr = tokenizer.nextToken();
+            final String heightStr = tokenizer.nextToken();
             height = Float.parseFloat(heightStr);
             while (tokenizer.hasMoreTokens()) {
                 final String token = tokenizer.nextToken();
@@ -148,7 +151,7 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<Margin> createEditorPart(TupleStyle style) {
             return new MarginEditorPart(this, style);
         }
 
@@ -165,7 +168,7 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<Integer> createEditorPart(TupleStyle style) {
             return new IntegerEditorPart(this, style);
         }
 

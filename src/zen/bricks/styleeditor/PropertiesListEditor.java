@@ -11,11 +11,15 @@ import zen.bricks.TupleStyle;
 public class PropertiesListEditor implements IBrickStyleEditor
 {
     private final StyleProperty<?>[] properties;
+
     private final TupleStyle style;
+
     private StyleEditorPart<?>[] parts;
+
     private Composite composite;
 
-    public PropertiesListEditor(StyleProperty<?>[] properties, TupleStyle style) {
+    public PropertiesListEditor(StyleProperty<?>[] properties, TupleStyle style)
+    {
         this.properties = properties;
         this.style = style;
     }
@@ -30,12 +34,12 @@ public class PropertiesListEditor implements IBrickStyleEditor
         composite = new Composite(parent, SWT.NONE);
 
         int numColumns = 0;
-        for (final StyleEditorPart part : parts) {
+        for (final StyleEditorPart<?> part : parts) {
             numColumns = Math.max(numColumns, part.getNumColumns());
         }
 
         GridLayoutFactory.fillDefaults().numColumns(numColumns).margins(5, 5)
-            .applyTo(composite);
+                .applyTo(composite);
 
         for (int i = 0; i < count; i++) {
             parts[i].createWidgets(composite, numColumns);
