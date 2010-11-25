@@ -64,4 +64,12 @@ public class Margin
     public int getBottom() {
         return bottom;
     }
+
+    public int getHorizontalSum() {
+        return left + right;
+    }
+
+    public int getVerticalSum() {
+        return top + bottom;
+    }
 }
