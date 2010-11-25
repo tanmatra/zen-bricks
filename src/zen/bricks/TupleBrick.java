@@ -28,6 +28,14 @@ public class TupleBrick extends ContainerBrick
         public Iterator<Brick> iterator() {
             return children.subList(startIndex, endIndex).iterator();
         }
+
+        /**
+         * @param baseY screen coordinate of brick
+         */
+        boolean intersects(int baseY, Rectangle rect) {
+            final int top = baseY + y;
+            return (rect.y < (top + height)) && ((rect.y + rect.height) > top);
+        }
     }
 
     // ================================================================== Fields
@@ -147,14 +155,19 @@ public class TupleBrick extends ContainerBrick
     private void paintChildren(GC gc, int baseX, int baseY, UI ui,
                                Rectangle clipping)
     {
-        for (final Brick brick : children) {
-            final int brickX = baseX + brick.x;
-            final int brickY = baseY + brick.y;
-            if (!clipping.intersects(brickX, brickY, brick.width, brick.height))
-            {
-                continue;
+        for (final Line line : lines) {
+            if (line.intersects(baseY, clipping)) {
+                for (final Brick brick : line) {
+                    final int brickX = baseX + brick.x;
+                    final int brickY = baseY + brick.y;
+                    if (!clipping.intersects(
+                            brickX, brickY, brick.width, brick.height))
+                    {
+                        continue;
+                    }
+                    brick.paint(gc, brickX, brickY, ui, clipping);
+                }
             }
-            brick.paint(gc, brickX, brickY, ui, clipping);
         }
     }
 

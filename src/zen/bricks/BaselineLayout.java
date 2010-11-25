@@ -50,6 +50,8 @@ public class BaselineLayout extends TupleLayout
                 child.y = lineY + margin;
                 lineHeight = Math.max(lineHeight, child.height + margin);
             }
+            line.y = lineY;
+            line.height = lineHeight;
             width = Math.max(width, currX - spacing);
             lineY += lineHeight + lineSpacing;
             // next line
