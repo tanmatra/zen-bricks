@@ -27,6 +27,7 @@ public class UI
 
     private TupleStyle basicStyle;
     private TupleStyle listStyle;
+    private TupleStyle selectedStyle;
 
     private StyleChain basicChain;
     private StyleChain listChain;
@@ -60,6 +61,9 @@ public class UI
         basicStyle = new TupleStyle("Basic", device, props, "basic_style");
         basicStyle.setTopLevel(true);
         listStyle = new TupleStyle("List", device, props, "list_style");
+
+        selectedStyle = new TupleStyle(
+                "Selected", device, props, "selected_style");
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
@@ -159,8 +163,8 @@ public class UI
         return savedGC;
     }
 
-    public void layout(TupleBrick brick) {
-        layout.doLayout(brick);
+    public void layout(TupleBrick brick, Editor editor) {
+        layout.doLayout(brick, editor);
     }
 
     public Color getCanvasBackgroundColor() {
@@ -179,16 +183,21 @@ public class UI
         gc.setTextAntialias(textAntialias);
     }
 
-    public StyleChain getStyleChain(TupleBrick brick) {
+    public StyleChain getStyleChain(TupleBrick brick, Editor editor) {
+        StyleChain chain;
         if (brick.isList()) {
-            return listChain;
+            chain = listChain;
         } else {
-            return basicChain;
+            chain = basicChain;
         }
+        if (brick == editor.getSelection()) {
+            chain = selectedStyle.createChain(chain);
+        }
+        return chain;
     }
 
     public List<? extends BrickStyle> getBrickStyles() {
-        return Arrays.asList(basicStyle, listStyle);
+        return Arrays.asList(basicStyle, listStyle, selectedStyle);
     }
 
     public Border getBorder() {

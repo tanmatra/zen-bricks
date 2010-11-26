@@ -98,9 +98,9 @@ public class RootBrick extends ContainerBrick
         x = newX;
     }
 
-    void calculateSize(UI ui) {
+    void calculateSize(UI ui, Editor editor) {
         if (document != null) {
-            document.calculateSize(ui);
+            document.calculateSize(ui, editor);
             width = document.width + padding.getHorizontalSum();
             height = document.height + padding.getVerticalSum();
         }
@@ -155,13 +155,13 @@ public class RootBrick extends ContainerBrick
         final UI ui = editor.ui;
         ui.preparePaint(gc);
         final Rectangle clipping = gc.getClipping();
-        paint(gc, x, y, ui, clipping);
+        paint(gc, x, y, ui, clipping, editor);
     }
 
-    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping, Editor editor) {
         if (document != null) {
             document.paint(gc, baseX + document.x, baseY + document.y,
-                    ui, clipping);
+                    ui, clipping, editor);
         }
     }
 

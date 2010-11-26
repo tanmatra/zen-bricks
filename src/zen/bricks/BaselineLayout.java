@@ -8,8 +8,8 @@ public class BaselineLayout extends TupleLayout
         super(ui);
     }
 
-    void doLayout(TupleBrick brick) {
-        final StyleChain chain = ui.getStyleChain(brick);
+    void doLayout(TupleBrick brick, Editor editor) {
+        final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();
         final int paddingLeft = brickPadding.getLeft();
@@ -31,7 +31,7 @@ public class BaselineLayout extends TupleLayout
         boolean firstLine = true;
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {
-                child.calculateSize(ui);
+                child.calculateSize(ui, editor);
                 child.x = currX;
                 currX += child.width + spacing;
                 lineAscent = Math.max(lineAscent, child.ascent);

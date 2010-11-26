@@ -14,6 +14,9 @@ public class StyleChain
     final TupleStyle style;
 
     protected StyleChain(TupleStyle style, StyleChain parent) {
+        if (style == null) {
+            throw new IllegalArgumentException("null style for chain");
+        }
         this.style = style;
         this.parent = parent;
     }

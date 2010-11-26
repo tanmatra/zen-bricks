@@ -6,8 +6,8 @@ public class SimpleLayout extends TupleLayout
         super(ui);
     }
 
-    void doLayout(TupleBrick brick) {
-        final StyleChain chain = ui.getStyleChain(brick);
+    void doLayout(TupleBrick brick, Editor editor) {
+        final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();
         final int lineSpacing = chain.getLineSpacing();
@@ -15,7 +15,7 @@ public class SimpleLayout extends TupleLayout
 
         brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
-        brick.textExtent = ui.getStyleChain(brick).getTextExtent(brick.text);
+        brick.textExtent = ui.getStyleChain(brick, editor).getTextExtent(brick.text);
         brick.width = textMargin.getLeft() + brick.textExtent.x;
 
         int currX = brick.width + spacing;
@@ -24,7 +24,7 @@ public class SimpleLayout extends TupleLayout
 
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {
-                child.calculateSize(ui);
+                child.calculateSize(ui, editor);
                 child.x = currX;
                 child.y = currY;
                 currLineHeight = Math.max(currLineHeight, child.height);

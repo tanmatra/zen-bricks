@@ -38,9 +38,9 @@ public abstract class Brick
     }
 
     public abstract void paint(GC gc, int baseX, int baseY, UI ui,
-                               Rectangle clipping);
+                               Rectangle clipping, Editor editor);
 
-    void calculateSize(UI ui) {
+    void calculateSize(UI ui, Editor editor) {
         // todo
     }
 

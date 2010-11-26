@@ -63,7 +63,7 @@ public class Editor
     public void refresh() {
         if (root != null) {
             root.realize(this);
-            root.calculateSize(ui);
+            root.calculateSize(ui, this);
             root.canvasResized();
         }
         canvas.redraw();
@@ -167,6 +167,7 @@ public class Editor
 
     public void setSelection(Brick selection) {
         this.selection = selection;
+        refresh(); // FIXME!!! DIRTY
         mainWindow.setStatus("Selected: " + selection); // DEBUG
     }
 

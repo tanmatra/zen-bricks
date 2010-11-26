@@ -114,30 +114,30 @@ public class TupleBrick extends ContainerBrick
     }
 
     @Override
-    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
-        paintBackground(gc, baseX, baseY, ui, clipping);
-        paintText(gc, baseX, baseY, ui, clipping);
-        paintChildren(gc, baseX, baseY, ui, clipping);
+    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping, Editor editor) {
+        paintBackground(gc, baseX, baseY, ui, clipping, editor);
+        paintText(gc, baseX, baseY, ui, clipping, editor);
+        paintChildren(gc, baseX, baseY, ui, clipping, editor);
     }
 
     private void paintBackground(GC gc, int baseX, int baseY, UI ui,
-                                 Rectangle clipping)
+                                 Rectangle clipping, Editor editor)
     {
-        final StyleChain chain = ui.getStyleChain(this);
+        final StyleChain chain = ui.getStyleChain(this, editor);
         gc.setBackground(chain.getBackgroundColor());
         gc.fillRectangle(baseX, baseY, this.getWidth(), this.getHeight());
 
         ui.getBorder().paint(gc, baseX, baseY, this, clipping);
     }
 
-    private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping) {
+    private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping, Editor editor) {
         final int textX = baseX + this.textX;
         final int textY = baseY + this.textY;
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
 
-        final StyleChain chain = ui.getStyleChain(this);
+        final StyleChain chain = ui.getStyleChain(this, editor);
         gc.setFont(chain.getFont());
         gc.setForeground(chain.getForegroundColor());
 
@@ -153,7 +153,7 @@ public class TupleBrick extends ContainerBrick
     }
 
     private void paintChildren(GC gc, int baseX, int baseY, UI ui,
-                               Rectangle clipping)
+                               Rectangle clipping, Editor editor)
     {
         for (final Line line : lines) {
             if (line.intersects(baseY, clipping)) {
@@ -165,14 +165,14 @@ public class TupleBrick extends ContainerBrick
                     {
                         continue;
                     }
-                    brick.paint(gc, brickX, brickY, ui, clipping);
+                    brick.paint(gc, brickX, brickY, ui, clipping, editor);
                 }
             }
         }
     }
 
-    void calculateSize(UI ui) {
-        ui.layout(this);
+    void calculateSize(UI ui, Editor editor) {
+        ui.layout(this, editor);
     }
 
     public String toString() {
