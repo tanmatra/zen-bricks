@@ -2,12 +2,13 @@ package zen.bricks;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 
 public abstract class Brick
 {
-    final ContainerBrick parent;
+    ContainerBrick parent;
     int index;
     int x;
     int y;
@@ -104,5 +105,17 @@ public abstract class Brick
         System.out.println("\nmouse event: " + event
                 + "\ntype: " + type
                 + "\non: " + this);
+    }
+
+    public Point toScreen() {
+        int px = 0;
+        int py = 0;
+        Brick brick = this;
+        while (brick != null) {
+            px += brick.x;
+            py += brick.y;
+            brick = brick.getParent();
+        }
+        return new Point(px, py);
     }
 }

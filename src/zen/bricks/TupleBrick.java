@@ -174,8 +174,9 @@ public class TupleBrick extends ContainerBrick
 
     public String toString() {
         return String.format(
-                "TextBrick[@%H, parent=%H, '%s', x=%d, y=%d, w=%d, h=%d]",
-                this, parent, text, x, y, width, height);
+                "TextBrick[@%H, parent=%H, '%s', x=%d, y=%d, w=%d, h=%d]" +
+                " (screen=%s)",
+                this, parent, text, x, y, width, height, toScreen());
     }
 
     protected void childResized(Brick child) {

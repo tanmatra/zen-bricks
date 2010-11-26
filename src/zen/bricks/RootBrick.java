@@ -168,6 +168,7 @@ public class RootBrick extends ContainerBrick
 
     protected void addChild(Brick child) {
         document = child;
+        child.parent = this;
         child.index = 0;
         child.x = padding.getTop();
         child.y = padding.getLeft();

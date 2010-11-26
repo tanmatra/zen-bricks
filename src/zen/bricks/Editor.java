@@ -1,6 +1,7 @@
 package zen.bricks;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -169,10 +170,19 @@ public class Editor
         }
     }
 
-    public void setSelection(Brick selection) {
-        this.selection = selection;
-        refresh(); // FIXME DIRTY
-        mainWindow.setStatus("Selected: " + selection); // DEBUG
+    public void setSelection(Brick newSel) {
+        Point p;
+        final Brick oldSel = selection;
+        selection = newSel;
+        if (oldSel != null) {
+            p = oldSel.toScreen();
+            canvas.redraw(p.x, p.y, oldSel.width, oldSel.height, false);
+        }
+        if (newSel != null) {
+            p = newSel.toScreen();
+            canvas.redraw(p.x, p.y, newSel.width, newSel.height, false);
+        }
+        mainWindow.setStatus("Selected: " + newSel); // DEBUG
     }
 
     public Brick getSelection() {
