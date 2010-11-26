@@ -158,10 +158,11 @@ public class RootBrick extends ContainerBrick
         paint(gc, x, y, clipping, editor);
     }
 
-    public void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
+    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
+                      Editor editor)
+    {
         if (document != null) {
-            document.paint(gc, baseX + document.x, baseY + document.y,
-                    clipping, editor);
+            document.repaint(gc, baseX, baseY, clipping, editor);
         }
     }
 
@@ -170,6 +171,8 @@ public class RootBrick extends ContainerBrick
         child.index = 0;
         child.x = padding.getTop();
         child.y = padding.getLeft();
+        x = 0;
+        y = 0;
         verticalBar.setSelection(0);
         horizontalBar.setSelection(0);
     }

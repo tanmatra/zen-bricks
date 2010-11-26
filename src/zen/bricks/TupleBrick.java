@@ -162,14 +162,7 @@ public class TupleBrick extends ContainerBrick
         for (final Line line : lines) {
             if (line.intersects(baseY, clipping)) {
                 for (final Brick brick : line) {
-                    final int brickX = baseX + brick.x;
-                    final int brickY = baseY + brick.y;
-                    if (!clipping.intersects(
-                            brickX, brickY, brick.width, brick.height))
-                    {
-                        continue;
-                    }
-                    brick.paint(gc, brickX, brickY, clipping, editor);
+                    brick.repaint(gc, baseX, baseY, clipping, editor);
                 }
             }
         }

@@ -37,6 +37,23 @@ public abstract class Brick
                 && (x < (this.x + width)) && (y < (this.y + height));
     }
 
+    public boolean intersects(Rectangle rect, int baseX, int baseY) {
+        return rect.intersects(x + baseX, y + baseX, width, height);
+    }
+
+    /**
+     * Paints only if intersects with clipping.
+     */
+    public void repaint(GC gc, int baseX, int baseY, Rectangle clipping,
+                        Editor editor)
+    {
+        final int brickX = baseX + x;
+        final int brickY = baseY + y;
+        if (clipping.intersects(brickX, brickY, width, height)) {
+            paint(gc, brickX, brickY, clipping, editor);
+        }
+    }
+
     public abstract void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                                Editor editor);
 
