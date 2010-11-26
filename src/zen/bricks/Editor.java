@@ -2,7 +2,6 @@ package zen.bricks;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -179,19 +178,15 @@ public class Editor
         final GC gc = new GC(canvas);
         try {
             if (oldSel != null) {
-                final Point point = oldSel.toScreen();
-                final Rectangle clipping = new Rectangle(
-                        point.x, point.y, oldSel.width, oldSel.height);
-                if (clipping.intersects(clientArea)) {
-                    oldSel.paint(gc, point.x, point.y, clipping, this);
+                final Rectangle rect = oldSel.toScreen();
+                if (rect.intersects(clientArea)) {
+                    oldSel.paint(gc, rect.x, rect.y, rect, this);
                 }
             }
             if (newSel != null) {
-                final Point point = newSel.toScreen();
-                final Rectangle clipping = new Rectangle(
-                        point.x, point.y, newSel.width, newSel.height);
-                if (clipping.intersects(clientArea)) {
-                    newSel.paint(gc, point.x, point.y, clipping, this);
+                final Rectangle rect = newSel.toScreen();
+                if (rect.intersects(clientArea)) {
+                    newSel.paint(gc, rect.x, rect.y, rect, this);
                 }
             }
         } finally {
@@ -202,16 +197,15 @@ public class Editor
 
     /* Unused */
     public void setSelection0(Brick newSel) {
-        Point p;
         final Brick oldSel = selection;
         selection = newSel;
         if (oldSel != null) {
-            p = oldSel.toScreen();
-            canvas.redraw(p.x, p.y, oldSel.width, oldSel.height, false);
+            final Rectangle rect = oldSel.toScreen();
+            canvas.redraw(rect.x, rect.y, rect.width, rect.height, false);
         }
         if (newSel != null) {
-            p = newSel.toScreen();
-            canvas.redraw(p.x, p.y, newSel.width, newSel.height, false);
+            final Rectangle rect = newSel.toScreen();
+            canvas.redraw(rect.x, rect.y, rect.width, rect.height, false);
         }
         mainWindow.setStatus("Selected: " + newSel); // DEBUG
     }

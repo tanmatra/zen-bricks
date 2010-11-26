@@ -2,7 +2,6 @@ package zen.bricks;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 
@@ -107,7 +106,7 @@ public abstract class Brick
                 + "\non: " + this);
     }
 
-    public Point toScreen() {
+    public Rectangle toScreen() {
         int px = 0;
         int py = 0;
         Brick brick = this;
@@ -116,6 +115,6 @@ public abstract class Brick
             py += brick.y;
             brick = brick.getParent();
         }
-        return new Point(px, py);
+        return new Rectangle(px, py, width, height);
     }
 }
