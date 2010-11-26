@@ -123,7 +123,7 @@ public class MainWindow extends ApplicationWindow
 
         final Action editStylesAction = new Action("&Edit styles...") {
             public void run() {
-                new EditStylesDialog(getShell(), editor.ui, editor).open();
+                new EditStylesDialog(getShell(), editor.getUI(), editor).open();
             }
         };
         viewMenu.add(editStylesAction);
@@ -131,7 +131,7 @@ public class MainWindow extends ApplicationWindow
         final Action fontAction = new Action("&Font...") {
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
-                final UI ui = editor.ui;
+                final UI ui = editor.getUI();
                 fontDialog.setFontList(ui.getBasicStyle().getFontList());
                 if (fontDialog.open() == null) {
                     return;
@@ -145,7 +145,7 @@ public class MainWindow extends ApplicationWindow
         final Action adjustFontAction = new Action("&Adjust font...") {
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
-                final UI ui = editor.ui;
+                final UI ui = editor.getUI();
                 dialog.fontList = ui.getBasicStyle().getFontList();
                 if (dialog.open() != Window.OK) {
                     return;

@@ -23,7 +23,7 @@ public class Editor
 
     Rectangle clientArea;
 
-    UI ui;
+    private UI ui;
 
     private Brick selection;
 
@@ -39,6 +39,10 @@ public class Editor
     }
 
     // ================================================================= Methods
+
+    public UI getUI() {
+        return ui;
+    }
 
     public void setUI(UI ui) {
         if (this.ui != null) {
@@ -167,7 +171,7 @@ public class Editor
 
     public void setSelection(Brick selection) {
         this.selection = selection;
-        refresh(); // FIXME!!! DIRTY
+        refresh(); // FIXME DIRTY
         mainWindow.setStatus("Selected: " + selection); // DEBUG
     }
 

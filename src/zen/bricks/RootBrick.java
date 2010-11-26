@@ -144,7 +144,7 @@ public class RootBrick extends ContainerBrick
     }
 
     void realize(Editor editor) {
-        canvas.setBackground(editor.ui.getCanvasBackgroundColor());
+        canvas.setBackground(editor.getUI().getCanvasBackgroundColor());
 //        if (document != null) {
 //            document.realize(editor);
 //        }
@@ -152,16 +152,16 @@ public class RootBrick extends ContainerBrick
     }
 
     void paint(GC gc) {
-        final UI ui = editor.ui;
+        final UI ui = editor.getUI();
         ui.preparePaint(gc);
         final Rectangle clipping = gc.getClipping();
-        paint(gc, x, y, ui, clipping, editor);
+        paint(gc, x, y, clipping, editor);
     }
 
-    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping, Editor editor) {
+    public void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
         if (document != null) {
             document.paint(gc, baseX + document.x, baseY + document.y,
-                    ui, clipping, editor);
+                    clipping, editor);
         }
     }
 

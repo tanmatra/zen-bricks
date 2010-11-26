@@ -114,30 +114,34 @@ public class TupleBrick extends ContainerBrick
     }
 
     @Override
-    public void paint(GC gc, int baseX, int baseY, UI ui, Rectangle clipping, Editor editor) {
-        paintBackground(gc, baseX, baseY, ui, clipping, editor);
-        paintText(gc, baseX, baseY, ui, clipping, editor);
+    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
+                      Editor editor)
+    {
+        final UI ui = editor.getUI();
+        final StyleChain chain = ui.getStyleChain(this, editor);
+        paintBackground(gc, baseX, baseY, ui, clipping, chain);
+        paintText(gc, baseX, baseY, clipping, chain);
         paintChildren(gc, baseX, baseY, ui, clipping, editor);
     }
 
     private void paintBackground(GC gc, int baseX, int baseY, UI ui,
-                                 Rectangle clipping, Editor editor)
+                                 Rectangle clipping, StyleChain chain)
     {
-        final StyleChain chain = ui.getStyleChain(this, editor);
         gc.setBackground(chain.getBackgroundColor());
         gc.fillRectangle(baseX, baseY, this.getWidth(), this.getHeight());
 
         ui.getBorder().paint(gc, baseX, baseY, this, clipping);
     }
 
-    private void paintText(GC gc, int baseX, int baseY, UI ui, Rectangle clipping, Editor editor) {
+    private void paintText(GC gc, int baseX, int baseY, Rectangle clipping,
+                           StyleChain chain)
+    {
         final int textX = baseX + this.textX;
         final int textY = baseY + this.textY;
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
 
-        final StyleChain chain = ui.getStyleChain(this, editor);
         gc.setFont(chain.getFont());
         gc.setForeground(chain.getForegroundColor());
 
@@ -165,7 +169,7 @@ public class TupleBrick extends ContainerBrick
                     {
                         continue;
                     }
-                    brick.paint(gc, brickX, brickY, ui, clipping, editor);
+                    brick.paint(gc, brickX, brickY, clipping, editor);
                 }
             }
         }
