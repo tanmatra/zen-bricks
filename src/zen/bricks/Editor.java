@@ -1,6 +1,7 @@
 package zen.bricks;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -21,8 +22,6 @@ public class Editor
     final RootBrick root;
 
     Brick document;
-
-    Rectangle clientArea;
 
     private UI ui;
 
@@ -171,6 +170,38 @@ public class Editor
     }
 
     public void setSelection(Brick newSel) {
+        if ((selection == null) && (newSel == null)) {
+            return;
+        }
+        final Brick oldSel = selection;
+        selection = newSel;
+        final Rectangle clientArea = canvas.getClientArea();
+        final GC gc = new GC(canvas);
+        try {
+            if (oldSel != null) {
+                final Point point = oldSel.toScreen();
+                final Rectangle clipping = new Rectangle(
+                        point.x, point.y, oldSel.width, oldSel.height);
+                if (clipping.intersects(clientArea)) {
+                    oldSel.paint(gc, point.x, point.y, clipping, this);
+                }
+            }
+            if (newSel != null) {
+                final Point point = newSel.toScreen();
+                final Rectangle clipping = new Rectangle(
+                        point.x, point.y, newSel.width, newSel.height);
+                if (clipping.intersects(clientArea)) {
+                    newSel.paint(gc, point.x, point.y, clipping, this);
+                }
+            }
+        } finally {
+            gc.dispose();
+        }
+        mainWindow.setStatus("Selected: " + newSel); // DEBUG
+    }
+
+    /* Unused */
+    public void setSelection0(Brick newSel) {
         Point p;
         final Brick oldSel = selection;
         selection = newSel;
