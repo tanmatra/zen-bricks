@@ -32,7 +32,7 @@ public class Editor
         this.mainWindow = mainWindow;
         canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER
                 | SWT.DOUBLE_BUFFERED /*| SWT.NO_BACKGROUND*/
-                | SWT.NO_REDRAW_RESIZE);
+                | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
         createListeners();
         root = new RootBrick(this);
     }
@@ -73,8 +73,8 @@ public class Editor
     }
 
     static TupleBrick makeSample() {
-        TupleBrick rootBrick = new TupleBrick(null,
-                "Quick brown fox\njumps over the lazy dog");
+        final TupleBrick rootBrick = new TupleBrick(null,
+        "Quick brown fox\njumps over the lazy dog");
 
         new ColorBrick(rootBrick, 200, 50,
                 new RGB(192, 64, 64),
@@ -169,6 +169,11 @@ public class Editor
     }
 
     public void setSelection(Brick newSel) {
+        setSelection0(newSel);
+    }
+
+    /* Unused */
+    public void setSelection1(Brick newSel) {
         if ((selection == null) && (newSel == null)) {
             return;
         }
@@ -195,17 +200,14 @@ public class Editor
         mainWindow.setStatus("Selected: " + newSel); // DEBUG
     }
 
-    /* Unused */
     public void setSelection0(Brick newSel) {
         final Brick oldSel = selection;
         selection = newSel;
         if (oldSel != null) {
-            final Rectangle rect = oldSel.toScreen();
-            canvas.redraw(rect.x, rect.y, rect.width, rect.height, false);
+            root.paintOnly(oldSel);
         }
         if (newSel != null) {
-            final Rectangle rect = newSel.toScreen();
-            canvas.redraw(rect.x, rect.y, rect.width, rect.height, false);
+            root.paintOnly(newSel);
         }
         mainWindow.setStatus("Selected: " + newSel); // DEBUG
     }

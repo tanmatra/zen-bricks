@@ -27,9 +27,13 @@ public class RootBrick extends ContainerBrick
 
     private final ScrollBar horizontalBar;
 
-    Rectangle clientArea;
+    private Rectangle clientArea;
 
-    private Margin padding = new Margin(5, 5, 5, 5);
+    private final Margin padding = new Margin(5, 5, 5, 5);
+
+    private Brick repaintBrick;
+
+    private Rectangle repaintRect;
 
     // ============================================================ Constructors
 
@@ -155,7 +159,24 @@ public class RootBrick extends ContainerBrick
         final UI ui = editor.getUI();
         ui.preparePaint(gc);
         final Rectangle clipping = gc.getClipping();
+        if (repaintBrick != null) {
+            if (repaintRect.intersects(clipping)) {
+                repaintBrick.paint(gc, repaintRect.x, repaintRect.y,
+                        clipping, editor);
+            }
+            repaintBrick = null;
+            repaintRect = null;
+            return;
+        }
         paint(gc, x, y, clipping, editor);
+    }
+
+    void paintOnly(Brick brick) {
+        canvas.update();
+        repaintBrick = brick;
+        repaintRect = brick.toScreen();
+        canvas.redraw(repaintRect.x, repaintRect.y,
+                repaintRect.width, repaintRect.height, false);
     }
 
     public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
