@@ -1,9 +1,7 @@
 package zen.bricks;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -169,38 +167,6 @@ public class Editor
     }
 
     public void setSelection(Brick newSel) {
-        setSelection0(newSel);
-    }
-
-    /* Unused */
-    public void setSelection1(Brick newSel) {
-        if ((selection == null) && (newSel == null)) {
-            return;
-        }
-        final Brick oldSel = selection;
-        selection = newSel;
-        final Rectangle clientArea = canvas.getClientArea();
-        final GC gc = new GC(canvas);
-        try {
-            if (oldSel != null) {
-                final Rectangle rect = oldSel.toScreen();
-                if (rect.intersects(clientArea)) {
-                    oldSel.paint(gc, rect.x, rect.y, rect, this);
-                }
-            }
-            if (newSel != null) {
-                final Rectangle rect = newSel.toScreen();
-                if (rect.intersects(clientArea)) {
-                    newSel.paint(gc, rect.x, rect.y, rect, this);
-                }
-            }
-        } finally {
-            gc.dispose();
-        }
-        mainWindow.setStatus("Selected: " + newSel); // DEBUG
-    }
-
-    public void setSelection0(Brick newSel) {
         final Brick oldSel = selection;
         selection = newSel;
         if (oldSel != null) {
