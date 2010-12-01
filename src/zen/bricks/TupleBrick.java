@@ -2,6 +2,7 @@ package zen.bricks;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -25,8 +26,16 @@ public class TupleBrick extends ContainerBrick
             this.endIndex = endIndex;
         }
 
+        int getBottom() {
+            return y + height;
+        }
+
+        List<Brick> getChildren() {
+            return children.subList(startIndex, endIndex);
+        }
+
         public Iterator<Brick> iterator() {
-            return children.subList(startIndex, endIndex).iterator();
+            return getChildren().iterator();
         }
 
         /**
@@ -36,7 +45,19 @@ public class TupleBrick extends ContainerBrick
             final int top = baseY + y;
             return (rect.y < (top + height)) && ((rect.y + rect.height) > top);
         }
+
+        void paint(GC gc, int baseX, int baseY, Rectangle clipping,
+                   Editor editor)
+        {
+            for (final Brick brick : this) {
+                brick.repaint(gc, baseX, baseY, clipping, editor);
+            }
+        }
     }
+
+    // ============================================================ Class Fields
+
+    private static final int BINSEARCH_THRESHOLD = 4;
 
     // ================================================================== Fields
 
@@ -159,13 +180,47 @@ public class TupleBrick extends ContainerBrick
     private void paintChildren(GC gc, int baseX, int baseY, UI ui,
                                Rectangle clipping, Editor editor)
     {
-        for (final Line line : lines) {
-            if (line.intersects(baseY, clipping)) {
-                for (final Brick brick : line) {
-                    brick.repaint(gc, baseX, baseY, clipping, editor);
-                }
+        final int length = lines.size();
+        final int clipTop = clipping.y - baseY;
+        final int clipBottom = clipTop + clipping.height;
+        int i;
+        if (length <= BINSEARCH_THRESHOLD) {
+            i = linearFindLine(clipTop, length);
+        } else {
+            i = binaryFindLine(clipTop, length);
+        }
+        for (; i < length; i++) {
+            final Line line = lines.get(i);
+            if (line.y >= clipBottom) {
+                break;
+            }
+            line.paint(gc, baseX, baseY, clipping, editor);
+        }
+    }
+
+    private int linearFindLine(int clipTop, int length) {
+        for (int i = 0; i < length; i++) {
+            final Line line = lines.get(i);
+            if (line.getBottom() > clipTop) {
+                return i;
             }
         }
+        return length;
+    }
+
+    private int binaryFindLine(int clipTop, int length) {
+        int min = 0;
+        int max = length;
+        while (min < max) {
+            final int mid = (min + max) >>> 1;
+            final Line line = lines.get(mid);
+            if (line.getBottom() <= clipTop) {
+                min = mid + 1;
+            } else {
+                max = mid;
+            }
+        }
+        return min;
     }
 
     void calculateSize(UI ui, Editor editor) {
@@ -174,9 +229,10 @@ public class TupleBrick extends ContainerBrick
 
     public String toString() {
         return String.format(
-                "TextBrick[@%H, parent=%H, '%s', x=%d, y=%d, w=%d, h=%d]" +
-                " (screen=%s)",
-                this, parent, text, x, y, width, height, toScreen());
+                "TextBrick[@%H, parent=@%H, '%s', x=%d, y=%d, w=%d, h=%d, " +
+                "index=%d, lines=%d, screen=%s]",
+                this, parent, text, x, y, width, height,
+                index, lines.size(), toScreen());
     }
 
     protected void childResized(Brick child) {
