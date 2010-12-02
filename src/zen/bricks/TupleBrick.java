@@ -49,9 +49,47 @@ public class TupleBrick extends ContainerBrick
         void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                    Editor editor)
         {
-            for (final Brick brick : this) {
-                brick.repaint(gc, baseX, baseY, clipping, editor);
+            final int clipLeft = clipping.x - baseX;
+            final int clipRight = clipLeft + clipping.width;
+            int i;
+            if ((endIndex - startIndex) <= BINSEARCH_THRESHOLD) {
+                i = linearFindChild(clipLeft);
+            } else {
+                i = binaryFindChild(clipLeft);
             }
+            for (; i < endIndex; i++) {
+                final Brick child = children.get(i);
+                if (child.x >= clipRight) {
+                    break;
+                }
+                child.paint(gc, baseX + child.x, baseY + child.y,
+                        clipping, editor);
+            }
+        }
+
+        private int linearFindChild(int clipLeft) {
+            for (int i = startIndex; i < endIndex; i++) {
+                final Brick child = children.get(i);
+                if (child.getRight() > clipLeft) {
+                    return i;
+                }
+            }
+            return endIndex;
+        }
+
+        private int binaryFindChild(int clipLeft) {
+            int min = startIndex;
+            int max = endIndex;
+            while (min < max) {
+                final int mid = (min + max) >>> 1;
+                final Brick child = children.get(mid);
+                if (child.getRight() <= clipLeft) {
+                    min = mid + 1;
+                } else {
+                    max = mid;
+                }
+            }
+            return min;
         }
     }
 
