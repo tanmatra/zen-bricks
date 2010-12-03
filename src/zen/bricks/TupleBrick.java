@@ -150,6 +150,10 @@ public class TupleBrick extends ContainerBrick
         return children.get(i);
     }
 
+    public Brick getFirstChild() {
+        return children.size() < 1 ? null : children.get(0);
+    }
+
     public ArrayList<Line> getLines() {
         return lines;
     }

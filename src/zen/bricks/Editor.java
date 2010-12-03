@@ -143,27 +143,104 @@ public class Editor
     }
 
     void keyDown(Event e) {
-        if (e.keyCode == SWT.PAGE_DOWN && e.stateMask == 0) {
-            final ScrollBar bar = canvas.getVerticalBar();
-            final int increment = bar.getPageIncrement();
-            bar.setSelection(bar.getSelection() + increment);
-            root.vertScroll();
-        } else if (e.keyCode == SWT.PAGE_UP && e.stateMask == 0) {
-            final ScrollBar bar = canvas.getVerticalBar();
-            final int increment = bar.getPageIncrement();
-            bar.setSelection(bar.getSelection() - increment);
-            root.vertScroll();
+        if (e.keyCode == SWT.PAGE_UP && e.stateMask == 0) {
+            scrollPageUp();
+        } else if (e.keyCode == SWT.PAGE_DOWN && e.stateMask == 0) {
+            scrollPageDown();
+        } else if (e.keyCode == SWT.ARROW_UP && e.stateMask == SWT.CTRL) {
+            scrollLineUp();
+        } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == SWT.CTRL) {
+            scrollLineDown();
+        } else if (e.keyCode == SWT.ARROW_LEFT && e.stateMask == 0) {
+            navigateLevelUp();
+        } else if (e.keyCode == SWT.ARROW_RIGHT && e.stateMask == 0) {
+            navigateLevelDown();
         } else if (e.keyCode == SWT.ARROW_UP && e.stateMask == 0) {
-            final ScrollBar bar = canvas.getVerticalBar();
-            final int increment = bar.getIncrement();
-            bar.setSelection(bar.getSelection() - increment);
-            root.vertScroll();
+            navigatePreviousElement();
         } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == 0) {
-            final ScrollBar bar = canvas.getVerticalBar();
-            final int increment = bar.getIncrement();
-            bar.setSelection(bar.getSelection() + increment);
-            root.vertScroll();
+            navigateNextElement();
         }
+    }
+
+    private void scrollPageUp() {
+        final ScrollBar bar = canvas.getVerticalBar();
+        final int increment = bar.getPageIncrement();
+        bar.setSelection(bar.getSelection() - increment);
+        root.vertScroll();
+    }
+
+    private void scrollPageDown() {
+        final ScrollBar bar = canvas.getVerticalBar();
+        final int increment = bar.getPageIncrement();
+        bar.setSelection(bar.getSelection() + increment);
+        root.vertScroll();
+    }
+
+    private void scrollLineUp() {
+        final ScrollBar bar = canvas.getVerticalBar();
+        final int increment = bar.getIncrement();
+        bar.setSelection(bar.getSelection() - increment);
+        root.vertScroll();
+    }
+
+    private void scrollLineDown() {
+        final ScrollBar bar = canvas.getVerticalBar();
+        final int increment = bar.getIncrement();
+        bar.setSelection(bar.getSelection() + increment);
+        root.vertScroll();
+    }
+
+    private void navigateLevelUp() {
+        if (selection == null) {
+            return;
+        }
+        ContainerBrick parent = selection.getParent();
+        if (!(parent instanceof RootBrick)) {
+            setSelection(parent);
+        }
+    }
+
+    private void navigateLevelDown() {
+        if (!(selection instanceof ContainerBrick)) {
+            return;
+        }
+        final ContainerBrick container = (ContainerBrick) selection;
+        final Brick brick = container.getFirstChild();
+        if (brick != null) {
+            setSelection(brick);
+        }
+    }
+
+    private void navigatePreviousElement() {
+        if (selection == null) {
+            return;
+        }
+        Brick previous = selection.getPreviousSibling();
+        if (previous == null) {
+            previous = selection.getParent();
+            if (previous instanceof RootBrick) {
+                return;
+            }
+        }
+        setSelection(previous);
+    }
+
+    private void navigateNextElement() {
+        if (selection == null) {
+            return;
+        }
+        Brick next = selection.getNextSibling();
+        if (next == null) {
+            ContainerBrick parent = selection.getParent();
+            if (parent instanceof RootBrick) {
+                return;
+            }
+            next = parent.getNextSibling();
+            if (next == null) {
+                return;
+            }
+        }
+        setSelection(next);
     }
 
     public void setSelection(Brick newSel) {

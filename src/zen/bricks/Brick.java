@@ -125,4 +125,20 @@ public abstract class Brick
         }
         return new Rectangle(px, py, width, height);
     }
+
+    public Brick getPreviousSibling() {
+        final int prevIndex = index - 1;
+        if (!parent.isValidIndex(prevIndex)) {
+            return null;
+        }
+        return parent.getChild(prevIndex);
+    }
+
+    public Brick getNextSibling() {
+        final int nextIndex = index + 1;
+        if (!parent.isValidIndex(nextIndex)) {
+            return null;
+        }
+        return parent.getChild(nextIndex);
+    }
 }

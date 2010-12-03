@@ -214,6 +214,10 @@ public class RootBrick extends ContainerBrick
         // TODO Auto-generated method stub
     }
 
+    public Brick getFirstChild() {
+        return document;
+    }
+
     public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor)
     {
         if ((document != null) && document.contains(mouseX, mouseY)) {

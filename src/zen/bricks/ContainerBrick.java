@@ -13,4 +13,10 @@ public abstract class ContainerBrick extends Brick
     protected abstract int childrenCount();
 
     protected abstract void childResized(Brick child);
+
+    public abstract Brick getFirstChild();
+
+    protected boolean isValidIndex(int index) {
+        return (index >= 0) && (index < childrenCount());
+    }
 }
