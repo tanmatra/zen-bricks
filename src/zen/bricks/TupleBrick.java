@@ -61,7 +61,7 @@ public class TupleBrick extends ContainerBrick
             }
         }
 
-        private int findChild(int clipLeft) {
+        int findChild(int clipLeft) {
             int min = startIndex;
             int max = endIndex;
             while (min < max) {
@@ -73,6 +73,12 @@ public class TupleBrick extends ContainerBrick
                 }
             }
             return min;
+        }
+
+        public String toString() {
+            return String.format(
+                    "(Line [y %d] [height %d] [start %d] [end %d])",
+                    y, height, startIndex, endIndex);
         }
     }
 
@@ -201,7 +207,7 @@ public class TupleBrick extends ContainerBrick
         final int length = lines.size();
         final int clipTop = clipping.y - baseY;
         final int clipBottom = clipTop + clipping.height;
-        for (int i = findLine(clipTop, length); i < length; i++) {
+        for (int i = findLine(clipTop); i < length; i++) {
             final Line line = lines.get(i);
             if (line.y >= clipBottom) {
                 break;
@@ -210,9 +216,9 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
-    private int findLine(int clipTop, int length) {
+    private int findLine(int clipTop) {
         int min = 0;
-        int max = length;
+        int max = lines.size();
         while (min < max) {
             final int mid = (min + max) >>> 1;
             if (lines.get(mid).getBottom() <= clipTop) {
@@ -250,11 +256,22 @@ public class TupleBrick extends ContainerBrick
     }
 
     protected Brick findChildAt(int x, int y) {
-        for (final Brick brick : children) {
-            if (brick.contains(x, y)) {
-                return brick;
-            }
+        final int lineIdx = findLine(y);
+        if (lineIdx >= lines.size()) {
+            return null;
         }
-        return null;
+        final Line line = lines.get(lineIdx);
+        if (y < line.y) {
+            return null;
+        }
+        final int childIdx = line.findChild(x);
+        if (childIdx >= line.endIndex) {
+            return null;
+        }
+        final Brick child = children.get(childIdx);
+        if ((x < child.x) || (y < child.y) || (y >= child.getBottom())) {
+            return null;
+        }
+        return child;
     }
 }

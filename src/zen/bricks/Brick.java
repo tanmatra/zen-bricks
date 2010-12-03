@@ -81,6 +81,10 @@ public abstract class Brick
         return x + width;
     }
 
+    public int getBottom() {
+        return y + height;
+    }
+
     @Deprecated
     int getAscent(UI ui) {
         return 0;
