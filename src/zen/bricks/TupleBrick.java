@@ -51,13 +51,7 @@ public class TupleBrick extends ContainerBrick
         {
             final int clipLeft = clipping.x - baseX;
             final int clipRight = clipLeft + clipping.width;
-            int i;
-            if ((endIndex - startIndex) <= BINSEARCH_THRESHOLD) {
-                i = linearFindChild(clipLeft);
-            } else {
-                i = binaryFindChild(clipLeft);
-            }
-            for (; i < endIndex; i++) {
+            for (int i = findChild(clipLeft); i < endIndex; i++) {
                 final Brick child = children.get(i);
                 if (child.x >= clipRight) {
                     break;
@@ -67,23 +61,12 @@ public class TupleBrick extends ContainerBrick
             }
         }
 
-        private int linearFindChild(int clipLeft) {
-            for (int i = startIndex; i < endIndex; i++) {
-                final Brick child = children.get(i);
-                if (child.getRight() > clipLeft) {
-                    return i;
-                }
-            }
-            return endIndex;
-        }
-
-        private int binaryFindChild(int clipLeft) {
+        private int findChild(int clipLeft) {
             int min = startIndex;
             int max = endIndex;
             while (min < max) {
                 final int mid = (min + max) >>> 1;
-                final Brick child = children.get(mid);
-                if (child.getRight() <= clipLeft) {
+                if (children.get(mid).getRight() <= clipLeft) {
                     min = mid + 1;
                 } else {
                     max = mid;
@@ -93,9 +76,6 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
-    // ============================================================ Class Fields
-
-    private static final int BINSEARCH_THRESHOLD = 4;
 
     // ================================================================== Fields
 
@@ -221,13 +201,7 @@ public class TupleBrick extends ContainerBrick
         final int length = lines.size();
         final int clipTop = clipping.y - baseY;
         final int clipBottom = clipTop + clipping.height;
-        int i;
-        if (length <= BINSEARCH_THRESHOLD) {
-            i = linearFindLine(clipTop, length);
-        } else {
-            i = binaryFindLine(clipTop, length);
-        }
-        for (; i < length; i++) {
+        for (int i = findLine(clipTop, length); i < length; i++) {
             final Line line = lines.get(i);
             if (line.y >= clipBottom) {
                 break;
@@ -236,23 +210,12 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
-    private int linearFindLine(int clipTop, int length) {
-        for (int i = 0; i < length; i++) {
-            final Line line = lines.get(i);
-            if (line.getBottom() > clipTop) {
-                return i;
-            }
-        }
-        return length;
-    }
-
-    private int binaryFindLine(int clipTop, int length) {
+    private int findLine(int clipTop, int length) {
         int min = 0;
         int max = length;
         while (min < max) {
             final int mid = (min + max) >>> 1;
-            final Line line = lines.get(mid);
-            if (line.getBottom() <= clipTop) {
+            if (lines.get(mid).getBottom() <= clipTop) {
                 min = mid + 1;
             } else {
                 max = mid;
