@@ -119,7 +119,7 @@ public class Editor
     void disposed() {
         if (root != null) {
             root.dispose();
-//            root = null;
+            //            root = null;
         }
         if (ui != null) {
             ui.dispose();
@@ -194,7 +194,7 @@ public class Editor
         if (selection == null) {
             return;
         }
-        ContainerBrick parent = selection.getParent();
+        final ContainerBrick parent = selection.getParent();
         if (!(parent instanceof RootBrick)) {
             setSelection(parent);
         }
@@ -226,21 +226,15 @@ public class Editor
     }
 
     private void navigateNextElement() {
-        if (selection == null) {
-            return;
-        }
-        Brick next = selection.getNextSibling();
-        if (next == null) {
-            ContainerBrick parent = selection.getParent();
-            if (parent instanceof RootBrick) {
+        Brick brick = selection;
+        while ((brick != null) && !(brick instanceof RootBrick)) {
+            final Brick next = brick.getNextSibling();
+            if (next != null) {
+                setSelection(next);
                 return;
             }
-            next = parent.getNextSibling();
-            if (next == null) {
-                return;
-            }
+            brick = brick.getParent();
         }
-        setSelection(next);
     }
 
     public void setSelection(Brick newSel) {
