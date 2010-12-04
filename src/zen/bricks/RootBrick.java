@@ -31,10 +31,6 @@ public class RootBrick extends ContainerBrick
 
     private final Margin padding = new Margin(5, 5, 5, 5);
 
-    private Brick repaintBrick;
-
-    private Rectangle repaintRect;
-
     // ============================================================ Constructors
 
     public RootBrick(Editor editor) {
@@ -156,27 +152,16 @@ public class RootBrick extends ContainerBrick
     }
 
     void paint(GC gc) {
-        final UI ui = editor.getUI();
-        ui.preparePaint(gc);
-        final Rectangle clipping = gc.getClipping();
-        if (repaintBrick != null) {
-            if (repaintRect.intersects(clipping)) {
-                repaintBrick.paint(
-                        gc, repaintRect.x, repaintRect.y, clipping, editor);
-            }
-            repaintBrick = null;
-            repaintRect = null;
-            return;
-        }
-        paint(gc, x, y, clipping, editor);
+        editor.getUI().preparePaint(gc);
+        paint(gc, x, y, gc.getClipping(), editor);
     }
 
     void paintOnly(Brick brick) {
-        canvas.update();
-        repaintBrick = brick;
-        repaintRect = brick.toScreen();
-        canvas.redraw(repaintRect.x, repaintRect.y,
-                repaintRect.width, repaintRect.height, false);
+//        canvas.update();
+        final Rectangle rect = brick.toScreen();
+        if (rect.intersects(clientArea)) {
+            canvas.redraw(rect.x, rect.y, rect.width, rect.height, false);
+        }
     }
 
     public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
