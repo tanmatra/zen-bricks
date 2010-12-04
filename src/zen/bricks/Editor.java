@@ -198,18 +198,17 @@ public class Editor
         if (selection == null) {
             return;
         }
-        final ContainerBrick parent = selection.getParent();
+        final Brick parent = selection.getParent();
         if (!(parent instanceof RootBrick)) {
             setSelection(parent, true);
         }
     }
 
     private void navigateLevelDown() {
-        if (!(selection instanceof ContainerBrick)) {
+        if (selection == null) {
             return;
         }
-        final ContainerBrick container = (ContainerBrick) selection;
-        final Brick brick = container.getFirstChild();
+        final Brick brick = selection.getFirstChild();
         if (brick != null) {
             setSelection(brick, true);
         }
