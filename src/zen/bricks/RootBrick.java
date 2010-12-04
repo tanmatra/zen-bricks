@@ -161,8 +161,8 @@ public class RootBrick extends ContainerBrick
         final Rectangle clipping = gc.getClipping();
         if (repaintBrick != null) {
             if (repaintRect.intersects(clipping)) {
-                repaintBrick.paint(gc, repaintRect.x, repaintRect.y,
-                        clipping, editor);
+                repaintBrick.paint(
+                        gc, repaintRect.x, repaintRect.y, clipping, editor);
             }
             repaintBrick = null;
             repaintRect = null;
@@ -226,5 +226,51 @@ public class RootBrick extends ContainerBrick
             editor.setSelection(null);
             return null;
         }
+    }
+
+    public void scrollTo(Brick brick) {
+        final Rectangle rect = brick.toScreen();
+        final int dy = verticalScrollNeeded(rect);
+        final int dx = horizontalScrollNeeded(rect);
+        horizontalBar.setSelection(horizontalBar.getSelection() - dx);
+        verticalBar.setSelection(verticalBar.getSelection() - dy);
+        vertScroll();
+        horizScroll();
+    }
+
+    private int verticalScrollNeeded(Rectangle rect) {
+        final int frameTop = clientArea.y + padding.getTop();
+        if (rect.y < frameTop) {
+            return frameTop - rect.y;
+        }
+        final int frameHeight = clientArea.height - padding.getVerticalSum();
+        if (rect.height >= frameHeight) {
+            return 0;
+        }
+        final int brickBottom = rect.y + rect.height;
+        final int frameBottom =
+                clientArea.y + clientArea.height - padding.getBottom();
+        if (brickBottom > frameBottom) {
+            return frameBottom - brickBottom;
+        }
+        return 0;
+    }
+
+    private int horizontalScrollNeeded(Rectangle rect) {
+        final int frameLeft = clientArea.x + padding.getLeft();
+        if (rect.x < frameLeft) {
+            return frameLeft - rect.x;
+        }
+        final int frameWidth = clientArea.width - padding.getHorizontalSum();
+        if (rect.width >= frameWidth) {
+            return 0;
+        }
+        final int brickRight = rect.x + rect.width;
+        final int frameRight =
+                clientArea.x + clientArea.width - padding.getRight();
+        if (brickRight > frameRight) {
+            return frameRight - brickRight;
+        }
+        return 0;
     }
 }

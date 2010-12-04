@@ -159,6 +159,10 @@ public class Editor
             navigatePreviousElement();
         } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == 0) {
             navigateNextElement();
+        } else if (e.keyCode == ' ' && e.stateMask == 0) {
+            if (selection != null) {
+                root.scrollTo(selection);
+            }
         }
     }
 
@@ -196,7 +200,7 @@ public class Editor
         }
         final ContainerBrick parent = selection.getParent();
         if (!(parent instanceof RootBrick)) {
-            setSelection(parent);
+            setSelection(parent, true);
         }
     }
 
@@ -207,7 +211,7 @@ public class Editor
         final ContainerBrick container = (ContainerBrick) selection;
         final Brick brick = container.getFirstChild();
         if (brick != null) {
-            setSelection(brick);
+            setSelection(brick, true);
         }
     }
 
@@ -222,7 +226,7 @@ public class Editor
                 return;
             }
         }
-        setSelection(previous);
+        setSelection(previous, true);
     }
 
     private void navigateNextElement() {
@@ -230,10 +234,17 @@ public class Editor
         while ((brick != null) && !(brick instanceof RootBrick)) {
             final Brick next = brick.getNextSibling();
             if (next != null) {
-                setSelection(next);
+                setSelection(next, true);
                 return;
             }
             brick = brick.getParent();
+        }
+    }
+
+    public void setSelection(Brick newSel, boolean scroll) {
+        setSelection(newSel);
+        if (scroll && (newSel != null)) {
+            root.scrollTo(newSel);
         }
     }
 
