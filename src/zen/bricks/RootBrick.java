@@ -230,7 +230,7 @@ public class RootBrick extends ContainerBrick
         }
         final int frameHeight = clientArea.height - padding.getVerticalSum();
         if (rect.height >= frameHeight) {
-            return 0;
+            return frameTop - rect.y;
         }
         final int brickBottom = rect.y + rect.height;
         final int frameBottom =
@@ -248,7 +248,7 @@ public class RootBrick extends ContainerBrick
         }
         final int frameWidth = clientArea.width - padding.getHorizontalSum();
         if (rect.width >= frameWidth) {
-            return 0;
+            return frameLeft - rect.x;
         }
         final int brickRight = rect.x + rect.width;
         final int frameRight =
