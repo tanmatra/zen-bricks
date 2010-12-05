@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,12 +35,14 @@ public class MainWindow extends ApplicationWindow
 {
     // ============================================================ Class Fields
 
+    private static final String LAST_THEME_KEY = "theme";
+
     private static final String DEFAULT_THEME_FILE =
             "themes/default.theme.properties";
 
     // =========================================================== Class Methods
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         final ImageDescriptor imageDesc =
                 ImageDescriptor.createFromFile(MainWindow.class, "bricks.png");
         final Image shellImage = imageDesc.createImage();
@@ -72,17 +75,17 @@ public class MainWindow extends ApplicationWindow
 
     Editor editor;
 
-    private final Properties defaultThemeProps;
-
     String themeFileName;
 
     private Action reloadThemeAction;
 
+    private final Preferences preferences;
+
     // ============================================================ Constructors
 
-    public MainWindow() throws IOException {
+    public MainWindow() {
         super(null);
-        defaultThemeProps = loadProperties(DEFAULT_THEME_FILE);
+        preferences = Preferences.userNodeForPackage(getClass());
         addMenuBar();
         addStatusLine();
     }
@@ -280,7 +283,10 @@ public class MainWindow extends ApplicationWindow
         contents.setLayout(layout);
 
         editor = new Editor(this, contents);
-        setEditorTheme(defaultThemeProps);
+
+        themeFileName = preferences.get(LAST_THEME_KEY, DEFAULT_THEME_FILE);
+        loadTheme();
+
         editor.setDocument(Editor.makeSample());
 
         getStatusLineManager().setMessage("Ready.");
@@ -311,6 +317,8 @@ public class MainWindow extends ApplicationWindow
     }
 
     void loadTheme() {
+        preferences.put(LAST_THEME_KEY, themeFileName);
+
         final Properties props;
         try {
             props = loadProperties(themeFileName);
