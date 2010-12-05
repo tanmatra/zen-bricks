@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
@@ -186,9 +187,30 @@ public class MainWindow extends ApplicationWindow
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
 
-        final Action editStylesAction = new Action("&Edit styles...") {
+        final Action editStylesAction = new Action("&Edit styles...")
+        {
+            private WeakReference<BrickStyle> lastStyleRef;
+
             public void run() {
-                new EditStylesDialog(getShell(), editor.getUI(), editor).open();
+                BrickStyle lastStyle;
+                final EditStylesDialog dialog = new EditStylesDialog(
+                        getShell(), editor.getUI(), editor);
+
+                if (lastStyleRef != null) {
+                    lastStyle = lastStyleRef.get();
+                    if (lastStyle != null) {
+                        dialog.setSelectedStyle(lastStyle);
+                    }
+                }
+
+                dialog.open();
+
+                lastStyle = dialog.getSelectedStyle();
+                if (lastStyle != null) {
+                    lastStyleRef = new WeakReference<BrickStyle>(lastStyle);
+                } else {
+                    lastStyleRef = null;
+                }
             }
         };
         viewMenu.add(editStylesAction);

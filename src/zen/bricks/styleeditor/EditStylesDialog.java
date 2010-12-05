@@ -56,6 +56,8 @@ public class EditStylesDialog extends Dialog
 
     private final Editor editor;
 
+    private BrickStyle selectedStyle;
+
     // ============================================================ Constructors
 
     public EditStylesDialog(Shell shell, UI ui, Editor editor) {
@@ -125,7 +127,10 @@ public class EditStylesDialog extends Dialog
         //================================
         sashForm.setWeights(new int[] { 20, 80 });
 
-        tableViewer.setSelection(new StructuredSelection(ui.getBasicStyle()));
+        if (selectedStyle != null) {
+            tableViewer.setSelection(
+                    new StructuredSelection(selectedStyle), true);
+        }
 
         return sashForm;
     }
@@ -137,6 +142,7 @@ public class EditStylesDialog extends Dialog
     }
 
     void styleSelected(BrickStyle style) {
+        selectedStyle = style;
         IBrickStyleEditor styleEditor = styleEditors.get(style);
         if (styleEditor == null) {
             styleEditor = style.getEditor();
@@ -179,5 +185,13 @@ public class EditStylesDialog extends Dialog
         for (IBrickStyleEditor styleEditor : styleEditors.values()) {
             styleEditor.cancel();
         }
+    }
+
+    public BrickStyle getSelectedStyle() {
+        return selectedStyle;
+    }
+
+    public void setSelectedStyle(BrickStyle selectedStyle) {
+        this.selectedStyle = selectedStyle;
     }
 }
