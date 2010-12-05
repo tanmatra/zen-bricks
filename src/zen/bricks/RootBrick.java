@@ -2,8 +2,10 @@ package zen.bricks;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Caret;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -84,6 +86,11 @@ public class RootBrick extends ContainerBrick
                 0, 0, /* sourceX, sourceY */
                 clientArea.width, clientArea.height,
                 false);
+
+        final Caret caret = canvas.getCaret();
+        final Point p = caret.getLocation();
+        caret.setLocation(p.x, p.y + yDelta);
+
         y = newY;
     }
 
@@ -95,6 +102,11 @@ public class RootBrick extends ContainerBrick
                 0, 0, /* sourceX, sourceY */
                 clientArea.width, clientArea.height,
                 false);
+
+        final Caret caret = canvas.getCaret();
+        final Point p = caret.getLocation();
+        caret.setLocation(p.x + xDelta, p.y);
+
         x = newX;
     }
 
@@ -152,8 +164,16 @@ public class RootBrick extends ContainerBrick
     }
 
     void paint(GC gc) {
+        final Caret caret = canvas.getCaret();
+        final boolean caretVisible = caret.getVisible();
+        if (caretVisible) {
+            caret.setVisible(false);
+        }
         editor.getUI().preparePaint(gc);
         paint(gc, x, y, gc.getClipping(), editor);
+        if (caretVisible) {
+            caret.setVisible(true);
+        }
     }
 
     void paintOnly(Brick brick) {

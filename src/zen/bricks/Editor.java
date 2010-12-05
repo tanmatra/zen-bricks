@@ -4,7 +4,9 @@ import java.util.LinkedList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Caret;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -33,6 +35,11 @@ public class Editor
         canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER
                 | SWT.DOUBLE_BUFFERED /*| SWT.NO_BACKGROUND*/
                 | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
+
+        final Caret caret = new Caret(canvas, SWT.NONE);
+//        canvas.setCaret(caret);
+        caret.setVisible(false);
+
         createListeners();
         root = new RootBrick(this);
     }
@@ -54,6 +61,7 @@ public class Editor
 
     public void setDocument(TupleBrick documentBrick) {
         selection = null;
+        canvas.getCaret().setVisible(false);
         if (document != null) {
             document.dispose();
         }
@@ -317,6 +325,12 @@ public class Editor
         }
         if (newSel != null) {
             root.paintOnly(newSel);
+            final Rectangle rect = newSel.toScreen();
+            final Caret caret = canvas.getCaret();
+            caret.setBounds(rect.x - 1, rect.y, 2, rect.height);
+            caret.setVisible(true);
+        } else {
+            canvas.getCaret().setVisible(false);
         }
 //        mainWindow.setStatus("Selected: " + newSel); // DEBUG
         mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
