@@ -327,7 +327,7 @@ public class Editor
             root.paintOnly(newSel);
             final Rectangle rect = newSel.toScreen();
             final Caret caret = canvas.getCaret();
-            caret.setBounds(rect.x - 1, rect.y, 2, rect.height);
+            caret.setBounds(rect.x, rect.y, 2, rect.height);
             caret.setVisible(true);
         } else {
             canvas.getCaret().setVisible(false);
