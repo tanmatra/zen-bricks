@@ -130,6 +130,10 @@ public abstract class Brick
         return null;
     }
 
+    public Brick getLastDescendantOrSelf() {
+        return this;
+    }
+
     public Brick getPreviousSibling() {
         final int prevIndex = index - 1;
         if (!parent.isValidIndex(prevIndex)) {

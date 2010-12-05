@@ -99,8 +99,13 @@ public class MainWindow extends ApplicationWindow
 
     protected MenuManager createMenuManager() {
         final MenuManager mainMenu = super.createMenuManager();
+        createFileMenu(mainMenu);
+        createNavigateMenu(mainMenu);
+        createViewMenu(mainMenu);
+        return mainMenu;
+    }
 
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    private void createFileMenu(final MenuManager mainMenu) {
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
 
@@ -116,8 +121,68 @@ public class MainWindow extends ApplicationWindow
             }
         };
         fileMenu.add(exitAction);
+    }
 
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    private void createNavigateMenu(MenuManager mainMenu) {
+        final MenuManager navigateMenu = new MenuManager("&Navigate");
+        mainMenu.add(navigateMenu);
+
+        navigateMenu.add(new Action("Go to &up level") {
+            { setAccelerator(SWT.HOME); }
+            public void run() {
+                editor.navigateLevelUp();
+            }
+        });
+
+        navigateMenu.add(new Action("Go to preceding") {
+            { setAccelerator(SWT.ARROW_LEFT); }
+            public void run() {
+                editor.navigatePreceding();
+            }
+        });
+
+        navigateMenu.add(new Action("Go to following") {
+            { setAccelerator(SWT.ARROW_RIGHT); }
+            public void run() {
+                editor.navigateFollowing();
+            }
+        });
+
+        navigateMenu.add(new Action("Go to previous") {
+            { setAccelerator(SWT.ARROW_UP); }
+            public void run() {
+                editor.navigatePrevious(true);
+            }
+        });
+        navigateMenu.add(new Action("Go to previous only") {
+            { setAccelerator(SWT.ARROW_UP | SWT.ALT); }
+            public void run() {
+                editor.navigatePrevious(false);
+            }
+        });
+
+        navigateMenu.add(new Action("Go to next") {
+            { setAccelerator(SWT.ARROW_DOWN); }
+            public void run() {
+                editor.navigateNextOrUp();
+            }
+        });
+        navigateMenu.add(new Action("Go to next only") {
+            { setAccelerator(SWT.ARROW_DOWN | SWT.ALT); }
+            public void run() {
+                editor.navigateNext(false);
+            }
+        });
+        navigateMenu.add(new Separator());
+        navigateMenu.add(new Action("&Scroll to selected") {
+            { setAccelerator(' '); }
+            public void run() {
+                editor.scrollToSelected();
+            }
+        });
+    }
+
+    private void createViewMenu(final MenuManager mainMenu) {
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
 
@@ -184,9 +249,6 @@ public class MainWindow extends ApplicationWindow
         };
         reloadThemeAction.setEnabled(false);
         viewMenu.add(reloadThemeAction);
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        return mainMenu;
     }
 
     protected Control createContents(Composite parent) {

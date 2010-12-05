@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import java.util.LinkedList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Canvas;
@@ -151,18 +153,22 @@ public class Editor
             scrollLineUp();
         } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == SWT.CTRL) {
             scrollLineDown();
-        } else if (e.keyCode == SWT.ARROW_LEFT && e.stateMask == 0) {
-            navigateLevelUp();
-        } else if (e.keyCode == SWT.ARROW_RIGHT && e.stateMask == 0) {
-            navigateLevelDown();
-        } else if (e.keyCode == SWT.ARROW_UP && e.stateMask == 0) {
-            navigatePreviousElement();
-        } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == 0) {
-            navigateNextElement();
-        } else if (e.keyCode == ' ' && e.stateMask == 0) {
-            if (selection != null) {
-                root.scrollTo(selection);
-            }
+//        } else if (e.keyCode == SWT.HOME && e.stateMask == 0) {
+//            navigateLevelUp();
+//        } else if (e.keyCode == SWT.ARROW_LEFT && e.stateMask == 0) {
+//            navigatePreceding();
+//        } else if (e.keyCode == SWT.ARROW_RIGHT && e.stateMask == 0) {
+//            navigateFollowing();
+//        } else if (e.keyCode == SWT.ARROW_UP && e.stateMask == SWT.ALT) {
+//            navigatePrevious(true);
+//        } else if (e.keyCode == SWT.ARROW_UP && e.stateMask == 0) {
+//            navigatePrevious(false);
+//        } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == 0) {
+//            navigateNextOrUp();
+//        } else if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == SWT.ALT) {
+//            navigateNext(false);
+//        } else if (e.keyCode == ' ' && e.stateMask == 0) {
+//            scrollToSelected();
         }
     }
 
@@ -194,7 +200,7 @@ public class Editor
         root.vertScroll();
     }
 
-    private void navigateLevelUp() {
+    void navigateLevelUp() {
         if (selection == null) {
             return;
         }
@@ -204,39 +210,95 @@ public class Editor
         }
     }
 
-    private void navigateLevelDown() {
+    void navigatePreceding() {
         if (selection == null) {
             return;
         }
-        final Brick brick = selection.getFirstChild();
-        if (brick != null) {
+        Brick brick = selection;
+        Brick prec = brick.getPreviousSibling();
+        if (prec != null) {
+            setSelection(prec.getLastDescendantOrSelf(), true);
+            return;
+        }
+        brick = brick.getParent();
+        if (!isTop(brick)) {
             setSelection(brick, true);
         }
     }
 
-    private void navigatePreviousElement() {
+    void navigateFollowing() {
+        if (selection == null) {
+            return;
+        }
+        Brick brick = selection;
+        Brick following = brick.getFirstChild();
+        if (following != null) {
+            setSelection(following, true);
+            return;
+        }
+        do {
+            following = brick.getNextSibling();
+            if (following != null) {
+                setSelection(following, true);
+                return;
+            }
+            brick = brick.getParent();
+        } while (!isTop(brick));
+    }
+
+    void navigatePrevious(boolean allowParent) {
         if (selection == null) {
             return;
         }
         Brick previous = selection.getPreviousSibling();
-        if (previous == null) {
-            previous = selection.getParent();
-            if (previous instanceof RootBrick) {
-                return;
-            }
+        if (previous != null) {
+            setSelection(previous, true);
+            return;
+        }
+        if (!allowParent) {
+            return;
+        }
+        previous = selection.getParent();
+        if (isTop(previous)) {
+            return;
         }
         setSelection(previous, true);
     }
 
-    private void navigateNextElement() {
+    void navigateNext(boolean allowParent) {
         Brick brick = selection;
-        while ((brick != null) && !(brick instanceof RootBrick)) {
+        if (brick == null) {
+            return;
+        }
+        Brick next = brick.getNextSibling();
+        if (next != null) {
+            setSelection(next, true);
+            return;
+        }
+        if (!allowParent) {
+            return;
+        }
+        next = brick.getParent();
+        if ((next != null) && !(next instanceof RootBrick)) {
+            setSelection(next, true);
+        }
+    }
+
+    void navigateNextOrUp() {
+        Brick brick = selection;
+        while (!isTop(brick)) {
             final Brick next = brick.getNextSibling();
             if (next != null) {
                 setSelection(next, true);
                 return;
             }
             brick = brick.getParent();
+        }
+    }
+
+    void scrollToSelected() {
+        if (selection != null) {
+            root.scrollTo(selection);
         }
     }
 
@@ -256,7 +318,28 @@ public class Editor
         if (newSel != null) {
             root.paintOnly(newSel);
         }
-        mainWindow.setStatus("Selected: " + newSel); // DEBUG
+//        mainWindow.setStatus("Selected: " + newSel); // DEBUG
+        mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
+    }
+
+    private static boolean isTop(Brick brick) {
+        return (brick == null) || (brick instanceof RootBrick);
+    }
+
+    private static String getPath(Brick brick) {
+        final LinkedList<String> list = new LinkedList<String>();
+        while ((brick != null) && !(brick instanceof RootBrick)) {
+            if (brick instanceof TupleBrick) {
+                final TupleBrick tuple = (TupleBrick) brick;
+                list.addFirst(brick.index + ":" +
+                        Strings.removeChar(tuple.text, '\n'));
+            } else {
+                list.addFirst(brick.index + ":" +
+                        brick.getClass().getName());
+            }
+            brick = brick.getParent();
+        }
+        return Strings.join(list, " / ");
     }
 
     public Brick getSelection() {

@@ -17,4 +17,15 @@ public abstract class ContainerBrick extends Brick
     protected boolean isValidIndex(int index) {
         return (index >= 0) && (index < childrenCount());
     }
+
+    public Brick getFirstChild() {
+        return (childrenCount() < 1) ? null : getChild(0);
+    }
+
+    public Brick getLastDescendantOrSelf() {
+        if (childrenCount() < 1) {
+            return super.getLastDescendantOrSelf();
+        }
+        return getChild(childrenCount() - 1).getLastDescendantOrSelf();
+    }
 }
