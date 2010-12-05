@@ -27,13 +27,13 @@ public class AdjustFontDialog extends Dialog
 
     private static final float SCALE = 10.0f;
 
-    FontData[] fontList;
+    private FontData[] fontList;
 
     Font exampleFont;
 
     Spinner spinner;
 
-    protected AdjustFontDialog(Shell shell) {
+    public AdjustFontDialog(Shell shell) {
         super(shell);
     }
 
@@ -101,5 +101,13 @@ public class AdjustFontDialog extends Dialog
     protected void okPressed() {
         fontList = exampleFont.getFontData();
         super.okPressed();
+    }
+
+    public FontData[] getFontList() {
+        return fontList;
+    }
+
+    public void setFontList(FontData[] fontList) {
+        this.fontList = fontList;
     }
 }

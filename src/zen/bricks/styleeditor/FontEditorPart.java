@@ -1,5 +1,6 @@
 package zen.bricks.styleeditor;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -13,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
 
+import zen.bricks.AdjustFontDialog;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 
@@ -22,6 +24,7 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
     FontData[] fontList;
     private Text previewText;
     private Font previewFont;
+    private Button adjustButton;
 
     public FontEditorPart(StyleProperty<FontData[]> property, TupleStyle style) {
         super(property, style);
@@ -55,15 +58,32 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
             }
         });
 
+        adjustButton = new Button(panel, SWT.PUSH);
+        adjustButton.setText("Adjust...");
+        adjustButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                final AdjustFontDialog dialog =
+                        new AdjustFontDialog(adjustButton.getShell());
+                dialog.setFontList(fontList);
+                if (dialog.open() != Window.OK) {
+                    return;
+                }
+                fontList = dialog.getFontList();
+                showPreview();
+            }
+        });
+
         if (fontList != null) {
             setDefined(true);
         } else {
             fontSelectButton.setEnabled(false);
+            adjustButton.setEnabled(false);
         }
     }
 
     protected void definedCheckChanged(boolean selected) {
         fontSelectButton.setEnabled(selected);
+        adjustButton.setEnabled(selected);
         if (!selected) {
             fontList = null;
             showPreview();

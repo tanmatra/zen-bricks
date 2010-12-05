@@ -236,11 +236,11 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
                 final UI ui = editor.getUI();
-                dialog.fontList = ui.getBasicStyle().getFontList();
+                dialog.setFontList(ui.getBasicStyle().getFontList());
                 if (dialog.open() != Window.OK) {
                     return;
                 }
-                ui.changeBasicFont(dialog.fontList);
+                ui.changeBasicFont(dialog.getFontList());
                 editor.refresh();
             }
         };
