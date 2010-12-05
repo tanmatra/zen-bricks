@@ -227,7 +227,7 @@ public class MainWindow extends ApplicationWindow
                     return;
                 }
                 ui.changeBasicFont(fontDialog.getFontList());
-                editor.setUI(ui);
+                editor.refresh();
             }
         };
         viewMenu.add(fontAction);
@@ -241,7 +241,7 @@ public class MainWindow extends ApplicationWindow
                     return;
                 }
                 ui.changeBasicFont(dialog.fontList);
-                editor.setUI(ui);
+                editor.refresh();
             }
         };
         viewMenu.add(adjustFontAction);
