@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor;
+package zen.bricks.styleeditor.parts;
 
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
@@ -34,7 +34,7 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
         color = property.get(style);
     }
 
-    void createWidgets(Composite parent, int columns) {
+    public void createWidgets(Composite parent, int columns) {
         createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1);

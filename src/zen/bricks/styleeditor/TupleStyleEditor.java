@@ -8,6 +8,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import zen.bricks.TupleStyle;
+import zen.bricks.styleeditor.parts.ColorEditorPart;
+import zen.bricks.styleeditor.parts.FontEditorPart;
+import zen.bricks.styleeditor.parts.IntegerEditorPart;
+import zen.bricks.styleeditor.parts.MarginEditorPart;
 
 /*
  * Currently unused. Can be deleted.

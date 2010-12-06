@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor;
+package zen.bricks.styleeditor.parts;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -31,7 +31,7 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
         fontList = property.get(style);
     }
 
-    protected void createWidgets(Composite parent, int columns) {
+    public void createWidgets(Composite parent, int columns) {
         createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1);

@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor;
+package zen.bricks.styleeditor.parts;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Label;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
+import zen.bricks.styleeditor.StyleEditorPart;
 
 abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {

@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor;
+package zen.bricks.styleeditor.parts;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -19,7 +19,7 @@ public class IntegerEditorPart extends CheckedEditorPart<Integer>
         pair.setEnabled(selected);
     }
 
-    void createWidgets(Composite parent, int numColumns) {
+    public void createWidgets(Composite parent, int numColumns) {
         createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, numColumns - 1);

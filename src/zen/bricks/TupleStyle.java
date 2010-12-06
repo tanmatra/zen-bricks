@@ -15,10 +15,10 @@ import zen.bricks.StyleProperty.ColorProperty;
 import zen.bricks.StyleProperty.FontProperty;
 import zen.bricks.StyleProperty.IntegerProperty;
 import zen.bricks.StyleProperty.MarginProperty;
-import zen.bricks.styleeditor.ColorEditorPart;
 import zen.bricks.styleeditor.IBrickStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
 import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.parts.ColorEditorPart;
 
 public class TupleStyle extends BrickStyle
 {

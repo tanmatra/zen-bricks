@@ -7,11 +7,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
-import zen.bricks.styleeditor.ColorEditorPart;
-import zen.bricks.styleeditor.FontEditorPart;
-import zen.bricks.styleeditor.IntegerEditorPart;
-import zen.bricks.styleeditor.MarginEditorPart;
 import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.parts.ColorEditorPart;
+import zen.bricks.styleeditor.parts.FontEditorPart;
+import zen.bricks.styleeditor.parts.IntegerEditorPart;
+import zen.bricks.styleeditor.parts.MarginEditorPart;
 
 public abstract class StyleProperty<T>
 {

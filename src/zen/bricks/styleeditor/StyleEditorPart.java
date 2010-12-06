@@ -19,9 +19,9 @@ public abstract class StyleEditorPart<T>
         this.style = style;
     }
 
-    abstract int getNumColumns();
+    protected abstract int getNumColumns();
 
-    abstract void createWidgets(Composite parent, int numColumns);
+    public abstract void createWidgets(Composite parent, int numColumns);
 
     public abstract T getValue();
 

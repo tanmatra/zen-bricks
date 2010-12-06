@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor;
+package zen.bricks.styleeditor.parts;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
@@ -27,7 +27,7 @@ public class MarginEditorPart extends CheckedEditorPart<Margin>
         bottomValue.setEnabled(selected);
     }
 
-    void createWidgets(Composite parent, int columns) {
+    public void createWidgets(Composite parent, int columns) {
         createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1, 8);

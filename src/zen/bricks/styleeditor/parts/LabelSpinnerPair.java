@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor;
+package zen.bricks.styleeditor.parts;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
