@@ -1,6 +1,5 @@
 package zen.bricks;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.swt.SWT;
@@ -11,231 +10,56 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
 
-import zen.bricks.StyleProperty.ColorProperty;
-import zen.bricks.StyleProperty.FontProperty;
-import zen.bricks.StyleProperty.IntegerProperty;
-import zen.bricks.StyleProperty.MarginProperty;
+import zen.bricks.properties.BackgroundProperty;
+import zen.bricks.properties.ChildrenSpacingProperty;
+import zen.bricks.properties.ColorProperty;
+import zen.bricks.properties.FontProperty;
+import zen.bricks.properties.ForegroundProperty;
+import zen.bricks.properties.IntegerProperty;
+import zen.bricks.properties.LayoutProperty;
+import zen.bricks.properties.LineSpacingProperty;
+import zen.bricks.properties.MarginProperty;
+import zen.bricks.properties.PaddingProperty;
+import zen.bricks.properties.TextBackgroundProperty;
+import zen.bricks.properties.TextFontProperty;
+import zen.bricks.properties.TextMarginProperty;
 import zen.bricks.styleeditor.IBrickStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
-import zen.bricks.styleeditor.StyleEditorPart;
-import zen.bricks.styleeditor.parts.CheckedEditorPart;
-import zen.bricks.styleeditor.parts.ColorEditorPart;
 
 public class TupleStyle extends BrickStyle
 {
     // ============================================================ Class Fields
 
     public static final ColorProperty FOREGROUND =
-            new ColorProperty("Foreground color", ".color")
-    {
-        public RGB get(TupleStyle style) {
-            return style.getForegroundRGB();
-        }
-
-        public void set(TupleStyle style, RGB value) {
-            style.setForegroundRGB(value);
-        }
-    };
+            new ForegroundProperty("Foreground color", ".color");
 
     public static final ColorProperty BACKGROUND =
-        new ColorProperty("Background color", ".background")
-    {
-        public RGB get(TupleStyle style) {
-            return style.getBackgroundRGB();
-        }
-
-        public void set(TupleStyle style, RGB value) {
-            style.setBackgroundRGB(value);
-        }
-    };
+            new BackgroundProperty("Background color", ".background");
 
     public static final ColorProperty TEXT_BACKGROUND =
-            new ColorProperty("Text background color", ".textBackground")
-    {
-        public boolean isDefined(TupleStyle style) {
-            return style.textBackground != null;
-        }
-
-        protected StyleEditorPart<RGB> createEditorPart(TupleStyle style, UI ui) {
-            return new ColorEditorPart(this, style, style.textBackground);
-        }
-
-        @Override
-        public void apply(StyleEditorPart<RGB> editorPart, TupleStyle style) {
-            final ColorEditorPart colorEditorPart = (ColorEditorPart) editorPart;
-            style.setTextBackgroundRGB(colorEditorPart.getBackground(),
-                    colorEditorPart.getValue());
-        }
-
-        public RGB get(TupleStyle style) {
-            return style.getTextBackgroundRGB();
-        }
-
-        @Override
-        public void set(TupleStyle style, RGB value) {
-            // do nothing, as it never called
-        }
-
-        public void parse(UI ui, TupleStyle style,
-                          Properties properties, String keyPrefix)
-        {
-            final String string =
-                    properties.getProperty(keyPrefix + keySuffix);
-            final Boolean background;
-            final RGB rgb;
-            if (string == null) {
-                background = null;
-                rgb = null;
-            } else if ("transparent".equals(string)) {
-                background = false;
-                rgb = null;
-            } else {
-                background = true;
-                rgb = ColorUtil.parse(style.getDevice(), string);
-            }
-            style.setTextBackgroundRGB(background, rgb);
-        }
-    };
+            new TextBackgroundProperty("Text background color",
+                    ".textBackground");
 
     public static final FontProperty FONT =
-            new FontProperty("Font", ".font")
-    {
-        public FontData[] get(TupleStyle style) {
-            return style.getFontList();
-        }
-
-        public void set(TupleStyle style, FontData[] value) {
-            style.setFont(value);
-        }
-    };
+            new TextFontProperty("Font", ".font");
 
     public static final MarginProperty PADDING =
-            new MarginProperty("Brick padding", ".padding")
-    {
-        public Margin get(TupleStyle style) {
-            return style.getPadding();
-        }
-
-        public void set(TupleStyle style, Margin value) {
-            style.setPadding(value);
-        }
-    };
+            new PaddingProperty("Brick padding", ".padding");
 
     public static final MarginProperty TEXT_MARGIN =
-            new MarginProperty("Text margin", ".textMargin")
-    {
-        public Margin get(TupleStyle style) {
-            return style.getTextMargin();
-        }
-
-        public void set(TupleStyle style, Margin value) {
-            style.setTextMargin(value);
-        }
-    };
+            new TextMarginProperty("Text margin", ".textMargin");
 
     public static final IntegerProperty LINE_SPACING =
-            new IntegerProperty("Line spacing", ".lineSpacing")
-    {
-        public Integer get(TupleStyle style) {
-            return style.getLineSpacing();
-        }
+            new LineSpacingProperty("Line spacing", ".lineSpacing");
 
-        public void set(TupleStyle style, Integer value) {
-            style.setLineSpacing(value);
-        }
-    };
+    public static final IntegerProperty CHILDREN_SPACING =
+            new ChildrenSpacingProperty("Children spacing", ".spacing");
 
-    public static final IntegerProperty CHILD_SPACING =
-            new IntegerProperty("Children spacing", ".spacing")
-    {
-        public Integer get(TupleStyle style) {
-            return style.getSpacing();
-        }
-
-        public void set(TupleStyle style, Integer value) {
-            style.setSpacing(value);
-        }
-    };
-
-    // =========================================================================
     public static final StyleProperty<TupleLayout> LAYOUT =
-            new StyleProperty<TupleLayout>("Layout", ".layout")
-    {
-        public TupleLayout get(TupleStyle style) {
-            return style.getLayout();
-        }
+            new LayoutProperty("Layout", ".layout");
 
-        public void set(TupleStyle style, TupleLayout value) {
-            style.setLayout(value);
-        }
-
-        protected StyleEditorPart<TupleLayout> createEditorPart(
-                final TupleStyle style, final UI ui)
-        {
-            return new CheckedEditorPart<TupleLayout>(this, style)
-            {
-                private Combo combo;
-
-                public void createWidgets(Composite parent, int columns) {
-                    createDefinedCheck(parent);
-                    final Composite panel =
-                            createValuesPanel(parent, columns - 1);
-
-                    combo = new Combo(panel, SWT.DROP_DOWN | SWT.READ_ONLY);
-                    final List<TupleLayout> layouts = ui.getTupleLayouts();
-                    for (TupleLayout tupleLayout : layouts) {
-                        combo.add(tupleLayout.getTitle());
-                    }
-
-                    final TupleLayout styleLayout = style.getLayout();
-                    if (styleLayout != null) {
-                        final int idx =
-                                ui.getTupleLayouts().indexOf(styleLayout);
-                        if (idx >= 0) {
-                            combo.select(idx);
-                        }
-                    }
-
-                    combo.setEnabled(isDefined());
-                }
-
-                protected void definedCheckChanged(boolean defined) {
-                    combo.setEnabled(defined);
-                }
-
-                public TupleLayout getValue() {
-                    final int idx = combo.getSelectionIndex();
-                    if (idx < 0) {
-                        return null;
-                    } else {
-                        return ui.getTupleLayouts().get(idx);
-                    }
-                }
-            };
-        }
-
-        public void parse(UI ui, TupleStyle style,
-                          Properties properties, String keyPrefix)
-        {
-            TupleLayout resultLayout = null;
-            final String value = properties.getProperty(keyPrefix + keySuffix);
-            if (value != null) {
-                final List<TupleLayout> layouts = ui.getTupleLayouts();
-                for (TupleLayout layout : layouts) {
-                    if (layout.getName().equals(value)) {
-                        resultLayout = layout;
-                        break;
-                    }
-                }
-            }
-            set(style, resultLayout);
-        }
-    };
-
-    // =========================================================================
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static final StyleProperty<?>[] ALL_PROPERTIES = {
         FONT,
         FOREGROUND,
@@ -244,10 +68,11 @@ public class TupleStyle extends BrickStyle
         PADDING,
         TEXT_MARGIN,
         LINE_SPACING,
-        CHILD_SPACING,
+        CHILDREN_SPACING,
         LAYOUT,
     };
 
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
 
     // ================================================================== Fields

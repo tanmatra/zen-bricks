@@ -50,7 +50,7 @@ public class TupleStyleEditor implements IBrickStyleEditor
         addPart(new MarginEditorPart(TupleStyle.PADDING, tupleStyle));
         addPart(new MarginEditorPart(TupleStyle.TEXT_MARGIN, tupleStyle));
         addPart(new IntegerEditorPart(TupleStyle.LINE_SPACING, tupleStyle));
-        addPart(new IntegerEditorPart(TupleStyle.CHILD_SPACING, tupleStyle));
+        addPart(new IntegerEditorPart(TupleStyle.CHILDREN_SPACING, tupleStyle));
         // addPart(new LayoutEditorPart(TupleStyle.LAYOUT, tupleStyle));
     }
 

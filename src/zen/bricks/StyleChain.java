@@ -68,6 +68,6 @@ public class StyleChain
     }
 
     public int getSpacing() {
-        return TupleStyle.CHILD_SPACING.find(this).getSpacing();
+        return TupleStyle.CHILDREN_SPACING.find(this).getSpacing();
     }
 }
