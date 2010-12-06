@@ -110,9 +110,9 @@ public class RootBrick extends ContainerBrick
         x = newX;
     }
 
-    void calculateSize(UI ui, Editor editor) {
+    void calculateSize(Editor editor) {
         if (document != null) {
-            document.calculateSize(ui, editor);
+            document.calculateSize(editor);
             width = document.width + padding.getHorizontalSum();
             height = document.height + padding.getVerticalSum();
         }

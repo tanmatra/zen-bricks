@@ -26,6 +26,9 @@ public abstract class Brick
         return parent;
     }
 
+    /**
+     * @param editor
+     */
     void realize(Editor editor) {
     }
 
@@ -38,7 +41,7 @@ public abstract class Brick
     }
 
     public boolean intersects(Rectangle rect, int baseX, int baseY) {
-        return rect.intersects(x + baseX, y + baseX, width, height);
+        return rect.intersects(x + baseX, y + baseY, width, height);
     }
 
     /**
@@ -57,7 +60,10 @@ public abstract class Brick
     public abstract void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                                Editor editor);
 
-    void calculateSize(UI ui, Editor editor) {
+    /**
+     * @param editor
+     */
+    void calculateSize(Editor editor) {
         // todo
     }
 
@@ -85,11 +91,10 @@ public abstract class Brick
         return y + height;
     }
 
-    @Deprecated
-    int getAscent(UI ui) {
-        return 0;
-    }
-
+    /**
+     * @param mouseX
+     * @param mouseY
+     */
     public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
         // debugMouseEvent(event);
         if (event.type == SWT.MouseDown) {

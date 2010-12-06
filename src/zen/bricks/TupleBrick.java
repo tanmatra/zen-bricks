@@ -166,7 +166,7 @@ public class TupleBrick extends ContainerBrick
         final StyleChain chain = ui.getStyleChain(this, editor);
         paintBackground(gc, baseX, baseY, ui, clipping, chain);
         paintText(gc, baseX, baseY, clipping, chain);
-        paintChildren(gc, baseX, baseY, ui, clipping, editor);
+        paintChildren(gc, baseX, baseY, clipping, editor);
     }
 
     private void paintBackground(GC gc, int baseX, int baseY, UI ui,
@@ -201,8 +201,8 @@ public class TupleBrick extends ContainerBrick
         gc.drawText(text, textX, textY, flags);
     }
 
-    private void paintChildren(GC gc, int baseX, int baseY, UI ui,
-                               Rectangle clipping, Editor editor)
+    private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping,
+                               Editor editor)
     {
         final int length = lines.size();
         final int clipTop = clipping.y - baseY;
@@ -230,8 +230,8 @@ public class TupleBrick extends ContainerBrick
         return min;
     }
 
-    void calculateSize(UI ui, Editor editor) {
-        ui.layout(this, editor);
+    void calculateSize(Editor editor) {
+        editor.getUI().layout(this, editor);
     }
 
     public String toString() {

@@ -74,7 +74,7 @@ public class Editor
     public void refresh() {
         if (root != null) {
             root.realize(this);
-            root.calculateSize(ui, this);
+            root.calculateSize(this);
             root.canvasResized();
         }
         canvas.redraw();

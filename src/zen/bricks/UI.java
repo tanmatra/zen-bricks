@@ -116,6 +116,9 @@ public class UI
         border = constr.newInstance(this, props);
     }
 
+    /**
+     * @param editor
+     */
     public void applyTo(Editor editor) {
         // what here ???
     }
