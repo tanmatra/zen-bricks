@@ -4,11 +4,11 @@ import org.eclipse.swt.graphics.Point;
 
 public class BaselineLayout extends TupleLayout
 {
-    public BaselineLayout(UI ui) {
-        super(ui);
+    public BaselineLayout() {
     }
 
-    void doLayout(TupleBrick brick, Editor editor) {
+    public void doLayout(TupleBrick brick, Editor editor) {
+        final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();

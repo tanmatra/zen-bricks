@@ -40,7 +40,7 @@ public class UI
         try {
             init(properties);
             if (layout == null) {
-                layout = new SimpleLayout(this);
+                layout = new SimpleLayout();
             }
             savedGC.setAntialias(antialias);
             // TODO: pass antialias to all text styles
@@ -99,9 +99,8 @@ public class UI
         if (!TupleLayout.class.isAssignableFrom(layoutClass)) {
             throw new ClassNotFoundException("Not a subclass of TupleLayout");
         }
-        final Constructor<TupleLayout> constr =
-                layoutClass.getConstructor(UI.class);
-        layout = constr.newInstance(this);
+        final Constructor<TupleLayout> constr = layoutClass.getConstructor();
+        layout = constr.newInstance();
     }
 
     private void initBorder(Properties props) throws Exception {

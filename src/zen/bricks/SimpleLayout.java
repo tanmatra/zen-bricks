@@ -2,11 +2,11 @@ package zen.bricks;
 
 public class SimpleLayout extends TupleLayout
 {
-    public SimpleLayout(UI ui) {
-        super(ui);
+    public SimpleLayout() {
     }
 
-    void doLayout(TupleBrick brick, Editor editor) {
+    public void doLayout(TupleBrick brick, Editor editor) {
+        final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
         final Margin brickPadding = chain.getPadding();

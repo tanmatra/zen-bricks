@@ -2,11 +2,8 @@ package zen.bricks;
 
 public abstract class TupleLayout
 {
-    protected UI ui;
-
-    TupleLayout(UI ui) {
-        this.ui = ui;
+    protected TupleLayout() {
     }
 
-    abstract void doLayout(TupleBrick brick, Editor editor);
+    public abstract void doLayout(TupleBrick brick, Editor editor);
 }
