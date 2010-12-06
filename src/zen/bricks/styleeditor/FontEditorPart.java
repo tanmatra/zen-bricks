@@ -31,7 +31,7 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
         fontList = property.get(style);
     }
 
-    protected void createWidgets(final Composite parent, int columns) {
+    protected void createWidgets(Composite parent, int columns) {
         createDefinedCheck(parent);
 
         final Composite panel = createValuesPanel(parent, columns - 1);
@@ -63,7 +63,7 @@ public class FontEditorPart extends CheckedEditorPart<FontData[]>
         adjustButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 final AdjustFontDialog dialog =
-                        new AdjustFontDialog(adjustButton.getShell());
+                        new AdjustFontDialog(panel.getShell());
                 dialog.setFontList(fontList);
                 if (dialog.open() != Window.OK) {
                     return;
