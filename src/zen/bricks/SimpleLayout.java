@@ -5,6 +5,14 @@ public class SimpleLayout extends TupleLayout
     public SimpleLayout() {
     }
 
+    public String getTitle() {
+        return "Simple";
+    }
+
+    public String getName() {
+        return "simple";
+    }
+
     public void doLayout(TupleBrick brick, Editor editor) {
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);

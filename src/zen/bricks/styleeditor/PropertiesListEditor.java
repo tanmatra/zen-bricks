@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Control;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
+import zen.bricks.UI;
 
 public class PropertiesListEditor implements IBrickStyleEditor
 {
@@ -18,17 +19,21 @@ public class PropertiesListEditor implements IBrickStyleEditor
 
     private Composite composite;
 
-    public PropertiesListEditor(StyleProperty<?>[] properties, TupleStyle style)
+    private final UI ui;
+
+    public PropertiesListEditor(StyleProperty<?>[] properties,
+                                TupleStyle style, UI ui)
     {
         this.properties = properties;
         this.style = style;
+        this.ui = ui;
     }
 
     public void createControl(Composite parent) {
         final int count = properties.length;
         parts = new StyleEditorPart<?>[count];
         for (int i = 0; i < count; i++) {
-            parts[i] = properties[i].makeEditorPart(style);
+            parts[i] = properties[i].makeEditorPart(style, ui);
         }
 
         composite = new Composite(parent, SWT.NONE);

@@ -14,7 +14,7 @@ public abstract class BrickStyle
         return name;
     }
 
-    public abstract IBrickStyleEditor getEditor();
+    public abstract IBrickStyleEditor createEditor(UI ui);
 
     public abstract void dispose();
 }

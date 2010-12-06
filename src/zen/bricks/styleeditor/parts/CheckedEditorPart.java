@@ -13,7 +13,7 @@ import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.styleeditor.StyleEditorPart;
 
-abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
+public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {
     private Label label;
     private Button definedCheck;

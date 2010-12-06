@@ -197,7 +197,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 BrickStyle lastStyle;
                 final EditStylesDialog dialog = new EditStylesDialog(
-                        getShell(), editor.getUI(), editor);
+                        getShell(), editor);
 
                 if (lastStyleRef != null) {
                     lastStyle = lastStyleRef.get();

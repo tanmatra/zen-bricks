@@ -1,9 +1,11 @@
 package zen.bricks;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.ServiceLoader;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -22,7 +24,6 @@ public class UI
     private int antialias;
     private Border border;
     private Color canvasBackgroundColor;
-    private TupleLayout layout;
     private int textAntialias;
 
     private TupleStyle basicStyle;
@@ -31,6 +32,7 @@ public class UI
 
     private StyleChain basicChain;
     private StyleChain listChain;
+    private ArrayList<TupleLayout> tupleLayouts;
 
     // ============================================================ Constructors
 
@@ -39,9 +41,6 @@ public class UI
         savedGC = new GC(device);
         try {
             init(properties);
-            if (layout == null) {
-                layout = new SimpleLayout();
-            }
             savedGC.setAntialias(antialias);
             // TODO: pass antialias to all text styles
         } catch (final Exception e) {
@@ -55,15 +54,22 @@ public class UI
         antialias = parseState(props, "antialias");
         initBorder(props);
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
-        initLayout(props);
+
+        final ServiceLoader<TupleLayout> loader =
+                ServiceLoader.load(TupleLayout.class);
+        tupleLayouts = new ArrayList<TupleLayout>();
+        for (final TupleLayout layout : loader) {
+            tupleLayouts.add(layout);
+        }
+
         textAntialias = parseState(props, "text.antialias");
 
-        basicStyle = new TupleStyle("Basic", device, props, "basic_style");
+        basicStyle = new TupleStyle(this, "Basic", props, "basic_style");
         basicStyle.setTopLevel(true);
-        listStyle = new TupleStyle("List", device, props, "list_style");
+        listStyle = new TupleStyle(this, "List", props, "list_style");
 
         selectedStyle = new TupleStyle(
-                "Selected", device, props, "selected_style");
+                this, "Selected", props, "selected_style");
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
@@ -86,21 +92,6 @@ public class UI
             listStyle.dispose();
             listStyle = null;
         }
-    }
-
-    private void initLayout(Properties props) throws Exception {
-        layout = null;
-        final String layoutClassName = props.getProperty("layout.class");
-        if (layoutClassName == null) {
-            return;
-        }
-        final Class<TupleLayout> layoutClass =
-                (Class<TupleLayout>) Class.forName(layoutClassName);
-        if (!TupleLayout.class.isAssignableFrom(layoutClass)) {
-            throw new ClassNotFoundException("Not a subclass of TupleLayout");
-        }
-        final Constructor<TupleLayout> constr = layoutClass.getConstructor();
-        layout = constr.newInstance();
     }
 
     private void initBorder(Properties props) throws Exception {
@@ -166,6 +157,9 @@ public class UI
     }
 
     public void layout(TupleBrick brick, Editor editor) {
+        final StyleChain styleChain = getStyleChain(brick, editor);
+        final TupleStyle style = TupleStyle.LAYOUT.find(styleChain);
+        final TupleLayout layout = style.getLayout();
         layout.doLayout(brick, editor);
     }
 
@@ -204,5 +198,9 @@ public class UI
 
     public Border getBorder() {
         return border;
+    }
+
+    public List<TupleLayout> getTupleLayouts() {
+        return tupleLayouts;
     }
 }

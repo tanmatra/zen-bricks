@@ -7,6 +7,14 @@ public class BaselineLayout extends TupleLayout
     public BaselineLayout() {
     }
 
+    public String getTitle() {
+        return "Base line";
+    }
+
+    public String getName() {
+        return "baseline";
+    }
+
     public void doLayout(TupleBrick brick, Editor editor) {
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);

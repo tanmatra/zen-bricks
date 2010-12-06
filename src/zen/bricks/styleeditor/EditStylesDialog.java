@@ -60,9 +60,9 @@ public class EditStylesDialog extends Dialog
 
     // ============================================================ Constructors
 
-    public EditStylesDialog(Shell shell, UI ui, Editor editor) {
+    public EditStylesDialog(Shell shell, Editor editor) {
         super(shell);
-        this.ui = ui;
+        this.ui = editor.getUI();
         this.editor = editor;
     }
 
@@ -145,7 +145,7 @@ public class EditStylesDialog extends Dialog
         selectedStyle = style;
         IBrickStyleEditor styleEditor = styleEditors.get(style);
         if (styleEditor == null) {
-            styleEditor = style.getEditor();
+            styleEditor = style.createEditor(ui);
             styleEditors.put(style, styleEditor);
             styleEditor.createControl(stackPanel);
         }

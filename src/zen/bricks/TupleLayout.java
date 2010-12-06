@@ -6,4 +6,8 @@ public abstract class TupleLayout
     }
 
     public abstract void doLayout(TupleBrick brick, Editor editor);
+
+    public abstract String getTitle();
+
+    public abstract String getName();
 }

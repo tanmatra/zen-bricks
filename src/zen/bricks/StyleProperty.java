@@ -38,15 +38,16 @@ public abstract class StyleProperty<T>
 
     public abstract void set(TupleStyle style, T value);
 
-    public StyleEditorPart<T> makeEditorPart(TupleStyle style) {
-        final StyleEditorPart<T> part = createEditorPart(style);
+    public StyleEditorPart<T> makeEditorPart(TupleStyle style, UI ui) {
+        final StyleEditorPart<T> part = createEditorPart(style, ui);
         if (style.isTopLevel()) {
             part.setMandatory(true);
         }
         return part;
     }
 
-    protected abstract StyleEditorPart<T> createEditorPart(TupleStyle style);
+    protected abstract StyleEditorPart<T> createEditorPart(
+            TupleStyle style, UI ui);
 
     public void apply(StyleEditorPart<T> editorPart, TupleStyle style) {
         set(style, editorPart.getValue());
@@ -64,11 +65,13 @@ public abstract class StyleProperty<T>
             }
             chain = chain.parent;
         } while (chain != null);
-        throw new Error("Style property not found in chain");
+        throw new Error("Style property \"" + title +
+                "\" (" + keySuffix +
+                ") not found in chain");
     }
 
-    public abstract void parse(TupleStyle style, Properties properties,
-                               String keyPrefix);
+    public abstract void parse(UI ui, TupleStyle style,
+                               Properties properties, String keyPrefix);
 
     // ========================================================== Nested Classes
 
@@ -78,12 +81,14 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<RGB> createEditorPart(
+                TupleStyle style, UI ui)
+        {
             return new ColorEditorPart(this, style);
         }
 
-        public void parse(TupleStyle style, Properties properties,
-                          String keyPrefix)
+        public void parse(UI ui, TupleStyle style,
+                          Properties properties, String keyPrefix)
         {
             final String value = properties.getProperty(keyPrefix + keySuffix);
             set(style, ColorUtil.parse(style.getDevice(), value));
@@ -96,13 +101,14 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart<FontData[]> createEditorPart(TupleStyle style)
+        protected StyleEditorPart<FontData[]> createEditorPart(
+                TupleStyle style, UI ui)
         {
             return new FontEditorPart(this, style);
         }
 
-        public void parse(TupleStyle style, Properties properties,
-                          String keyPrefix)
+        public void parse(UI ui, TupleStyle style,
+                          Properties properties, String keyPrefix)
         {
             final String value = properties.getProperty(keyPrefix + ".font");
             final FontData[] list;
@@ -151,12 +157,14 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart<Margin> createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<Margin> createEditorPart(
+                TupleStyle style, UI ui)
+        {
             return new MarginEditorPart(this, style);
         }
 
-        public void parse(TupleStyle style, Properties properties,
-                          String keyPrefix)
+        public void parse(UI ui, TupleStyle style,
+                          Properties properties, String keyPrefix)
         {
             set(style, Margin.parseMargin(properties, keyPrefix + keySuffix));
         }
@@ -168,12 +176,14 @@ public abstract class StyleProperty<T>
             super(title, keySuffix);
         }
 
-        protected StyleEditorPart<Integer> createEditorPart(TupleStyle style) {
+        protected StyleEditorPart<Integer> createEditorPart(
+                TupleStyle style, UI ui)
+        {
             return new IntegerEditorPart(this, style);
         }
 
-        public void parse(TupleStyle style, Properties properties,
-                          String keyPrefix)
+        public void parse(UI ui, TupleStyle style,
+                          Properties properties, String keyPrefix)
         {
             final String string = properties.getProperty(keyPrefix + keySuffix);
             final Integer value = (string == null) ?
