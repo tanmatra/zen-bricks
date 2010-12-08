@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
 import zen.bricks.properties.BackgroundProperty;
+import zen.bricks.properties.BorderProperty;
 import zen.bricks.properties.ChildrenSpacingProperty;
 import zen.bricks.properties.ColorProperty;
 import zen.bricks.properties.FontProperty;
@@ -59,6 +60,9 @@ public class TupleStyle extends BrickStyle
     public static final StyleProperty<TupleLayout> LAYOUT =
             new LayoutProperty("Layout", ".layout");
 
+    public static final StyleProperty<Border> BORDER =
+            new BorderProperty("Border", ".border");
+
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static final StyleProperty<?>[] ALL_PROPERTIES = {
         FONT,
@@ -70,6 +74,7 @@ public class TupleStyle extends BrickStyle
         LINE_SPACING,
         CHILDREN_SPACING,
         LAYOUT,
+        BORDER,
     };
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -118,6 +123,8 @@ public class TupleStyle extends BrickStyle
     private Integer spacing;
 
     private TupleLayout layout;
+
+    private Border border;
 
     // ============================================================ Constructors
 
@@ -304,5 +311,16 @@ public class TupleStyle extends BrickStyle
 
     public void setLayout(TupleLayout layout) {
         this.layout = layout;
+    }
+
+    public Border getBorder() {
+        return border;
+    }
+
+    public void setBorder(Border border) {
+        if (this.border != null) {
+            this.border.dispose();
+        }
+        this.border = border;
     }
 }

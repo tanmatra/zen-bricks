@@ -164,18 +164,15 @@ public class TupleBrick extends ContainerBrick
     {
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(this, editor);
-        paintBackground(gc, baseX, baseY, ui, clipping, chain);
-        paintText(gc, baseX, baseY, clipping, chain);
-        paintChildren(gc, baseX, baseY, clipping, editor);
-    }
 
-    private void paintBackground(GC gc, int baseX, int baseY, UI ui,
-                                 Rectangle clipping, StyleChain chain)
-    {
         gc.setBackground(chain.getBackgroundColor());
         gc.fillRectangle(baseX, baseY, this.getWidth(), this.getHeight());
+//        ui.getBorder().paint(gc, baseX, baseY, this, clipping);
+        final Border border = TupleStyle.BORDER.find(chain).getBorder();
+        border.paint(gc, baseX, baseY, this, clipping);
 
-        ui.getBorder().paint(gc, baseX, baseY, this, clipping);
+        paintText(gc, baseX, baseY, clipping, chain);
+        paintChildren(gc, baseX, baseY, clipping, editor);
     }
 
     private void paintText(GC gc, int baseX, int baseY, Rectangle clipping,

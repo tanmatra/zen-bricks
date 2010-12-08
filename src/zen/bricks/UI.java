@@ -1,6 +1,5 @@
 package zen.bricks;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,11 +32,14 @@ public class UI
     private StyleChain basicChain;
     private StyleChain listChain;
     private ArrayList<TupleLayout> tupleLayouts;
+    private ArrayList<BorderFactory> borderFactories;
+    public final Properties properties; // FIXME
 
     // ============================================================ Constructors
 
     public UI(Device device, Properties properties) throws Exception {
         this.device = device;
+        this.properties = properties;
         savedGC = new GC(device);
         try {
             init(properties);
@@ -52,19 +54,28 @@ public class UI
     void init(Properties props) throws Exception {
         advanced = parseBoolean(props, "advanced");
         antialias = parseState(props, "antialias");
-        initBorder(props);
+
         canvasBackgroundColor = parseColor(props, "canvas.background.color");
 
-        final ServiceLoader<TupleLayout> loader =
+        final ServiceLoader<TupleLayout> layoutsLoader =
                 ServiceLoader.load(TupleLayout.class);
         tupleLayouts = new ArrayList<TupleLayout>();
-        for (final TupleLayout layout : loader) {
+        for (final TupleLayout layout : layoutsLoader) {
             tupleLayouts.add(layout);
         }
+
+        final ServiceLoader<BorderFactory> bordersLoader =
+                ServiceLoader.load(BorderFactory.class);
+        borderFactories = new ArrayList<BorderFactory>();
+        for (final BorderFactory borderFactory : bordersLoader) {
+            borderFactories.add(borderFactory);
+        }
+        initBorder(props);
 
         textAntialias = parseState(props, "text.antialias");
 
         basicStyle = new TupleStyle(this, "Basic", props, "basic_style");
+        basicStyle.setBorder(border); // FIXME
         basicStyle.setTopLevel(true);
         listStyle = new TupleStyle(this, "List", props, "list_style");
 
@@ -95,15 +106,23 @@ public class UI
     }
 
     private void initBorder(Properties props) throws Exception {
-        final String borderClassName = props.getProperty("border.class");
-        final Class<Border> borderClass =
-                (Class<Border>) Class.forName(borderClassName);
-        final Constructor<Border> constr =
-                borderClass.getConstructor(UI.class, Properties.class);
-        if (!Border.class.isAssignableFrom(borderClass)) {
-            throw new ClassNotFoundException("Not a subclass of Border");
+//        final String borderClassName = props.getProperty("border.class");
+//        final Class<Border> borderClass =
+//                (Class<Border>) Class.forName(borderClassName);
+//        final Constructor<Border> constr =
+//                borderClass.getConstructor(UI.class, Properties.class);
+//        if (!Border.class.isAssignableFrom(borderClass)) {
+//            throw new ClassNotFoundException("Not a subclass of Border");
+//        }
+//        border = constr.newInstance(this, props);
+
+        for (final BorderFactory factory : borderFactories) {
+            if (factory.getName().equals("simple")) {
+                border = factory.createBorder(this);
+                border.init(props);
+                return;
+            }
         }
-        border = constr.newInstance(this, props);
     }
 
     /**
@@ -202,5 +221,9 @@ public class UI
 
     public List<TupleLayout> getTupleLayouts() {
         return tupleLayouts;
+    }
+
+    public List<BorderFactory> getBorderFactories() {
+        return borderFactories;
     }
 }
