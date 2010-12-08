@@ -1,6 +1,6 @@
 package zen.bricks.properties;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import zen.bricks.Margin;
 import zen.bricks.StyleProperty;
@@ -21,9 +21,7 @@ public abstract class MarginProperty extends StyleProperty<Margin>
         return new MarginEditorPart(this, style);
     }
 
-    public void parse(UI ui, TupleStyle style,
-                      Properties properties, String keyPrefix)
-    {
-        set(style, Margin.parseMargin(properties, keyPrefix + keySuffix));
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        set(style, Margin.parseMargin(preferences.get(key, null)));
     }
 }

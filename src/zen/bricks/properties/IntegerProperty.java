@@ -1,6 +1,6 @@
 package zen.bricks.properties;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
@@ -20,10 +20,8 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
         return new IntegerEditorPart(this, style);
     }
 
-    public void parse(UI ui, TupleStyle style,
-                      Properties properties, String keyPrefix)
-    {
-        final String string = properties.getProperty(keyPrefix + keySuffix);
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        final String string = preferences.get(key, null);
         final Integer value = (string == null) ?
                 null : Integer.parseInt(string);
         set(style, value);

@@ -1,6 +1,6 @@
 package zen.bricks.borders;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
@@ -33,15 +33,10 @@ public class RoundedBorder extends Border
         super(factory, ui);
     }
 
-    public RoundedBorder(UI ui, Properties properties) {
-        super(ui, properties);
-        init(properties);
-    }
-
-    @Override
-    public void init(Properties properties) {
-        super.init(properties);
-        arcSize = ui.parseInt(properties, "border.arc.size");
+    public void load(Preferences preferences) {
+        // TODO Somehow initialize arc size
+        // super.load(preferences);
+        arcSize = preferences.getInt("arcSize", 0);
     }
 
     protected void paintBorder(GC gc, int x, int y, Brick brick,

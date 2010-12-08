@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -33,16 +34,14 @@ public class UI
     private StyleChain listChain;
     private ArrayList<TupleLayout> tupleLayouts;
     private ArrayList<BorderFactory> borderFactories;
-    public final Properties properties; // FIXME
 
     // ============================================================ Constructors
 
-    public UI(Device device, Properties properties) throws Exception {
+    public UI(Device device, Preferences preferences) throws Exception {
         this.device = device;
-        this.properties = properties;
         savedGC = new GC(device);
         try {
-            init(properties);
+            init(preferences);
             savedGC.setAntialias(antialias);
             // TODO: pass antialias to all text styles
         } catch (final Exception e) {
@@ -51,11 +50,13 @@ public class UI
         }
     }
 
-    void init(Properties props) throws Exception {
-        advanced = parseBoolean(props, "advanced");
-        antialias = parseState(props, "antialias");
+    // ================================================================= Methods
 
-        canvasBackgroundColor = parseColor(props, "canvas.background.color");
+    void init(Preferences prefs) throws Exception {
+        advanced = parseBoolean(prefs, "advanced");
+        antialias = parseState(prefs, "antialias");
+
+        canvasBackgroundColor = parseColor(prefs, "canvasBackgroundColor");
 
         final ServiceLoader<TupleLayout> layoutsLoader =
                 ServiceLoader.load(TupleLayout.class);
@@ -70,17 +71,15 @@ public class UI
         for (final BorderFactory borderFactory : bordersLoader) {
             borderFactories.add(borderFactory);
         }
-        initBorder(props);
 
-        textAntialias = parseState(props, "text.antialias");
+        textAntialias = parseState(prefs, "textAntialias");
 
-        basicStyle = new TupleStyle(this, "Basic", props, "basic_style");
-        basicStyle.setBorder(border); // FIXME
+        final Preferences stylesNode = prefs.node("styles");
+        basicStyle = new TupleStyle(this, "Basic", stylesNode.node("basic"));
         basicStyle.setTopLevel(true);
-        listStyle = new TupleStyle(this, "List", props, "list_style");
-
-        selectedStyle = new TupleStyle(
-                this, "Selected", props, "selected_style");
+        listStyle = new TupleStyle(this, "List", stylesNode.node("list"));
+        selectedStyle =
+                new TupleStyle(this, "Selected", stylesNode.node("selected"));
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
@@ -105,26 +104,6 @@ public class UI
         }
     }
 
-    private void initBorder(Properties props) throws Exception {
-//        final String borderClassName = props.getProperty("border.class");
-//        final Class<Border> borderClass =
-//                (Class<Border>) Class.forName(borderClassName);
-//        final Constructor<Border> constr =
-//                borderClass.getConstructor(UI.class, Properties.class);
-//        if (!Border.class.isAssignableFrom(borderClass)) {
-//            throw new ClassNotFoundException("Not a subclass of Border");
-//        }
-//        border = constr.newInstance(this, props);
-
-        for (final BorderFactory factory : borderFactories) {
-            if (factory.getName().equals("simple")) {
-                border = factory.createBorder(this);
-                border.init(props);
-                return;
-            }
-        }
-    }
-
     /**
      * @param editor
      */
@@ -132,16 +111,16 @@ public class UI
         // what here ???
     }
 
-    public Boolean parseBoolean(Properties properties, String key) {
-        final String value = properties.getProperty(key);
+    public Boolean parseBoolean(Preferences preferences, String key) {
+        final String value = preferences.get(key, null);
         if (value == null) {
             return null;
         }
         return Boolean.valueOf(value);
     }
 
-    private Color parseColor(Properties properties, String key) {
-        final String value = properties.getProperty(key);
+    private Color parseColor(Preferences preferences, String key) {
+        final String value = preferences.get(key, null);
         return new Color(device, ColorUtil.parse(device, value));
     }
 
@@ -150,8 +129,8 @@ public class UI
         return Integer.parseInt(value);
     }
 
-    private int parseState(Properties properties, String key) {
-        final String value = properties.getProperty(key);
+    private int parseState(Preferences preferences, String key) {
+        final String value = preferences.get(key, null);
         if ((value == null) || "default".equals(value)) {
             return SWT.DEFAULT;
         } else if ("on".equals(value)) {
@@ -167,7 +146,7 @@ public class UI
         basicStyle.setFont(fontList);
     }
 
-    Device getDevice() {
+    public Device getDevice() {
         return device;
     }
 

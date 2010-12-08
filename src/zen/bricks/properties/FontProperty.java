@@ -1,7 +1,7 @@
 package zen.bricks.properties;
 
-import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -24,15 +24,13 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         return new FontEditorPart(this, style);
     }
 
-    public void parse(UI ui, TupleStyle style,
-                      Properties properties, String keyPrefix)
-    {
-        final String value = properties.getProperty(keyPrefix + ".font");
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        final String value = preferences.get(key, null);
         final FontData[] list;
         if ((value == null) || "inherit".equals(value)) {
             list = null;
         } else {
-            list = new FontData[] { FontProperty.parseFontData(value) };
+            list = new FontData[] { parseFontData(value) };
         }
         set(style, list);
     }

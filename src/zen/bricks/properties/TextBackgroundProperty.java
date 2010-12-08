@@ -1,6 +1,6 @@
 package zen.bricks.properties;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.graphics.RGB;
 
@@ -40,11 +40,9 @@ public class TextBackgroundProperty extends ColorProperty
         // do nothing, as it never called
     }
 
-    public void parse(UI ui, TupleStyle style,
-                      Properties properties, String keyPrefix)
-    {
-        final String string =
-                properties.getProperty(keyPrefix + keySuffix);
+    @Override
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        final String string = preferences.get(key, null);
         final Boolean background;
         final RGB rgb;
         if (string == null) {
@@ -55,7 +53,7 @@ public class TextBackgroundProperty extends ColorProperty
             rgb = null;
         } else {
             background = true;
-            rgb = ColorUtil.parse(style.getDevice(), string);
+            rgb = ColorUtil.parse(ui.getDevice(), string);
         }
         style.setTextBackgroundRGB(background, rgb);
     }

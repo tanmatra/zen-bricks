@@ -1,6 +1,6 @@
 package zen.bricks;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -33,35 +33,35 @@ public class TupleStyle extends BrickStyle
     // ============================================================ Class Fields
 
     public static final ColorProperty FOREGROUND =
-            new ForegroundProperty("Foreground color", ".color");
+            new ForegroundProperty("Foreground color", "color");
 
     public static final ColorProperty BACKGROUND =
-            new BackgroundProperty("Background color", ".background");
+            new BackgroundProperty("Background color", "background");
 
     public static final ColorProperty TEXT_BACKGROUND =
             new TextBackgroundProperty("Text background color",
-                    ".textBackground");
+                    "textBackground");
 
     public static final FontProperty FONT =
-            new TextFontProperty("Font", ".font");
+            new TextFontProperty("Font", "font");
 
     public static final MarginProperty PADDING =
-            new PaddingProperty("Brick padding", ".padding");
+            new PaddingProperty("Brick padding", "padding");
 
     public static final MarginProperty TEXT_MARGIN =
-            new TextMarginProperty("Text margin", ".textMargin");
+            new TextMarginProperty("Text margin", "textMargin");
 
     public static final IntegerProperty LINE_SPACING =
-            new LineSpacingProperty("Line spacing", ".lineSpacing");
+            new LineSpacingProperty("Line spacing", "lineSpacing");
 
     public static final IntegerProperty CHILDREN_SPACING =
-            new ChildrenSpacingProperty("Children spacing", ".spacing");
+            new ChildrenSpacingProperty("Children spacing", "spacing");
 
     public static final StyleProperty<TupleLayout> LAYOUT =
-            new LayoutProperty("Layout", ".layout");
+            new LayoutProperty("Layout", "layout");
 
     public static final StyleProperty<Border> BORDER =
-            new BorderProperty("Border", ".border");
+            new BorderProperty("Border", "border");
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static final StyleProperty<?>[] ALL_PROPERTIES = {
@@ -128,14 +128,12 @@ public class TupleStyle extends BrickStyle
 
     // ============================================================ Constructors
 
-    public TupleStyle(UI ui, String name,
-                      Properties properties, String keyPrefix)
-    {
+    public TupleStyle(UI ui, String name, Preferences preferences) {
         super(name);
         this.device = ui.getDevice();
         try {
             for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
-                styleProperty.parse(ui, this, properties, keyPrefix);
+                styleProperty.load(ui, this, preferences);
             }
         } catch (RuntimeException e) {
             dispose();

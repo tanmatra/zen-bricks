@@ -1,6 +1,6 @@
 package zen.bricks;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import zen.bricks.styleeditor.StyleEditorPart;
 
@@ -10,13 +10,13 @@ public abstract class StyleProperty<T>
 
     protected final String title;
 
-    protected final String keySuffix;
+    protected final String key;
 
     // ============================================================ Constructors
 
-    public StyleProperty(String title, String keySuffix) {
+    public StyleProperty(String title, String key) {
         this.title = title;
-        this.keySuffix = keySuffix;
+        this.key = key;
     }
 
     // ================================================================= Methods
@@ -56,10 +56,9 @@ public abstract class StyleProperty<T>
             }
             chain = chain.parent;
         } while (chain != null);
-        throw new Error("Style property \"" + title + "\" (" + keySuffix +
+        throw new Error("Style property \"" + title + "\" (" + key +
                 ") not found in chain");
     }
 
-    public abstract void parse(UI ui, TupleStyle style,
-                               Properties properties, String keyPrefix);
+    public abstract void load(UI ui, TupleStyle style, Preferences preferences);
 }

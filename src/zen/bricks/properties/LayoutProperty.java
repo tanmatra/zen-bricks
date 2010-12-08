@@ -1,7 +1,7 @@
 package zen.bricks.properties;
 
 import java.util.List;
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -73,20 +73,18 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         };
     }
 
-    public void parse(UI ui, TupleStyle style,
-                      Properties properties, String keyPrefix)
-    {
-        TupleLayout resultLayout = null;
-        final String value = properties.getProperty(keyPrefix + keySuffix);
-        if (value != null) {
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        final String value = preferences.get(key, null);
+        if (value == null) {
+            set(style, null);
+        } else {
             final List<TupleLayout> layouts = ui.getTupleLayouts();
             for (TupleLayout layout : layouts) {
                 if (layout.getName().equals(value)) {
-                    resultLayout = layout;
-                    break;
+                    set(style, layout);
+                    return;
                 }
             }
         }
-        set(style, resultLayout);
     }
 }

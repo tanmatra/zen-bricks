@@ -1,11 +1,8 @@
 package zen.bricks;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.util.Properties;
 import java.util.prefs.Preferences;
 
 import org.eclipse.core.runtime.IStatus;
@@ -29,6 +26,7 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.styleeditor.EditStylesDialog;
+import zen.bricks.utils.PropertiesPreferences;
 
 
 public class MainWindow extends ApplicationWindow
@@ -52,23 +50,6 @@ public class MainWindow extends ApplicationWindow
         window.open();
         shellImage.dispose();
         Display.getCurrent().dispose();
-    }
-
-    private static Properties loadProperties(String filePath)
-            throws IOException
-    {
-        final InputStream inputStream = new FileInputStream(filePath);
-        try {
-            final Properties properties = new Properties();
-            properties.load(inputStream);
-            return properties;
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
     }
 
     // ================================================================== Fields
@@ -305,10 +286,10 @@ public class MainWindow extends ApplicationWindow
         getShell().setText("Bricks - " + fileName);
     }
 
-    void setEditorTheme(Properties props) {
+    void setEditorTheme(Preferences themePrefs) {
         final UI ui;
         try {
-            ui = new UI(getShell().getDisplay(), props);
+            ui = new UI(getShell().getDisplay(), themePrefs);
         } catch (Exception e) {
             handleException(e, "Error setting theme");
             return;
@@ -319,14 +300,14 @@ public class MainWindow extends ApplicationWindow
     void loadTheme() {
         preferences.put(LAST_THEME_KEY, themeFileName);
 
-        final Properties props;
+        final Preferences themePreferences;
         try {
-            props = loadProperties(themeFileName);
+            themePreferences = PropertiesPreferences.load(themeFileName);
         } catch (IOException e) {
             handleException(e, "Error loading theme");
             return;
         }
-        setEditorTheme(props);
+        setEditorTheme(themePreferences);
         getStatusLineManager().setMessage(
                 "Loaded theme \"" + themeFileName + "\"");
         reloadThemeAction.setEnabled(true);

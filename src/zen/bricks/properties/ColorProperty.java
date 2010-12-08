@@ -1,6 +1,6 @@
 package zen.bricks.properties;
 
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.eclipse.swt.graphics.RGB;
 
@@ -23,10 +23,8 @@ public abstract class ColorProperty extends StyleProperty<RGB>
         return new ColorEditorPart(this, style);
     }
 
-    public void parse(UI ui, TupleStyle style,
-                      Properties properties, String keyPrefix)
-    {
-        final String value = properties.getProperty(keyPrefix + keySuffix);
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        final String value = preferences.get(key, null);
         set(style, ColorUtil.parse(style.getDevice(), value));
     }
 }

@@ -1,17 +1,20 @@
 package zen.bricks.properties;
 
 import java.util.List;
-import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.prefs.Preferences;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import zen.bricks.Border;
 import zen.bricks.BorderFactory;
+import zen.bricks.ColorUtil;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
@@ -20,8 +23,8 @@ import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class BorderProperty extends StyleProperty<Border>
 {
-    public BorderProperty(String title, String keySuffix) {
-        super(title, keySuffix);
+    public BorderProperty(String title, String key) {
+        super(title, key);
     }
 
     public Border get(TupleStyle style) {
@@ -52,7 +55,6 @@ public class BorderProperty extends StyleProperty<Border>
                 }
                 final Border border = ui.getBorderFactories().get(index)
                         .createBorder(ui);
-                border.init(ui.properties);
                 border.setColor(colorSelector.getColorValue());
                 return border;
             }
@@ -103,9 +105,23 @@ public class BorderProperty extends StyleProperty<Border>
         };
     }
 
-    public void parse(UI ui, TupleStyle style, Properties properties,
-                        String keyPrefix)
-    {
-        // TODO Auto-generated method stub
+    public void load(UI ui, TupleStyle style, Preferences preferences) {
+        final String string = preferences.get(key, null);
+        if (string == null) {
+            set(style, null);
+        } else {
+            final StringTokenizer tokenizer = new StringTokenizer(string);
+            final String name = tokenizer.nextToken();
+            final String colorStr = tokenizer.nextToken();
+            for (final BorderFactory factory : ui.getBorderFactories()) {
+                if (factory.getName().equals(name)) {
+                    final Border border = factory.createBorder(ui);
+                    final RGB rgb = ColorUtil.parse(ui.getDevice(), colorStr);
+                    border.setColor(rgb);
+                    set(style, border);
+                    return;
+                }
+            }
+        }
     }
 }

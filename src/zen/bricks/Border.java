@@ -1,7 +1,5 @@
 package zen.bricks;
 
-import java.util.Properties;
-
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -16,17 +14,6 @@ public abstract class Border
     protected Border(BorderFactory factory, UI ui) {
         this.factory = factory;
         this.ui = ui;
-    }
-
-    protected Border(UI ui, Properties properties) {
-        this.ui = ui;
-        init(properties);
-    }
-
-    public void init(Properties properties) {
-        final String string = properties.getProperty("border.color");
-        final RGB rgb = ColorUtil.parse(ui.getDevice(), string);
-        color = new Color(ui.getDevice(), rgb);
     }
 
     public void dispose() {

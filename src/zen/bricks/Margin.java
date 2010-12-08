@@ -28,8 +28,7 @@ public class Margin
         this.bottom = bottom;
     }
 
-    public static Margin parseMargin(Properties props, String key) {
-        final String string = props.getProperty(key);
+    public static Margin parseMargin(String string) {
         if (string == null) {
             return null;
         }
