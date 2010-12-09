@@ -1,6 +1,7 @@
 package zen.bricks.styleeditor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -81,38 +82,40 @@ public class EditStylesDialog extends Dialog
 
     @Override
     protected Control createDialogArea(Composite parent) {
+        final List<? extends BrickStyle> brickStyles = ui.getBrickStyles();
+
         final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
 
-        //================================
+        //------------------------------------------------- styles table viewer
         final Composite listPanel = new Composite(sashForm, SWT.NONE);
         GridLayoutFactory.fillDefaults().extendedMargins(5, 0, 5, 5)
-            .applyTo(listPanel);
+                .applyTo(listPanel);
 
         final Label stylesLabel = new Label(listPanel, SWT.NONE);
         stylesLabel.setText("Styles:");
 
-        final TableViewer tableViewer = new TableViewer(listPanel,
-            SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
+        final TableViewer stylesViewer = new TableViewer(listPanel,
+                SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
         GridDataFactory.fillDefaults().grab(true, true)
-            .applyTo(tableViewer.getTable());
-        tableViewer.setLabelProvider(new StyleLabelProvider());
-        tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-        tableViewer.setInput(ui.getBrickStyles());
-        tableViewer.addPostSelectionChangedListener(
+                .applyTo(stylesViewer.getTable());
+        stylesViewer.setLabelProvider(new StyleLabelProvider());
+        stylesViewer.setContentProvider(ArrayContentProvider.getInstance());
+        stylesViewer.setInput(brickStyles);
+        stylesViewer.addPostSelectionChangedListener(
                 new ISelectionChangedListener()
         {
             public void selectionChanged(SelectionChangedEvent event) {
                 final IStructuredSelection selection =
-                    (IStructuredSelection) event.getSelection();
+                        (IStructuredSelection) event.getSelection();
                 styleSelected((BrickStyle) selection.getFirstElement());
             }
         });
 
-        //================================
+        //----------------------------------------------------- properties panel
         final Composite propertiesPanel = new Composite(sashForm, SWT.NONE);
         GridLayoutFactory.fillDefaults().extendedMargins(0, 5, 5, 5)
-            .applyTo(propertiesPanel);
+                .applyTo(propertiesPanel);
 
         final Label propsLabel = new Label(propertiesPanel, SWT.NONE);
         propsLabel.setText("Properties:");
@@ -120,17 +123,18 @@ public class EditStylesDialog extends Dialog
 
         stackPanel = new Composite(propertiesPanel, SWT.BORDER | SWT.V_SCROLL);
         GridDataFactory.fillDefaults().hint(600, 400).grab(true, true)
-            .applyTo(stackPanel);
+                .applyTo(stackPanel);
         stackLayout = new StackLayout();
         stackPanel.setLayout(stackLayout);
 
-        //================================
+        //----------------------------------------------------------------------
         sashForm.setWeights(new int[] { 20, 80 });
 
-        if (selectedStyle != null) {
-            tableViewer.setSelection(
-                    new StructuredSelection(selectedStyle), true);
+        if ((selectedStyle == null) && (brickStyles.size() > 0)) {
+            selectedStyle = brickStyles.get(0);
         }
+        stylesViewer.setSelection(
+                new StructuredSelection(selectedStyle), true);
 
         return sashForm;
     }
