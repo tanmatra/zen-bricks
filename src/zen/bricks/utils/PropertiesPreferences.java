@@ -12,43 +12,6 @@ import java.util.prefs.Preferences;
 
 public class PropertiesPreferences extends AbstractPreferences
 {
-    public static void main(String[] args) throws Exception {
-        Properties props = new Properties();
-        FileInputStream fis =
-                new FileInputStream("themes/default.theme.properties");
-        try {
-            props.load(fis);
-        } finally {
-            fis.close();
-        }
-        PropertiesPreferences prefs = new PropertiesPreferences(props);
-        System.out.println("antialias = " + prefs.get("antialias", null));
-
-        Preferences borderNode = prefs.node("border");
-        printKeys(borderNode);
-        borderNode.removeNode();
-        printKeys(borderNode);
-
-        Preferences stylesNode = prefs.node("styles");
-        System.out.println("class = " + stylesNode.get("class", null));
-
-        String[] childrenNames = stylesNode.childrenNames();
-        for (final String childName : childrenNames) {
-            System.out.format("Style '%s'%n", childName);
-            Preferences subnode = stylesNode.node(childName);
-            System.out.println("Style color = " + subnode.get("color", null));
-        }
-        System.out.println();
-    }
-
-    private static void printKeys(Preferences node)
-            throws BackingStoreException
-    {
-        for (final String attr : node.keys()) {
-            System.out.format("Border attr: '%s'%n", attr);
-        }
-    }
-
     public static Preferences load(String fileName) throws IOException {
         final Properties properties = new Properties();
         final InputStream input = new FileInputStream(fileName);
