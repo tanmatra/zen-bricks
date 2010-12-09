@@ -7,7 +7,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
@@ -15,8 +16,7 @@ import zen.bricks.styleeditor.StyleEditorPart;
 
 public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {
-    private Label label;
-    private Button definedCheck;
+    Button definedCheck;
 
     public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
         super(property, style);
@@ -27,12 +27,18 @@ public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     }
 
     protected void createDefinedCheck(Composite parent) {
+        definedCheck = new Button(parent, SWT.CHECK);
+        definedCheck.setText(property.getTitle());
         if (isMandatory()) {
-            label = new Label(parent, SWT.NONE);
-            label.setText(property.getTitle());
+            definedCheck.setSelection(true);
+            definedCheck.setGrayed(true);
+            definedCheck.addListener(SWT.Selection, new Listener() {
+                public void handleEvent(Event event) {
+                    event.doit = false;
+                    definedCheck.setSelection(true);
+                }
+            });
         } else {
-            definedCheck = new Button(parent, SWT.CHECK);
-            definedCheck.setText(property.getTitle());
             definedCheck.addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
                     definedCheckChanged(isDefined());
@@ -44,8 +50,8 @@ public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     protected Composite createValuesPanel(Composite parent, int span) {
         final Composite panel = new Composite(parent, SWT.NONE);
         final RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
-        rowLayout.marginLeft = rowLayout.marginTop
-            = rowLayout.marginRight = rowLayout.marginBottom = 0;
+        rowLayout.marginLeft = rowLayout.marginTop =
+                rowLayout.marginRight = rowLayout.marginBottom = 0;
         rowLayout.center = true;
         panel.setLayout(rowLayout);
         gridData(span - 1).applyTo(panel);
@@ -66,7 +72,7 @@ public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     protected abstract void definedCheckChanged(boolean defined);
 
     public boolean isDefined() {
-        return isMandatory() ? true : definedCheck.getSelection();
+        return isMandatory() || definedCheck.getSelection();
     }
 
     protected void setDefined(boolean defined) {
