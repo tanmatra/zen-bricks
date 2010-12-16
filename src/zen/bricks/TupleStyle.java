@@ -15,6 +15,7 @@ import zen.bricks.properties.BackgroundProperty;
 import zen.bricks.properties.BorderProperty;
 import zen.bricks.properties.ChildrenSpacingProperty;
 import zen.bricks.properties.ColorProperty;
+import zen.bricks.properties.ColorState;
 import zen.bricks.properties.FontProperty;
 import zen.bricks.properties.ForegroundProperty;
 import zen.bricks.properties.IntegerProperty;
@@ -100,15 +101,10 @@ public class TupleStyle extends BrickStyle
 
     private Color foregroundColor;
 
-    /**
-     * null  - not defined<br/>
-     * false - transparent<br/>
-     * true  - opaque
-     */
-    Boolean textBackground;
+    private ColorState textBackground;
 
     /**
-     * Valid (not null) only if textBackground == true
+     * Valid (not null) only if textBackground == OPAQUE
      */
     private Color textBackgroundColor;
 
@@ -243,7 +239,7 @@ public class TupleStyle extends BrickStyle
         return foregroundColor != null ? foregroundColor.getRGB() : null;
     }
 
-    public Boolean getTextBackground() {
+    public ColorState getTextBackground() {
         return textBackground;
     }
 
@@ -256,12 +252,12 @@ public class TupleStyle extends BrickStyle
                 textBackgroundColor.getRGB() : null;
     }
 
-    public void setTextBackgroundRGB(Boolean textBackground, RGB rgb) {
+    public void setTextBackgroundRGB(ColorState textBackground, RGB rgb) {
         if (textBackgroundColor != null) {
             textBackgroundColor.dispose();
         }
         this.textBackground = textBackground;
-        if (Boolean.TRUE.equals(textBackground)) { // if opaque
+        if (textBackground == ColorState.OPAQUE) {
             textBackgroundColor = new Color(getDevice(), rgb);
         } else {
             textBackgroundColor = null;

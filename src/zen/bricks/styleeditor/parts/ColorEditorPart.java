@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
+import zen.bricks.properties.ColorState;
 
 public class ColorEditorPart extends CheckedEditorPart<RGB>
 {
@@ -17,17 +18,17 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
     ColorSelector colorSelector;
     private final boolean allowTransparent;
     private Button transparentCheck;
-    private final Boolean background;
+    private final ColorState background;
 
     public ColorEditorPart(StyleProperty<RGB> property, TupleStyle style) {
         super(property, style);
         this.allowTransparent = false;
         color = property.get(style);
-        background = (color == null) ? null : true;
+        background = (color != null) ? ColorState.OPAQUE : null;
     }
 
     public ColorEditorPart(StyleProperty<RGB> property, TupleStyle style,
-                           Boolean textBackground) {
+                           ColorState textBackground) {
         super(property, style);
         this.background = textBackground;
         this.allowTransparent = true;
@@ -49,7 +50,7 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
                     testColorSelectorEnabled();
                 }
             });
-            transparentCheck.setSelection(Boolean.FALSE.equals(background));
+            transparentCheck.setSelection(background == ColorState.TRANSPARENT);
         }
 
         final boolean defined = (background != null);
@@ -91,8 +92,9 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
         return isDefined() ? colorSelector.getColorValue() : null;
     }
 
-    public Boolean getBackground() {
+    public ColorState getBackground() {
         return !isDefined() ? null :
-                transparentCheck.getSelection() ? false : true;
+                transparentCheck.getSelection() ?
+                        ColorState.TRANSPARENT : ColorState.OPAQUE;
     }
 }

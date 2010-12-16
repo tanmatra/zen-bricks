@@ -10,6 +10,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 
+import zen.bricks.properties.ColorState;
+
 public class TupleBrick extends ContainerBrick
 {
     // ========================================================== Nested Classes
@@ -186,7 +188,8 @@ public class TupleBrick extends ContainerBrick
 
         final TupleStyle background = chain.findTextBackground();
         int flags = StyleChain.TEXT_FLAGS;
-        if (background.textBackground) { // garanteed not null here
+        // getTextBackground() garanteed not null here
+        if (background.getTextBackground() == ColorState.OPAQUE) {
             gc.setBackground(background.getTextBackgroundColor());
         } else {
             flags |= SWT.DRAW_TRANSPARENT;

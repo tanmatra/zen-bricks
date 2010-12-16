@@ -43,16 +43,16 @@ public class TextBackgroundProperty extends ColorProperty
     @Override
     public void load(UI ui, TupleStyle style, Preferences preferences) {
         final String string = preferences.get(key, null);
-        final Boolean background;
+        final ColorState background;
         final RGB rgb;
         if (string == null) {
             background = null;
             rgb = null;
         } else if ("transparent".equals(string)) {
-            background = false;
+            background = ColorState.TRANSPARENT;
             rgb = null;
         } else {
-            background = true;
+            background = ColorState.OPAQUE;
             rgb = ColorUtil.parse(ui.getDevice(), string);
         }
         style.setTextBackgroundRGB(background, rgb);
