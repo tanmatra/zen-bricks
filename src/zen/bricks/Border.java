@@ -17,7 +17,7 @@ public abstract class Border
     public abstract void dispose();
 
     public abstract void paint(GC gc, int x, int y, Brick brick,
-                                Rectangle clipping);
+                                Rectangle clipping, Editor editor);
 
     public BorderFactory<?> getFactory() {
         return factory;

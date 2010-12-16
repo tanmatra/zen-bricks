@@ -3,6 +3,7 @@ package zen.bricks.borders;
 import java.util.prefs.Preferences;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -92,9 +93,19 @@ public class RoundedBorder extends SimpleBorder
 
     // ================================================================= Methods
 
-    protected void paintBorder(GC gc, int x, int y, Brick brick,
-            Rectangle clipping)
+    protected void paintBackground(GC gc, int x, int y, Brick brick,
+            Color background)
     {
+        gc.setBackground(background);
+        gc.fillRoundRectangle(x, y,
+                brick.getWidth(), brick.getHeight(),
+                arcSize, arcSize);
+    }
+
+    protected void paintBorder(GC gc, int x, int y, Brick brick,
+            Rectangle clipping, Color foreground)
+    {
+        gc.setForeground(color);
         gc.drawRoundRectangle(x, y,
                 brick.getWidth() - 1, brick.getHeight() - 1,
                 arcSize, arcSize);

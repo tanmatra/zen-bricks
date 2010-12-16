@@ -15,7 +15,10 @@ import zen.bricks.Border;
 import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
 import zen.bricks.ColorUtil;
+import zen.bricks.Editor;
+import zen.bricks.StyleChain;
 import zen.bricks.StyleProperty;
+import zen.bricks.TupleBrick;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
 import zen.bricks.styleeditor.IStyleEditor;
@@ -106,19 +109,31 @@ public class SimpleBorder extends Border
         }
     }
 
-    public void paint(GC gc, int x, int y, Brick brick,
-                            Rectangle clipping)
+    public void paint(GC gc, int x, int y, Brick brick, Rectangle clipping,
+            Editor editor)
     {
-        gc.setForeground(color);
-        paintBorder(gc, x, y, brick, clipping);
+        final TupleBrick tupleBrick = (TupleBrick) brick;
+        final StyleChain styleChain = ui.getStyleChain(tupleBrick, editor);
+        final Color backgroundColor = styleChain.getBackgroundColor();
+        paintBackground(gc, x, y, brick, backgroundColor);
+
+        paintBorder(gc, x, y, brick, clipping, color);
+    }
+
+    protected void paintBackground(GC gc, int x, int y, Brick brick,
+            Color backgroundColor)
+    {
+        gc.setBackground(backgroundColor);
+        gc.fillRectangle(x, y, brick.getWidth(), brick.getHeight());
     }
 
     /**
      * @param clipping not used
      */
     protected void paintBorder(GC gc, int x, int y, Brick brick,
-            Rectangle clipping)
+            Rectangle clipping, Color foreground)
     {
+        gc.setForeground(color);
         gc.drawRectangle(x, y, brick.getWidth() - 1, brick.getHeight() - 1);
     }
 
