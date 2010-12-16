@@ -1,31 +1,35 @@
 package zen.bricks.properties;
 
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import zen.bricks.Border;
 import zen.bricks.BorderFactory;
-import zen.bricks.ColorUtil;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
+import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.styleeditor.StyleEditorPart;
 import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class BorderProperty extends StyleProperty<Border>
 {
+    // ============================================================ Constructors
+
     public BorderProperty(String title, String key) {
         super(title, key);
     }
+
+    // ================================================================= Methods
 
     public Border get(TupleStyle style) {
         return style.getBorder();
@@ -35,92 +39,149 @@ public class BorderProperty extends StyleProperty<Border>
         style.setBorder(value);
     }
 
-    protected StyleEditorPart<Border> createEditorPart(
-            final TupleStyle style, final UI ui)
-    {
-        return new CheckedEditorPart<Border>(this, style)
-        {
-            private Label label1;
-            private Combo combo;
-            private Label label2;
-            private ColorSelector colorSelector;
-
-            public Border getValue() {
-                if (!isDefined()) {
-                    return null;
-                }
-                final int index = combo.getSelectionIndex();
-                if (index < 0) {
-                    return null;
-                }
-                final Border border = ui.getBorderFactories().get(index)
-                        .createBorder(ui);
-                border.setColor(colorSelector.getColorValue());
-                return border;
-            }
-
-            public void createWidgets(Composite parent, int columns) {
-                final Border border = property.get(style);
-
-                createDefinedCheck(parent);
-
-                final Composite panel =
-                        createValuesPanel(parent, columns - 1, 4);
-
-                label1 = new Label(panel, SWT.NONE);
-                label1.setText("Style:");
-
-                combo = new Combo(panel, SWT.DROP_DOWN | SWT.READ_ONLY);
-                final List<BorderFactory> factories = ui.getBorderFactories();
-                for (final BorderFactory factory : factories) {
-                    combo.add(factory.getTitle());
-                }
-                if (border != null) {
-                    final int factoryIndex =
-                            factories.indexOf(border.getFactory());
-                    if (factoryIndex >= 0) {
-                        combo.select(factoryIndex);
-                    }
-                }
-
-                label2 = new Label(panel, SWT.NONE);
-                label2.setText("Color:");
-                GridDataFactory.swtDefaults().indent(10, 0).applyTo(label2);
-
-                colorSelector = new ColorSelector(panel);
-                if (border != null) {
-                    colorSelector.setColorValue(border.getColor());
-                }
-
-                setDefined(border != null);
-                definedCheckChanged(isDefined());
-            }
-
-            protected void definedCheckChanged(boolean defined) {
-                label1.setEnabled(defined);
-                combo.setEnabled(defined);
-                label2.setEnabled(defined);
-                colorSelector.setEnabled(defined);
-            }
-        };
-    }
-
     public void load(UI ui, TupleStyle style, Preferences preferences) {
-        final String string = preferences.get(key, null);
-        if (string == null) {
+        final Preferences borderNode = preferences.node(key);
+        final String type = borderNode.get("type", null);
+        if (type == null) {
             set(style, null);
         } else {
-            final StringTokenizer tokenizer = new StringTokenizer(string);
-            final String name = tokenizer.nextToken();
-            final String colorStr = tokenizer.nextToken();
-            for (final BorderFactory factory : ui.getBorderFactories()) {
-                if (factory.getName().equals(name)) {
-                    final Border border = factory.createBorder(ui);
-                    final RGB rgb = ColorUtil.parse(ui.getDevice(), colorStr);
-                    border.setColor(rgb);
+            for (final BorderFactory<?> factory : ui.getBorderFactories()) {
+                if (factory.getName().equals(type)) {
+                    final Border border = factory.createBorder(ui, borderNode);
                     set(style, border);
                     return;
                 }
+            }
+            throw new RuntimeException("Border type '" + type + "' not found");
+        }
+    }
+
+    protected StyleEditorPart<Border> createEditorPart(
+            final TupleStyle style)
+    {
+        return new BorderEditorPart(this, style);
+    }
+
+    // ========================================================== Nested Classes
+
+    static class BorderEditorPart extends CheckedEditorPart<Border>
+    {
+        private Label label;
+
+        private Combo combo;
+
+        private IStyleEditor borderStyleEditor;
+
+        private BorderFactory<?> selectedFactory;
+
+        private final List<BorderFactory<?>> factories;
+
+        private Composite editorPanel;
+
+        BorderEditorPart(BorderProperty property, TupleStyle style) {
+            super(property, style);
+            factories = style.getUI().getBorderFactories();
+        }
+
+        public void apply() {
+            if (borderStyleEditor != null) {
+                borderStyleEditor.apply();
+            } else {
+                property.set(style, null);
+            }
+        }
+
+        public Border getValue() {
+            return null; // will be never called
+        }
+
+        public void createWidgets(Composite parent, int columns) {
+            // ---------------------------------------------------------- row 1
+            createDefinedCheck(parent);
+
+            final Composite typePanel = createValuesPanel(parent, columns - 1, 2);
+
+            label = new Label(typePanel, SWT.NONE);
+            label.setText("Style:");
+
+            combo = new Combo(typePanel, SWT.DROP_DOWN | SWT.READ_ONLY);
+            for (final BorderFactory<?> factory : factories) {
+                combo.add(factory.getTitle());
+            }
+            combo.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent e) {
+                    comboSelected();
+                }
+            });
+
+            // ---------------------------------------------------------- row 2
+            new Label(parent, SWT.NONE).setVisible(false);
+
+            editorPanel = new Composite(parent, SWT.NONE);
+            final FillLayout layout = new FillLayout(SWT.HORIZONTAL);
+            editorPanel.setLayout(layout);
+            GridDataFactory.fillDefaults().applyTo(editorPanel);
+
+            // ----------------------------------------------------------- init
+            final Border sourceBorder = property.get(style);
+            setDefined(sourceBorder != null);
+
+            selectedFactory =
+                    (sourceBorder != null) ? sourceBorder.getFactory() : null;
+            if (selectedFactory != null) {
+                final int factoryIndex = factories.indexOf(selectedFactory);
+                if (factoryIndex >= 0) {
+                    combo.select(factoryIndex);
+                }
+            }
+
+            definedCheckChanged(isDefined());
+        }
+
+        protected void definedCheckChanged(boolean defined) {
+            label.setEnabled(defined);
+            combo.setEnabled(defined);
+
+            if (defined) {
+                makeEditor();
+            } else {
+                destroyEditor();
+            }
+            layoutEditorPanel();
+        }
+
+        void comboSelected() {
+            final int index = combo.getSelectionIndex();
+            final BorderFactory<?> newFactory =
+                    (index < 0) ? null : factories.get(index);
+            if (newFactory == selectedFactory) {
+                return;
+            }
+            destroyEditor();
+            selectedFactory = newFactory;
+            makeEditor();
+            layoutEditorPanel();
+        }
+
+        private void layoutEditorPanel() {
+            editorPanel.getParent().layout(true, true);
+        }
+
+        private void makeEditor() {
+            if (selectedFactory != null) {
+                borderStyleEditor = ((BorderFactory<Border>) selectedFactory)
+                        .createStyleEditor(style, property);
+                borderStyleEditor.createControl(editorPanel);
+            } else {
+                borderStyleEditor = null;
+            }
+        }
+
+        private void destroyEditor() {
+            if (borderStyleEditor != null) {
+                borderStyleEditor.cancel();
+                borderStyleEditor.getControl().dispose();
+                borderStyleEditor = null;
             }
         }
     }

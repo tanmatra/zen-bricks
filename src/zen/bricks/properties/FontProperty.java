@@ -19,7 +19,7 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
     }
 
     protected StyleEditorPart<FontData[]> createEditorPart(
-            TupleStyle style, UI ui)
+            TupleStyle style)
     {
         return new FontEditorPart(this, style);
     }

@@ -15,7 +15,7 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
     }
 
     protected StyleEditorPart<Integer> createEditorPart(
-            TupleStyle style, UI ui)
+            TupleStyle style)
     {
         return new IntegerEditorPart(this, style);
     }

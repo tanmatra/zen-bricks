@@ -20,7 +20,7 @@ public class TextBackgroundProperty extends ColorProperty
         return style.getTextBackground() != null;
     }
 
-    protected StyleEditorPart<RGB> createEditorPart(TupleStyle style, UI ui) {
+    protected StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
         return new ColorEditorPart(this, style, style.getTextBackground());
     }
 

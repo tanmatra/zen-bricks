@@ -16,7 +16,7 @@ public abstract class MarginProperty extends StyleProperty<Margin>
     }
 
     protected StyleEditorPart<Margin> createEditorPart(
-            TupleStyle style, UI ui)
+            TupleStyle style)
     {
         return new MarginEditorPart(this, style);
     }

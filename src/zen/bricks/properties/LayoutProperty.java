@@ -29,13 +29,15 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
     }
 
     protected StyleEditorPart<TupleLayout> createEditorPart(
-            final TupleStyle style, final UI ui)
+            final TupleStyle style)
     {
         return new CheckedEditorPart<TupleLayout>(this, style)
         {
             private Combo combo;
 
             public void createWidgets(Composite parent, int columns) {
+                final UI ui = style.getUI();
+
                 createDefinedCheck(parent);
                 final Composite panel =
                         createValuesPanel(parent, columns - 1);
@@ -67,7 +69,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
                 if (idx < 0) {
                     return null;
                 } else {
-                    return ui.getTupleLayouts().get(idx);
+                    return style.getUI().getTupleLayouts().get(idx);
                 }
             }
         };

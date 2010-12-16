@@ -13,10 +13,13 @@ import zen.bricks.styleeditor.parts.FontEditorPart;
 import zen.bricks.styleeditor.parts.IntegerEditorPart;
 import zen.bricks.styleeditor.parts.MarginEditorPart;
 
-/*
+/**
  * Currently unused. Can be deleted.
+ *
+ * @deprecated
  */
-public class TupleStyleEditor implements IBrickStyleEditor
+@Deprecated
+public class TupleStyleEditor implements IStyleEditor
 {
     // ================================================================== Fields
 

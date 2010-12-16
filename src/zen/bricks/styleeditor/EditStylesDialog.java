@@ -52,8 +52,8 @@ public class EditStylesDialog extends Dialog
 
     private StackLayout stackLayout;
 
-    private final Map<BrickStyle, IBrickStyleEditor> styleEditors =
-        new HashMap<BrickStyle, IBrickStyleEditor>();
+    private final Map<BrickStyle, IStyleEditor> styleEditors =
+        new HashMap<BrickStyle, IStyleEditor>();
 
     private final Editor editor;
 
@@ -147,9 +147,9 @@ public class EditStylesDialog extends Dialog
 
     void styleSelected(BrickStyle style) {
         selectedStyle = style;
-        IBrickStyleEditor styleEditor = styleEditors.get(style);
+        IStyleEditor styleEditor = styleEditors.get(style);
         if (styleEditor == null) {
-            styleEditor = style.createEditor(ui);
+            styleEditor = style.createEditor();
             styleEditors.put(style, styleEditor);
             styleEditor.createControl(stackPanel);
         }
@@ -179,14 +179,14 @@ public class EditStylesDialog extends Dialog
     }
 
     private void apply() {
-        for (IBrickStyleEditor styleEditor : styleEditors.values()) {
+        for (IStyleEditor styleEditor : styleEditors.values()) {
             styleEditor.apply();
         }
         editor.refresh();
     }
 
     void cancelEditors() {
-        for (IBrickStyleEditor styleEditor : styleEditors.values()) {
+        for (IStyleEditor styleEditor : styleEditors.values()) {
             styleEditor.cancel();
         }
     }

@@ -25,7 +25,7 @@ import zen.bricks.properties.PaddingProperty;
 import zen.bricks.properties.TextBackgroundProperty;
 import zen.bricks.properties.TextFontProperty;
 import zen.bricks.properties.TextMarginProperty;
-import zen.bricks.styleeditor.IBrickStyleEditor;
+import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
 
 public class TupleStyle extends BrickStyle
@@ -84,8 +84,6 @@ public class TupleStyle extends BrickStyle
 
     private boolean topLevel;
 
-    private final Device device;
-
     private Font font;
 
     /**
@@ -129,8 +127,7 @@ public class TupleStyle extends BrickStyle
     // ============================================================ Constructors
 
     public TupleStyle(UI ui, String name, Preferences preferences) {
-        super(name);
-        this.device = ui.getDevice();
+        super(ui, name);
         try {
             for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
                 styleProperty.load(ui, this, preferences);
@@ -168,10 +165,14 @@ public class TupleStyle extends BrickStyle
             savedGC.dispose();
             savedGC = null;
         }
+        if (border != null) {
+            border.dispose();
+            border = null;
+        }
     }
 
     public Device getDevice() {
-        return device;
+        return ui.getDevice();
     }
 
     public void setFont(FontData[] fontList) {
@@ -185,8 +186,8 @@ public class TupleStyle extends BrickStyle
         if (fontList == null) {
             return;
         }
-        font = new Font(device, fontList);
-        savedGC = new GC(device);
+        font = new Font(getDevice(), fontList);
+        savedGC = new GC(getDevice());
         savedGC.setFont(font);
         fontMetrics = savedGC.getFontMetrics();
     }
@@ -199,9 +200,9 @@ public class TupleStyle extends BrickStyle
         return font;
     }
 
-    public IBrickStyleEditor createEditor(UI ui) {
+    public IStyleEditor createEditor() {
 //        return new TupleStyleEditor(this);
-        return new PropertiesListEditor(TupleStyle.ALL_PROPERTIES, this, ui);
+        return new PropertiesListEditor(ALL_PROPERTIES, this);
     }
 
     public Color getBackgroundColor() {
@@ -217,7 +218,7 @@ public class TupleStyle extends BrickStyle
             backgroundColor.dispose();
         }
         if (rgb != null) {
-            backgroundColor = new Color(device, rgb);
+            backgroundColor = new Color(getDevice(), rgb);
         } else {
             backgroundColor = null;
         }
@@ -228,7 +229,7 @@ public class TupleStyle extends BrickStyle
             foregroundColor.dispose();
         }
         if (rgb != null) {
-            foregroundColor = new Color(device, rgb);
+            foregroundColor = new Color(getDevice(), rgb);
         } else {
             foregroundColor = null;
         }
@@ -261,7 +262,7 @@ public class TupleStyle extends BrickStyle
         }
         this.textBackground = textBackground;
         if (Boolean.TRUE.equals(textBackground)) { // if opaque
-            textBackgroundColor = new Color(device, rgb);
+            textBackgroundColor = new Color(getDevice(), rgb);
         } else {
             textBackgroundColor = null;
         }

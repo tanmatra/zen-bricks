@@ -29,8 +29,8 @@ public abstract class StyleProperty<T>
 
     public abstract void set(TupleStyle style, T value);
 
-    public StyleEditorPart<T> makeEditorPart(TupleStyle style, UI ui) {
-        final StyleEditorPart<T> part = createEditorPart(style, ui);
+    public StyleEditorPart<T> makeEditorPart(TupleStyle style) {
+        final StyleEditorPart<T> part = createEditorPart(style);
         if (style.isTopLevel()) {
             part.setMandatory(true);
         }
@@ -38,7 +38,7 @@ public abstract class StyleProperty<T>
     }
 
     protected abstract StyleEditorPart<T> createEditorPart(
-            TupleStyle style, UI ui);
+            TupleStyle style);
 
     public void apply(StyleEditorPart<T> editorPart, TupleStyle style) {
         set(style, editorPart.getValue());

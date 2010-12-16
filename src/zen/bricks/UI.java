@@ -33,7 +33,7 @@ public class UI
     private StyleChain basicChain;
     private StyleChain listChain;
     private ArrayList<TupleLayout> tupleLayouts;
-    private ArrayList<BorderFactory> borderFactories;
+    private ArrayList<BorderFactory<?>> borderFactories;
 
     // ============================================================ Constructors
 
@@ -65,10 +65,11 @@ public class UI
             tupleLayouts.add(layout);
         }
 
+        @SuppressWarnings("rawtypes")
         final ServiceLoader<BorderFactory> bordersLoader =
                 ServiceLoader.load(BorderFactory.class);
-        borderFactories = new ArrayList<BorderFactory>();
-        for (final BorderFactory borderFactory : bordersLoader) {
+        borderFactories = new ArrayList<BorderFactory<?>>();
+        for (final BorderFactory<?> borderFactory : bordersLoader) {
             borderFactories.add(borderFactory);
         }
 
@@ -202,7 +203,7 @@ public class UI
         return tupleLayouts;
     }
 
-    public List<BorderFactory> getBorderFactories() {
+    public List<BorderFactory<?>> getBorderFactories() {
         return borderFactories;
     }
 }

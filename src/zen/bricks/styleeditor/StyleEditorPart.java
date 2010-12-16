@@ -10,7 +10,7 @@ public abstract class StyleEditorPart<T>
 {
     protected final StyleProperty<T> property;
 
-    private final TupleStyle style;
+    protected final TupleStyle style;
 
     private boolean mandatory;
 
