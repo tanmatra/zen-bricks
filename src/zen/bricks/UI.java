@@ -134,9 +134,9 @@ public class UI
         final String value = preferences.get(key, null);
         if ((value == null) || "default".equals(value)) {
             return SWT.DEFAULT;
-        } else if ("on".equals(value)) {
+        } else if ("on".equals(value) || "true".equals(value)) {
             return SWT.ON;
-        } else if ("off".equals(value)) {
+        } else if ("off".equals(value) || "false".equals(value)) {
             return SWT.OFF;
         } else {
             throw new IllegalArgumentException("Wrong state: " + value);
