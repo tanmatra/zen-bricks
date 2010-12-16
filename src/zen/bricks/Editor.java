@@ -14,6 +14,12 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public class Editor
 {
+    // ============================================================ Class Fields
+
+    private static final int CARET_OFFSET = -2;
+
+    private static final int CARET_WIDTH = 2;
+
     // ================================================================== Fields
 
     private final MainWindow mainWindow;
@@ -327,7 +333,8 @@ public class Editor
             root.paintOnly(newSel);
             final Rectangle rect = newSel.toScreen();
             final Caret caret = canvas.getCaret();
-            caret.setBounds(rect.x, rect.y, 2, rect.height);
+            caret.setBounds(rect.x + CARET_OFFSET, rect.y,
+                    CARET_WIDTH, rect.height);
             caret.setVisible(true);
         } else {
             canvas.getCaret().setVisible(false);
