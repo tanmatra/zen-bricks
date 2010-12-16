@@ -105,7 +105,7 @@ public class RoundedBorder extends SimpleBorder
     protected void paintBorder(GC gc, int x, int y, Brick brick,
             Rectangle clipping, Color foreground)
     {
-        gc.setForeground(color);
+        gc.setForeground(foreground);
         gc.drawRoundRectangle(x, y,
                 brick.getWidth() - 1, brick.getHeight() - 1,
                 arcSize, arcSize);
