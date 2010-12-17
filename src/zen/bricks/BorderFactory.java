@@ -10,24 +10,24 @@ import org.eclipse.swt.widgets.Group;
 
 import zen.bricks.styleeditor.IStyleEditor;
 
-public abstract class BorderFactory <T extends Border>
+public abstract class BorderFactory <V extends Border>
 {
     public abstract String getName();
 
     public abstract String getTitle();
 
-    public T createBorder(UI ui, Preferences preferences) {
-        final T border = newBorder(ui);
+    public V createBorder(UI ui, Preferences preferences) {
+        final V border = newBorder(ui);
         init(border, preferences, ui);
         return border;
     }
 
-    protected abstract T newBorder(UI ui);
+    protected abstract V newBorder(UI ui);
 
-    protected abstract void init(T border, Preferences preferences, UI ui);
+    protected abstract void init(V border, Preferences preferences, UI ui);
 
     public abstract IStyleEditor createStyleEditor(
-            TupleStyle style, StyleProperty<T> property);
+            TupleStyle style, StyleProperty<V> property);
 
     // ========================================================== Nested Classes
 

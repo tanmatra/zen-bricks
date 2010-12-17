@@ -8,7 +8,6 @@ import org.eclipse.swt.graphics.FontData;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
-import zen.bricks.UI;
 import zen.bricks.styleeditor.StyleEditorPart;
 import zen.bricks.styleeditor.parts.FontEditorPart;
 
@@ -18,13 +17,13 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         super(title, keySuffix);
     }
 
-    protected StyleEditorPart<FontData[]> createEditorPart(
+    protected StyleEditorPart<FontData[]> newEditorPart(
             TupleStyle style)
     {
         return new FontEditorPart(this, style);
     }
 
-    public void load(UI ui, TupleStyle style, Preferences preferences) {
+    public void load(TupleStyle style, Preferences preferences) {
         final String value = preferences.get(key, null);
         final FontData[] list;
         if ((value == null) || "inherit".equals(value)) {

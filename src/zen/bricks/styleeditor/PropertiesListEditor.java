@@ -29,7 +29,7 @@ public class PropertiesListEditor implements IStyleEditor
         final int count = properties.length;
         parts = new StyleEditorPart<?>[count];
         for (int i = 0; i < count; i++) {
-            parts[i] = properties[i].makeEditorPart(style);
+            parts[i] = properties[i].createEditorPart(style);
         }
 
         composite = new Composite(parent, SWT.NONE);

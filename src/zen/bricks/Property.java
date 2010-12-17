@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import java.util.prefs.Preferences;
+
 /**
  * @param <T> object type
  * @param <V> value type
@@ -23,4 +25,6 @@ public abstract class Property<T, V>
     public boolean isDefined(T object) {
         return get(object) != null;
     }
+
+    public abstract void load(T object, Preferences preferences);
 }

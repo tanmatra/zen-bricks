@@ -7,7 +7,6 @@ import org.eclipse.swt.graphics.RGB;
 import zen.bricks.ColorUtil;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
-import zen.bricks.UI;
 import zen.bricks.styleeditor.StyleEditorPart;
 import zen.bricks.styleeditor.parts.ColorEditorPart;
 
@@ -17,13 +16,13 @@ public abstract class ColorProperty extends StyleProperty<RGB>
         super(title, keySuffix);
     }
 
-    protected StyleEditorPart<RGB> createEditorPart(
+    protected StyleEditorPart<RGB> newEditorPart(
             TupleStyle style)
     {
         return new ColorEditorPart(this, style);
     }
 
-    public void load(UI ui, TupleStyle style, Preferences preferences) {
+    public void load(TupleStyle style, Preferences preferences) {
         final String value = preferences.get(key, null);
         set(style, ColorUtil.parse(style.getDevice(), value));
     }

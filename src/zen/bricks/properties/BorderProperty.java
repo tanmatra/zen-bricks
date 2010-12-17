@@ -39,12 +39,13 @@ public class BorderProperty extends StyleProperty<Border>
         style.setBorder(value);
     }
 
-    public void load(UI ui, TupleStyle style, Preferences preferences) {
+    public void load(TupleStyle style, Preferences preferences) {
         final Preferences borderNode = preferences.node(key);
         final String type = borderNode.get("type", null);
         if (type == null) {
             set(style, null);
         } else {
+            UI ui = style.getUI();
             for (final BorderFactory<?> factory : ui.getBorderFactories()) {
                 if (factory.getName().equals(type)) {
                     final Border border = factory.createBorder(ui, borderNode);
@@ -56,7 +57,7 @@ public class BorderProperty extends StyleProperty<Border>
         }
     }
 
-    protected StyleEditorPart<Border> createEditorPart(
+    protected StyleEditorPart<Border> newEditorPart(
             final TupleStyle style)
     {
         return new BorderEditorPart(this, style);
@@ -87,7 +88,8 @@ public class BorderProperty extends StyleProperty<Border>
             if (borderStyleEditor != null) {
                 borderStyleEditor.apply();
             } else {
-                property.set(style, null);
+                setObjectProperty(null);
+//                property.set(style, null);
             }
         }
 
@@ -123,7 +125,8 @@ public class BorderProperty extends StyleProperty<Border>
             GridDataFactory.fillDefaults().applyTo(editorPanel);
 
             // ----------------------------------------------------------- init
-            final Border sourceBorder = property.get(style);
+//            final Border sourceBorder = property.get(style);
+            final Border sourceBorder = getObjectProperty();
             setDefined(sourceBorder != null);
 
             selectedFactory =
@@ -169,8 +172,12 @@ public class BorderProperty extends StyleProperty<Border>
 
         private void makeEditor() {
             if (selectedFactory != null) {
-                borderStyleEditor = ((BorderFactory<Border>) selectedFactory)
-                        .createStyleEditor(style, property);
+                // FIXME
+                TupleStyle style = getObject();
+                final BorderFactory<Border> bf =
+                        (BorderFactory<Border>) selectedFactory;
+                StyleProperty<Border> pr = (StyleProperty<Border>) getProperty();
+                borderStyleEditor = bf.createStyleEditor(style, pr);
                 borderStyleEditor.createControl(editorPanel);
             } else {
                 borderStyleEditor = null;

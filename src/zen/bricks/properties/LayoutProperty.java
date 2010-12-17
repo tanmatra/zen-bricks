@@ -28,7 +28,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         style.setLayout(value);
     }
 
-    protected StyleEditorPart<TupleLayout> createEditorPart(
+    protected StyleEditorPart<TupleLayout> newEditorPart(
             final TupleStyle style)
     {
         return new CheckedEditorPart<TupleLayout>(this, style)
@@ -75,12 +75,12 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         };
     }
 
-    public void load(UI ui, TupleStyle style, Preferences preferences) {
+    public void load(TupleStyle style, Preferences preferences) {
         final String value = preferences.get(key, null);
         if (value == null) {
             set(style, null);
         } else {
-            final List<TupleLayout> layouts = ui.getTupleLayouts();
+            final List<TupleLayout> layouts = style.getUI().getTupleLayouts();
             for (TupleLayout layout : layouts) {
                 if (layout.getName().equals(value)) {
                     set(style, layout);

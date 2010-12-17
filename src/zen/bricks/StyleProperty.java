@@ -1,10 +1,8 @@
 package zen.bricks;
 
-import java.util.prefs.Preferences;
-
 import zen.bricks.styleeditor.StyleEditorPart;
 
-public abstract class StyleProperty<T> extends Property<TupleStyle, T>
+public abstract class StyleProperty<V> extends Property<TupleStyle, V>
 {
     // ================================================================== Fields
 
@@ -19,16 +17,15 @@ public abstract class StyleProperty<T> extends Property<TupleStyle, T>
 
     // ================================================================= Methods
 
-    public StyleEditorPart<T> makeEditorPart(TupleStyle style) {
-        final StyleEditorPart<T> part = createEditorPart(style);
+    public StyleEditorPart<V> createEditorPart(TupleStyle style) {
+        final StyleEditorPart<V> part = newEditorPart(style);
         if (style.isTopLevel()) {
             part.setMandatory(true);
         }
         return part;
     }
 
-    protected abstract StyleEditorPart<T> createEditorPart(
-            TupleStyle style);
+    protected abstract StyleEditorPart<V> newEditorPart(TupleStyle style);
 
     public TupleStyle find(StyleChain chain) {
         do {
@@ -41,6 +38,4 @@ public abstract class StyleProperty<T> extends Property<TupleStyle, T>
         throw new Error("Style property \"" + title + "\" (" + key +
                 ") not found in chain");
     }
-
-    public abstract void load(UI ui, TupleStyle style, Preferences preferences);
 }

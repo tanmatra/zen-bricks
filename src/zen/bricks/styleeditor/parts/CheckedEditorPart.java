@@ -19,7 +19,7 @@ public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     Button definedCheck;
 
     public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
-        super(property, style);
+        super(style, property);
     }
 
     protected int getNumColumns() {

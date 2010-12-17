@@ -117,7 +117,7 @@ public class TupleStyle extends BrickStyle
         super(ui, name);
         try {
             for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
-                styleProperty.load(ui, this, preferences);
+                styleProperty.load(this, preferences);
             }
         } catch (RuntimeException e) {
             dispose();

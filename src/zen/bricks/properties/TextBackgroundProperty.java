@@ -9,7 +9,6 @@ import org.eclipse.swt.graphics.RGB;
 import zen.bricks.ColorUtil;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
-import zen.bricks.UI;
 import zen.bricks.styleeditor.StyleEditorPart;
 import zen.bricks.styleeditor.parts.TransparentColorEditorPart;
 
@@ -19,7 +18,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
         super(title, keySuffix);
     }
 
-    protected StyleEditorPart<TransparentColor> createEditorPart(
+    protected StyleEditorPart<TransparentColor> newEditorPart(
             TupleStyle style)
     {
         return new TransparentColorEditorPart(this, style);
@@ -33,7 +32,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
         style.setTextBackground(value);
     }
 
-    public void load(UI ui, TupleStyle style, Preferences preferences) {
+    public void load(TupleStyle style, Preferences preferences) {
         final String string = preferences.get(key, null);
         final TransparentColor transparentColor;
         if (string == null) {
@@ -41,7 +40,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
         } else if ("transparent".equals(string)) {
             transparentColor = new TransparentColor();
         } else {
-            final Device device = ui.getDevice();
+            final Device device = style.getUI().getDevice();
             final RGB rgb = ColorUtil.parse(device, string);
             transparentColor = new TransparentColor(new Color(device, rgb));
         }
