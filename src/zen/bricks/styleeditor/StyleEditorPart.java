@@ -26,7 +26,7 @@ public abstract class StyleEditorPart<T>
     public abstract T getValue();
 
     public void apply() {
-        property.apply(this, style);
+        property.set(style, getValue());
     }
 
     public void cancel() {

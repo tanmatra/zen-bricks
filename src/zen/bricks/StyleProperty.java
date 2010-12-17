@@ -40,10 +40,6 @@ public abstract class StyleProperty<T>
     protected abstract StyleEditorPart<T> createEditorPart(
             TupleStyle style);
 
-    public void apply(StyleEditorPart<T> editorPart, TupleStyle style) {
-        set(style, editorPart.getValue());
-    }
-
     public boolean isDefined(TupleStyle style) {
         return get(style) != null;
     }
