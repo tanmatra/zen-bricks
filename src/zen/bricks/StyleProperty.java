@@ -4,30 +4,20 @@ import java.util.prefs.Preferences;
 
 import zen.bricks.styleeditor.StyleEditorPart;
 
-public abstract class StyleProperty<T>
+public abstract class StyleProperty<T> extends Property<TupleStyle, T>
 {
     // ================================================================== Fields
-
-    protected final String title;
 
     protected final String key;
 
     // ============================================================ Constructors
 
     public StyleProperty(String title, String key) {
-        this.title = title;
+        super(title);
         this.key = key;
     }
 
     // ================================================================= Methods
-
-    public String getTitle() {
-        return title;
-    }
-
-    public abstract T get(TupleStyle style);
-
-    public abstract void set(TupleStyle style, T value);
 
     public StyleEditorPart<T> makeEditorPart(TupleStyle style) {
         final StyleEditorPart<T> part = createEditorPart(style);
@@ -39,10 +29,6 @@ public abstract class StyleProperty<T>
 
     protected abstract StyleEditorPart<T> createEditorPart(
             TupleStyle style);
-
-    public boolean isDefined(TupleStyle style) {
-        return get(style) != null;
-    }
 
     public TupleStyle find(StyleChain chain) {
         do {
