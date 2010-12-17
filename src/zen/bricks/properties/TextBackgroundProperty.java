@@ -2,59 +2,49 @@ package zen.bricks.properties;
 
 import java.util.prefs.Preferences;
 
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
 
 import zen.bricks.ColorUtil;
+import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
 import zen.bricks.styleeditor.StyleEditorPart;
-import zen.bricks.styleeditor.parts.ColorEditorPart;
+import zen.bricks.styleeditor.parts.TransparentColorEditorPart;
 
-public class TextBackgroundProperty extends ColorProperty
+public class TextBackgroundProperty extends StyleProperty<TransparentColor>
 {
     public TextBackgroundProperty(String title, String keySuffix) {
         super(title, keySuffix);
     }
 
-    public boolean isDefined(TupleStyle style) {
-        return style.getTextBackground() != null;
+    protected StyleEditorPart<TransparentColor> createEditorPart(
+            TupleStyle style)
+    {
+        return new TransparentColorEditorPart(this, style);
     }
 
-    protected StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
-        return new ColorEditorPart(this, style, style.getTextBackground());
+    public TransparentColor get(TupleStyle style) {
+        return style.getTextBackground();
     }
 
-    @Override
-    public void apply(StyleEditorPart<RGB> editorPart, TupleStyle style) {
-        final ColorEditorPart colorEditorPart = (ColorEditorPart) editorPart;
-        style.setTextBackgroundRGB(colorEditorPart.getBackground(),
-                colorEditorPart.getValue());
+    public void set(TupleStyle style, TransparentColor value) {
+        style.setTextBackground(value);
     }
 
-    public RGB get(TupleStyle style) {
-        return style.getTextBackgroundRGB();
-    }
-
-    @Override
-    public void set(TupleStyle style, RGB value) {
-        // do nothing, as it never called
-    }
-
-    @Override
     public void load(UI ui, TupleStyle style, Preferences preferences) {
         final String string = preferences.get(key, null);
-        final ColorState background;
-        final RGB rgb;
+        final TransparentColor transparentColor;
         if (string == null) {
-            background = null;
-            rgb = null;
+            transparentColor = null;
         } else if ("transparent".equals(string)) {
-            background = ColorState.TRANSPARENT;
-            rgb = null;
+            transparentColor = new TransparentColor();
         } else {
-            background = ColorState.OPAQUE;
-            rgb = ColorUtil.parse(ui.getDevice(), string);
+            final Device device = ui.getDevice();
+            final RGB rgb = ColorUtil.parse(device, string);
+            transparentColor = new TransparentColor(new Color(device, rgb));
         }
-        style.setTextBackgroundRGB(background, rgb);
+        set(style, transparentColor);
     }
 }

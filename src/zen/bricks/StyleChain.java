@@ -25,7 +25,7 @@ public class StyleChain
         return TupleStyle.FONT.find(this);
     }
 
-    TupleStyle findTextBackground() {
+    public TupleStyle findTextBackground() {
         return TupleStyle.TEXT_BACKGROUND.find(this);
     }
 
@@ -35,10 +35,6 @@ public class StyleChain
 
     public Color getBackgroundColor() {
         return TupleStyle.BACKGROUND.find(this).getBackgroundColor();
-    }
-
-    public Color getTextBackgroundColor() {
-        return findTextBackground().getTextBackgroundColor();
     }
 
     public Font getFont() {

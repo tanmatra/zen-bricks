@@ -2,7 +2,6 @@ package zen.bricks;
 
 import java.util.prefs.Preferences;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
@@ -15,7 +14,6 @@ import zen.bricks.properties.BackgroundProperty;
 import zen.bricks.properties.BorderProperty;
 import zen.bricks.properties.ChildrenSpacingProperty;
 import zen.bricks.properties.ColorProperty;
-import zen.bricks.properties.ColorState;
 import zen.bricks.properties.FontProperty;
 import zen.bricks.properties.ForegroundProperty;
 import zen.bricks.properties.IntegerProperty;
@@ -26,6 +24,7 @@ import zen.bricks.properties.PaddingProperty;
 import zen.bricks.properties.TextBackgroundProperty;
 import zen.bricks.properties.TextFontProperty;
 import zen.bricks.properties.TextMarginProperty;
+import zen.bricks.properties.TransparentColor;
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
 
@@ -39,7 +38,7 @@ public class TupleStyle extends BrickStyle
     public static final ColorProperty BACKGROUND =
             new BackgroundProperty("Background color", "background");
 
-    public static final ColorProperty TEXT_BACKGROUND =
+    public static final StyleProperty<TransparentColor> TEXT_BACKGROUND =
             new TextBackgroundProperty("Text background color",
                     "textBackground");
 
@@ -78,9 +77,6 @@ public class TupleStyle extends BrickStyle
         BORDER,
     };
 
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
-
     // ================================================================== Fields
 
     private boolean topLevel;
@@ -101,12 +97,7 @@ public class TupleStyle extends BrickStyle
 
     private Color foregroundColor;
 
-    private ColorState textBackground;
-
-    /**
-     * Valid (not null) only if textBackground == OPAQUE
-     */
-    private Color textBackgroundColor;
+    private TransparentColor textBackground;
 
     private Margin padding;
 
@@ -153,9 +144,9 @@ public class TupleStyle extends BrickStyle
             foregroundColor.dispose();
             foregroundColor = null;
         }
-        if (textBackgroundColor != null) {
-            textBackgroundColor.dispose();
-            textBackgroundColor = null;
+        if (textBackground != null) {
+            textBackground.dispose();
+            textBackground = null;
         }
         if (savedGC != null) {
             savedGC.dispose();
@@ -239,29 +230,15 @@ public class TupleStyle extends BrickStyle
         return foregroundColor != null ? foregroundColor.getRGB() : null;
     }
 
-    public ColorState getTextBackground() {
+    public TransparentColor getTextBackground() {
         return textBackground;
     }
 
-    public Color getTextBackgroundColor() {
-        return textBackgroundColor;
-    }
-
-    public RGB getTextBackgroundRGB() {
-        return textBackgroundColor != null ?
-                textBackgroundColor.getRGB() : null;
-    }
-
-    public void setTextBackgroundRGB(ColorState textBackground, RGB rgb) {
-        if (textBackgroundColor != null) {
-            textBackgroundColor.dispose();
+    public void setTextBackground(TransparentColor textBackgroundColor) {
+        if (this.textBackground != null) {
+            this.textBackground.dispose();
         }
-        this.textBackground = textBackground;
-        if (textBackground == ColorState.OPAQUE) {
-            textBackgroundColor = new Color(getDevice(), rgb);
-        } else {
-            textBackgroundColor = null;
-        }
+        this.textBackground = textBackgroundColor;
     }
 
     public Margin getPadding() {

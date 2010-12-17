@@ -5,12 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
-
-import zen.bricks.properties.ColorState;
 
 public class TupleBrick extends ContainerBrick
 {
@@ -186,11 +185,11 @@ public class TupleBrick extends ContainerBrick
         gc.setFont(chain.getFont());
         gc.setForeground(chain.getForegroundColor());
 
-        final TupleStyle background = chain.findTextBackground();
+        final TupleStyle backgroundStyle = chain.findTextBackground();
+        final Color color = backgroundStyle.getTextBackground().getColor();
         int flags = StyleChain.TEXT_FLAGS;
-        // getTextBackground() garanteed not null here
-        if (background.getTextBackground() == ColorState.OPAQUE) {
-            gc.setBackground(background.getTextBackgroundColor());
+        if (color != null) {
+            gc.setBackground(color);
         } else {
             flags |= SWT.DRAW_TRANSPARENT;
         }

@@ -12,6 +12,7 @@ import zen.bricks.styleeditor.parts.ColorEditorPart;
 import zen.bricks.styleeditor.parts.FontEditorPart;
 import zen.bricks.styleeditor.parts.IntegerEditorPart;
 import zen.bricks.styleeditor.parts.MarginEditorPart;
+import zen.bricks.styleeditor.parts.TransparentColorEditorPart;
 
 /**
  * Currently unused. Can be deleted.
@@ -47,8 +48,8 @@ public class TupleStyleEditor implements IStyleEditor
     private void createParts() {
         addPart(new ColorEditorPart(TupleStyle.FOREGROUND, tupleStyle));
         addPart(new ColorEditorPart(TupleStyle.BACKGROUND, tupleStyle));
-        addPart(new ColorEditorPart(TupleStyle.TEXT_BACKGROUND, tupleStyle,
-                tupleStyle.getTextBackground()));
+        addPart(new TransparentColorEditorPart(TupleStyle.TEXT_BACKGROUND,
+                tupleStyle));
         addPart(new FontEditorPart(TupleStyle.FONT, tupleStyle));
         addPart(new MarginEditorPart(TupleStyle.PADDING, tupleStyle));
         addPart(new MarginEditorPart(TupleStyle.TEXT_MARGIN, tupleStyle));
