@@ -88,8 +88,7 @@ public class BorderProperty extends StyleProperty<Border>
             if (borderStyleEditor != null) {
                 borderStyleEditor.apply();
             } else {
-                setObjectProperty(null);
-//                property.set(style, null);
+                setEditedValue(null);
             }
         }
 
@@ -125,8 +124,7 @@ public class BorderProperty extends StyleProperty<Border>
             GridDataFactory.fillDefaults().applyTo(editorPanel);
 
             // ----------------------------------------------------------- init
-//            final Border sourceBorder = property.get(style);
-            final Border sourceBorder = getObjectProperty();
+            final Border sourceBorder = getEditedValue();
             setDefined(sourceBorder != null);
 
             selectedFactory =
@@ -172,12 +170,10 @@ public class BorderProperty extends StyleProperty<Border>
 
         private void makeEditor() {
             if (selectedFactory != null) {
-                // FIXME
-                TupleStyle style = getObject();
                 final BorderFactory<Border> bf =
                         (BorderFactory<Border>) selectedFactory;
-                StyleProperty<Border> pr = (StyleProperty<Border>) getProperty();
-                borderStyleEditor = bf.createStyleEditor(style, pr);
+                borderStyleEditor =
+                        bf.createStyleEditor(getEditedObject(), getProperty());
                 borderStyleEditor.createControl(editorPanel);
             } else {
                 borderStyleEditor = null;

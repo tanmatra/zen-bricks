@@ -16,8 +16,8 @@ import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
 import zen.bricks.ColorUtil;
 import zen.bricks.Editor;
+import zen.bricks.Property;
 import zen.bricks.StyleChain;
-import zen.bricks.StyleProperty;
 import zen.bricks.TupleBrick;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
@@ -49,7 +49,7 @@ public class SimpleBorder extends Border
         }
 
         public IStyleEditor createStyleEditor(
-                TupleStyle style, StyleProperty<B> property)
+                TupleStyle style, Property<TupleStyle, B> property)
         {
             return new SimpleBorder.StyleEditor<B>(this, style, property);
         }
@@ -63,7 +63,9 @@ public class SimpleBorder extends Border
         private Label label;
         private ColorSelector colorSelector;
 
-        StyleEditor(Factory<S> factory, TupleStyle style, StyleProperty<S> property) {
+        StyleEditor(Factory<S> factory, TupleStyle style,
+                Property<TupleStyle, S> property)
+        {
             super(factory, style, property);
         }
 

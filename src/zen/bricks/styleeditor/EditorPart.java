@@ -4,19 +4,19 @@ import zen.bricks.Property;
 
 public abstract class EditorPart<T, V>
 {
-    protected final T object;
+    protected final T editedObject;
 
     protected final Property<T, V> property;
 
     protected EditorPart(T object, Property<T, V> property) {
-        this.object = object;
+        this.editedObject = object;
         this.property = property;
     }
 
     protected abstract V getValue();
 
     public void apply() {
-        property.set(object, getValue());
+        property.set(editedObject, getValue());
     }
 
     public void cancel() {
@@ -28,18 +28,18 @@ public abstract class EditorPart<T, V>
     }
 
     protected boolean isPropertyDefined() {
-        return property.isDefined(object);
+        return property.isDefined(editedObject);
     }
 
-    protected T getObject() {
-        return object;
+    protected T getEditedObject() {
+        return editedObject;
     }
 
-    protected void setObjectProperty(V value) {
-        property.set(object, value);
+    protected void setEditedValue(V value) {
+        property.set(editedObject, value);
     }
 
-    protected V getObjectProperty() {
-        return property.get(object);
+    protected V getEditedValue() {
+        return property.get(editedObject);
     }
 }

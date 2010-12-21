@@ -22,12 +22,10 @@ public class ColorEditorPart extends CheckedEditorPart<RGB>
 
         colorSelector = new ColorSelector(panel);
 
-//        final boolean defined = property.isDefined(style);
         final boolean defined = isPropertyDefined();
         setDefined(defined);
         if (defined) {
-//            colorSelector.setColorValue(property.get(style));
-            colorSelector.setColorValue(getObjectProperty());
+            colorSelector.setColorValue(getEditedValue());
         }
         definedCheckChanged(isDefined());
     }

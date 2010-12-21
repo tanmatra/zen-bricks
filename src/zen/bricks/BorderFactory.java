@@ -27,7 +27,7 @@ public abstract class BorderFactory <V extends Border>
     protected abstract void init(V border, Preferences preferences, UI ui);
 
     public abstract IStyleEditor createStyleEditor(
-            TupleStyle style, StyleProperty<V> property);
+            TupleStyle style, Property<TupleStyle, V> property);
 
     // ========================================================== Nested Classes
 
@@ -36,7 +36,7 @@ public abstract class BorderFactory <V extends Border>
     {
         private final TupleStyle style;
 
-        private final StyleProperty<T> property;
+        private final Property<TupleStyle, T> property;
 
         /* This value is source only, do not modify or set it. */
         protected final Border sourceBorder;
@@ -46,7 +46,7 @@ public abstract class BorderFactory <V extends Border>
         private Group group;
 
         protected StyleEditor(BorderFactory<T> factory, TupleStyle style,
-                StyleProperty<T> property)
+                Property<TupleStyle, T> property)
         {
             this.factory = factory;
             this.style = style;

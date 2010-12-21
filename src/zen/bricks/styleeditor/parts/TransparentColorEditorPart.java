@@ -43,7 +43,7 @@ public class TransparentColorEditorPart
         });
 
 //        final TransparentColor transparentColor = property.get(style);
-        final TransparentColor transparentColor = getObjectProperty();
+        final TransparentColor transparentColor = getEditedValue();
         if (transparentColor != null) {
             setDefined(true);
             final Color color = transparentColor.getColor();
@@ -82,8 +82,7 @@ public class TransparentColorEditorPart
             if (rgb == null) {
                 color = null;
             } else {
-//                final Device device = style.getUI().getDevice();
-                final Device device = getObject().getUI().getDevice();
+                final Device device = getEditedObject().getUI().getDevice();
                 color = new Color(device, rgb);
             }
             return new TransparentColor(color);

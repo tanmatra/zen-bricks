@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Spinner;
 
 import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
+import zen.bricks.Property;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
@@ -54,7 +55,7 @@ public class RoundedBorder extends SimpleBorder
             extends SimpleBorder.StyleEditor<S>
     {
         StyleEditor(Factory<S> factory,
-                    TupleStyle style, StyleProperty<S> property)
+                    TupleStyle style, Property<TupleStyle, S> property)
         {
             super(factory, style, property);
         }
