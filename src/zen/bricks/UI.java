@@ -191,7 +191,7 @@ public class UI
         return chain;
     }
 
-    public List<? extends BrickStyle> getBrickStyles() {
+    public List<? extends Style> getStyles() {
         return Arrays.asList(basicStyle, listStyle, selectedStyle);
     }
 

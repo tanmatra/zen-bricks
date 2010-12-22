@@ -28,7 +28,7 @@ import zen.bricks.properties.TransparentColor;
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
 
-public class TupleStyle extends BrickStyle
+public class TupleStyle extends Style
 {
     // ============================================================ Class Fields
 

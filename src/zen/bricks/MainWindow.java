@@ -173,10 +173,10 @@ public class MainWindow extends ApplicationWindow
 
         final Action editStylesAction = new Action("&Edit styles...")
         {
-            private WeakReference<BrickStyle> lastStyleRef;
+            private WeakReference<Style> lastStyleRef;
 
             public void run() {
-                BrickStyle lastStyle;
+                Style lastStyle;
                 final EditStylesDialog dialog = new EditStylesDialog(
                         getShell(), editor);
 
@@ -191,7 +191,7 @@ public class MainWindow extends ApplicationWindow
 
                 lastStyle = dialog.getSelectedStyle();
                 if (lastStyle != null) {
-                    lastStyleRef = new WeakReference<BrickStyle>(lastStyle);
+                    lastStyleRef = new WeakReference<Style>(lastStyle);
                 } else {
                     lastStyleRef = null;
                 }

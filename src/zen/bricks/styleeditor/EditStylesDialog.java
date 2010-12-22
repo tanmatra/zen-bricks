@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import zen.bricks.BrickStyle;
+import zen.bricks.Style;
 import zen.bricks.Editor;
 import zen.bricks.UI;
 
@@ -36,7 +36,7 @@ public class EditStylesDialog extends Dialog
     static class StyleLabelProvider extends LabelProvider
     {
         public String getText(Object element) {
-            return ((BrickStyle) element).getName();
+            return ((Style) element).getName();
         }
     }
 
@@ -52,12 +52,12 @@ public class EditStylesDialog extends Dialog
 
     private StackLayout stackLayout;
 
-    private final Map<BrickStyle, IStyleEditor> styleEditors =
-        new HashMap<BrickStyle, IStyleEditor>();
+    private final Map<Style, IStyleEditor> styleEditors =
+        new HashMap<Style, IStyleEditor>();
 
     private final Editor editor;
 
-    private BrickStyle selectedStyle;
+    private Style selectedStyle;
 
     // ============================================================ Constructors
 
@@ -82,7 +82,7 @@ public class EditStylesDialog extends Dialog
 
     @Override
     protected Control createDialogArea(Composite parent) {
-        final List<? extends BrickStyle> brickStyles = ui.getBrickStyles();
+        final List<? extends Style> styles = ui.getStyles();
 
         final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
@@ -101,14 +101,14 @@ public class EditStylesDialog extends Dialog
                 .applyTo(stylesViewer.getTable());
         stylesViewer.setLabelProvider(new StyleLabelProvider());
         stylesViewer.setContentProvider(ArrayContentProvider.getInstance());
-        stylesViewer.setInput(brickStyles);
+        stylesViewer.setInput(styles);
         stylesViewer.addPostSelectionChangedListener(
                 new ISelectionChangedListener()
         {
             public void selectionChanged(SelectionChangedEvent event) {
                 final IStructuredSelection selection =
                         (IStructuredSelection) event.getSelection();
-                styleSelected((BrickStyle) selection.getFirstElement());
+                styleSelected((Style) selection.getFirstElement());
             }
         });
 
@@ -130,8 +130,8 @@ public class EditStylesDialog extends Dialog
         //----------------------------------------------------------------------
         sashForm.setWeights(new int[] { 20, 80 });
 
-        if ((selectedStyle == null) && (brickStyles.size() > 0)) {
-            selectedStyle = brickStyles.get(0);
+        if ((selectedStyle == null) && (styles.size() > 0)) {
+            selectedStyle = styles.get(0);
         }
         stylesViewer.setSelection(
                 new StructuredSelection(selectedStyle), true);
@@ -145,7 +145,7 @@ public class EditStylesDialog extends Dialog
         super.createButtonsForButtonBar(parent);
     }
 
-    void styleSelected(BrickStyle style) {
+    void styleSelected(Style style) {
         selectedStyle = style;
         if (style != null) {
             IStyleEditor styleEditor = styleEditors.get(style);
@@ -195,11 +195,11 @@ public class EditStylesDialog extends Dialog
         }
     }
 
-    public BrickStyle getSelectedStyle() {
+    public Style getSelectedStyle() {
         return selectedStyle;
     }
 
-    public void setSelectedStyle(BrickStyle selectedStyle) {
+    public void setSelectedStyle(Style selectedStyle) {
         this.selectedStyle = selectedStyle;
     }
 }

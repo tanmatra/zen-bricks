@@ -2,13 +2,13 @@ package zen.bricks;
 
 import zen.bricks.styleeditor.IStyleEditor;
 
-public abstract class BrickStyle
+public abstract class Style
 {
     private final String name;
 
     protected final UI ui;
 
-    public BrickStyle(UI ui, String name) {
+    public Style(UI ui, String name) {
         this.ui = ui;
         this.name = name;
     }
