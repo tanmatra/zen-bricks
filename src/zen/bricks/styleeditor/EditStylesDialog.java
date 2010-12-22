@@ -147,13 +147,17 @@ public class EditStylesDialog extends Dialog
 
     void styleSelected(BrickStyle style) {
         selectedStyle = style;
-        IStyleEditor styleEditor = styleEditors.get(style);
-        if (styleEditor == null) {
-            styleEditor = style.createEditor();
-            styleEditors.put(style, styleEditor);
-            styleEditor.createControl(stackPanel);
+        if (style != null) {
+            IStyleEditor styleEditor = styleEditors.get(style);
+            if (styleEditor == null) {
+                styleEditor = style.createEditor();
+                styleEditors.put(style, styleEditor);
+                styleEditor.createControl(stackPanel);
+            }
+            stackLayout.topControl = styleEditor.getControl();
+        } else {
+            stackLayout.topControl = null;
         }
-        stackLayout.topControl = styleEditor.getControl();
         stackPanel.layout();
     }
 
