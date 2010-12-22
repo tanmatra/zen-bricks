@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Spinner;
 import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
 import zen.bricks.Property;
-import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
 import zen.bricks.styleeditor.IStyleEditor;
@@ -42,8 +41,8 @@ public class RoundedBorder extends SimpleBorder
             border.arcSize = preferences.getInt("arcSize", 0);
         }
 
-        public IStyleEditor createStyleEditor(TupleStyle style,
-                StyleProperty<B> property)
+        public IStyleEditor createStyleEditor(
+                TupleStyle style, Property<TupleStyle, B> property)
         {
             return new RoundedBorder.StyleEditor<B>(this, style, property);
         }
