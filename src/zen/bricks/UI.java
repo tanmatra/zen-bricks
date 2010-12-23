@@ -31,7 +31,6 @@ public class UI
 
     private Boolean advanced;
     int antialias;
-    private Border border;
     Color canvasBackgroundColor;
     int textAntialias;
 
@@ -100,10 +99,6 @@ public class UI
     }
 
     void dispose() {
-        if (border != null) {
-            border.dispose();
-            border = null;
-        }
         if (savedGC != null) {
             savedGC.dispose();
             savedGC = null;
@@ -210,10 +205,6 @@ public class UI
 
     public List<? extends Style> getStyles() {
         return Arrays.asList(globalStyle, basicStyle, listStyle, selectedStyle);
-    }
-
-    public Border getBorder() {
-        return border;
     }
 
     public List<TupleLayout> getTupleLayouts() {
