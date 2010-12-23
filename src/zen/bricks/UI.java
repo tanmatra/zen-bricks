@@ -7,28 +7,39 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.prefs.Preferences;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+
+import zen.bricks.styleeditor.IStyleEditor;
+import zen.bricks.utils.RadioPanel;
 
 public class UI
 {
     // ================================================================== Fields
 
-    private final Device device;
+    final Device device;
     private GC savedGC;
 
     private Boolean advanced;
-    private int antialias;
+    int antialias;
     private Border border;
-    private Color canvasBackgroundColor;
-    private int textAntialias;
+    Color canvasBackgroundColor;
+    int textAntialias;
 
     private TupleStyle basicStyle;
     private TupleStyle listStyle;
     private TupleStyle selectedStyle;
+
+    private GlobalStyle globalStyle;
 
     private StyleChain basicChain;
     private StyleChain listChain;
@@ -81,6 +92,8 @@ public class UI
         listStyle = new TupleStyle(this, "List", stylesNode.node("list"));
         selectedStyle =
                 new TupleStyle(this, "Selected", stylesNode.node("selected"));
+
+        globalStyle = new GlobalStyle();
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
@@ -196,7 +209,7 @@ public class UI
     }
 
     public List<? extends Style> getStyles() {
-        return Arrays.asList(basicStyle, listStyle, selectedStyle);
+        return Arrays.asList(globalStyle, basicStyle, listStyle, selectedStyle);
     }
 
     public Border getBorder() {
@@ -209,5 +222,74 @@ public class UI
 
     public List<BorderFactory<?>> getBorderFactories() {
         return borderFactories;
+    }
+
+    // ========================================================== Nested Classes
+
+    class GlobalStyle extends Style
+    {
+        public GlobalStyle() {
+            super(UI.this, "Global");
+        }
+
+        public IStyleEditor createEditor() {
+            return new GlobalStyleEditor();
+        }
+
+        public void dispose() {
+        }
+    }
+
+    static final String[] ANTIALIAS_LABELS = { "On", "Off", "Default" };
+    static final Integer[] ANTIALIAS_VALUES = { SWT.ON, SWT.OFF, SWT.DEFAULT };
+
+    class GlobalStyleEditor implements IStyleEditor
+    {
+        private Composite panel;
+        private RadioPanel antialiasPanel;
+        private RadioPanel textAntialiasPanel;
+        private ColorSelector canvasColorSelector;
+
+        public void createControl(Composite parent) {
+            panel = new Composite(parent, SWT.NONE);
+            GridLayoutFactory.swtDefaults().numColumns(2).applyTo(panel);
+
+            new Label(panel, SWT.NONE).setText("Antialias:");
+
+            antialiasPanel = new RadioPanel(panel);
+            antialiasPanel.setLabels(ANTIALIAS_LABELS);
+            antialiasPanel.setValues(ANTIALIAS_VALUES);
+            antialiasPanel.setValueSelected(antialias);
+
+            new Label(panel, SWT.NONE).setText("Text antialias:");
+
+            textAntialiasPanel = new RadioPanel(panel);
+            textAntialiasPanel.setLabels(ANTIALIAS_LABELS);
+            textAntialiasPanel.setValues(ANTIALIAS_VALUES);
+            textAntialiasPanel.setValueSelected(textAntialias);
+
+            new Label(panel, SWT.NONE).setText("Canvas background:");
+
+            canvasColorSelector = new ColorSelector(panel);
+            canvasColorSelector.setColorValue(canvasBackgroundColor.getRGB());
+        }
+
+        public Control getControl() {
+            return panel;
+        }
+
+        public void apply() {
+            antialias = (Integer) antialiasPanel.getSelectionValue();
+            textAntialias = (Integer) textAntialiasPanel.getSelectionValue();
+
+            final RGB rgb = canvasColorSelector.getColorValue();
+            if (!rgb.equals(canvasBackgroundColor.getRGB())) {
+                canvasBackgroundColor.dispose();
+                canvasBackgroundColor = new Color(device, rgb);
+            }
+        }
+
+        public void cancel() {
+        }
     }
 }
