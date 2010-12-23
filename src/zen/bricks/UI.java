@@ -63,10 +63,8 @@ public class UI
     // ================================================================= Methods
 
     void init(Preferences prefs) throws Exception {
-        advanced = parseBoolean(prefs, "advanced");
-        antialias = parseState(prefs, "antialias");
-
-        canvasBackgroundColor = parseColor(prefs, "canvasBackgroundColor");
+        globalStyle = new GlobalStyle();
+        globalStyle.load(prefs);
 
         final ServiceLoader<TupleLayout> layoutsLoader =
                 ServiceLoader.load(TupleLayout.class);
@@ -83,16 +81,15 @@ public class UI
             borderFactories.add(borderFactory);
         }
 
-        textAntialias = parseState(prefs, "textAntialias");
+        basicStyle = new TupleStyle(this, "Basic");
+        basicStyle.setTopLevel(true);
+        listStyle = new TupleStyle(this, "List");
+        selectedStyle = new TupleStyle(this, "Selected");
 
         final Preferences stylesNode = prefs.node("styles");
-        basicStyle = new TupleStyle(this, "Basic", stylesNode.node("basic"));
-        basicStyle.setTopLevel(true);
-        listStyle = new TupleStyle(this, "List", stylesNode.node("list"));
-        selectedStyle =
-                new TupleStyle(this, "Selected", stylesNode.node("selected"));
-
-        globalStyle = new GlobalStyle();
+        basicStyle.load(stylesNode.node("basic"));
+        listStyle.load(stylesNode.node("list"));
+        selectedStyle.load(stylesNode.node("selected"));
 
         basicChain = basicStyle.createChain(null);
         listChain = listStyle.createChain(basicChain);
@@ -132,7 +129,7 @@ public class UI
         return Boolean.valueOf(value);
     }
 
-    private Color parseColor(Preferences preferences, String key) {
+    Color parseColor(Preferences preferences, String key) {
         final String value = preferences.get(key, null);
         return new Color(device, ColorUtil.parse(device, value));
     }
@@ -142,7 +139,7 @@ public class UI
         return Integer.parseInt(value);
     }
 
-    private int parseState(Preferences preferences, String key) {
+    int parseState(Preferences preferences, String key) {
         final String value = preferences.get(key, null);
         if ((value == null) || "default".equals(value)) {
             return SWT.DEFAULT;
@@ -227,7 +224,15 @@ public class UI
             return new GlobalStyleEditor();
         }
 
+        public void load(Preferences preferences) {
+            antialias = parseState(preferences, "antialias");
+            textAntialias = parseState(preferences, "textAntialias");
+            canvasBackgroundColor =
+                    parseColor(preferences, "canvasBackgroundColor");
+        }
+
         public void dispose() {
+            // do nothing
         }
     }
 

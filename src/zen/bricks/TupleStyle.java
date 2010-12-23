@@ -113,19 +113,17 @@ public class TupleStyle extends Style
 
     // ============================================================ Constructors
 
-    public TupleStyle(UI ui, String name, Preferences preferences) {
+    public TupleStyle(UI ui, String name) {
         super(ui, name);
-        try {
-            for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
-                styleProperty.load(this, preferences);
-            }
-        } catch (RuntimeException e) {
-            dispose();
-            throw e;
-        }
     }
 
     // ================================================================= Methods
+
+    public void load(Preferences preferences) {
+        for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
+            styleProperty.load(this, preferences);
+        }
+    }
 
     public boolean isTopLevel() {
         return topLevel;

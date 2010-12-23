@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import java.util.prefs.Preferences;
+
 import zen.bricks.styleeditor.IStyleEditor;
 
 public abstract class Style
@@ -20,6 +22,8 @@ public abstract class Style
     public String getName() {
         return name;
     }
+
+    public abstract void load(Preferences preferences);
 
     public abstract IStyleEditor createEditor();
 
