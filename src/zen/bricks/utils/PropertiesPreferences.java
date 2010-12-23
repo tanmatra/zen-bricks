@@ -1,18 +1,19 @@
 package zen.bricks.utils;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
-public class PropertiesPreferences extends AbstractPreferences
+public class PropertiesPreferences extends StoredPreferences
 {
-    public static Preferences load(String fileName) throws IOException {
+    public static StoredPreferences load(String fileName) throws IOException {
         final Properties properties = new Properties();
         final InputStream input = new FileInputStream(fileName);
         try {
@@ -116,5 +117,14 @@ public class PropertiesPreferences extends AbstractPreferences
 
     protected void flushSpi() throws BackingStoreException {
         // do nothing
+    }
+
+    public void save(String fileName) throws IOException {
+        final OutputStream out = new FileOutputStream(fileName);
+        try {
+            properties.store(out, null);
+        } finally {
+            out.close();
+        }
     }
 }

@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.styleeditor.EditStylesDialog;
 import zen.bricks.utils.PropertiesPreferences;
+import zen.bricks.utils.StoredPreferences;
 
 
 public class MainWindow extends ApplicationWindow
@@ -61,6 +62,8 @@ public class MainWindow extends ApplicationWindow
     private Action reloadThemeAction;
 
     private final Preferences preferences;
+
+    private StoredPreferences themePreferences;
 
     // ============================================================ Constructors
 
@@ -255,6 +258,13 @@ public class MainWindow extends ApplicationWindow
         };
         reloadThemeAction.setEnabled(false);
         viewMenu.add(reloadThemeAction);
+
+        final Action saveThemeAction = new Action("Save theme") {
+            public void run() {
+                saveTheme();
+            }
+        };
+        viewMenu.add(saveThemeAction);
     }
 
     protected Control createContents(Composite parent) {
@@ -300,7 +310,6 @@ public class MainWindow extends ApplicationWindow
     void loadTheme() {
         preferences.put(LAST_THEME_KEY, themeFileName);
 
-        final Preferences themePreferences;
         try {
             themePreferences = PropertiesPreferences.load(themeFileName);
         } catch (IOException e) {
@@ -311,5 +320,18 @@ public class MainWindow extends ApplicationWindow
         getStatusLineManager().setMessage(
                 "Loaded theme \"" + themeFileName + "\"");
         reloadThemeAction.setEnabled(true);
+    }
+
+    void saveTheme() {
+        final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
+        final String fileName = dialog.open();
+        if (fileName == null) {
+            return;
+        }
+        try {
+            themePreferences.save(fileName);
+        } catch (IOException e) {
+            handleException(e, "Error saving theme");
+        }
     }
 }
