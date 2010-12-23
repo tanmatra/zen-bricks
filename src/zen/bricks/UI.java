@@ -103,6 +103,10 @@ public class UI
             listStyle.dispose();
             listStyle = null;
         }
+        if (selectedStyle != null) {
+            selectedStyle.dispose();
+            selectedStyle = null;
+        }
     }
 
     /**
