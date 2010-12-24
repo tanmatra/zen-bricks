@@ -25,4 +25,13 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
                 null : Integer.parseInt(string);
         set(style, value);
     }
+
+    public void save(TupleStyle object, Preferences preferences) {
+        final Integer value = get(object);
+        if (value == null) {
+            preferences.remove(key);
+        } else {
+            preferences.putInt(key, value);
+        }
+    }
 }

@@ -19,6 +19,10 @@ import zen.bricks.styleeditor.IStyleEditor;
 
 public class RoundedBorder extends SimpleBorder
 {
+    // ============================================================ Class Fields
+
+    static final String ARC_SIZE_KEY = "arcSize";
+
     // ========================================================== Nested Classes
 
     public static class Factory <B extends RoundedBorder>
@@ -38,7 +42,7 @@ public class RoundedBorder extends SimpleBorder
 
         protected void init(B border, Preferences preferences, UI ui) {
             super.init(border, preferences, ui);
-            border.arcSize = preferences.getInt("arcSize", 0);
+            border.arcSize = preferences.getInt(ARC_SIZE_KEY, 0);
         }
 
         public IStyleEditor createStyleEditor(
@@ -109,5 +113,10 @@ public class RoundedBorder extends SimpleBorder
         gc.drawRoundRectangle(x, y,
                 brick.getWidth() - 1, brick.getHeight() - 1,
                 arcSize, arcSize);
+    }
+
+    public void save(Preferences prefs) {
+        super.save(prefs);
+        prefs.putInt(ARC_SIZE_KEY, arcSize);
     }
 }

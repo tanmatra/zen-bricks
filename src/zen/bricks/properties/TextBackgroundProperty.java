@@ -14,6 +14,8 @@ import zen.bricks.styleeditor.parts.TransparentColorEditorPart;
 
 public class TextBackgroundProperty extends StyleProperty<TransparentColor>
 {
+    private static final String TRANSPARENT = "transparent";
+
     public TextBackgroundProperty(String title, String keySuffix) {
         super(title, keySuffix);
     }
@@ -37,7 +39,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
         final TransparentColor transparentColor;
         if (string == null) {
             transparentColor = null;
-        } else if ("transparent".equals(string)) {
+        } else if (TRANSPARENT.equals(string)) {
             transparentColor = new TransparentColor();
         } else {
             final Device device = style.getUI().getDevice();
@@ -45,5 +47,19 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
             transparentColor = new TransparentColor(new Color(device, rgb));
         }
         set(style, transparentColor);
+    }
+
+    public void save(TupleStyle object, Preferences preferences) {
+        final TransparentColor transparentColor = get(object);
+        if (transparentColor == null) {
+            preferences.remove(key);
+            return;
+        }
+        final Color color = transparentColor.getColor();
+        if (color == null) {
+            preferences.put(key, TRANSPARENT);
+        } else {
+            preferences.put(key, ColorUtil.format(color));
+        }
     }
 }

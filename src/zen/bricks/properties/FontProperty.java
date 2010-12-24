@@ -13,6 +13,9 @@ import zen.bricks.styleeditor.parts.FontEditorPart;
 
 public abstract class FontProperty extends StyleProperty<FontData[]>
 {
+    private static final String BOLD = "bold";
+    private static final String ITALIC = "italic";
+
     public FontProperty(String title, String keySuffix) {
         super(title, keySuffix);
     }
@@ -51,9 +54,9 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         height = Float.parseFloat(heightStr);
         while (tokenizer.hasMoreTokens()) {
             final String token = tokenizer.nextToken();
-            if ("bold".equals(token)) {
+            if (BOLD.equals(token)) {
                 style |= SWT.BOLD;
-            } else if ("italic".equals(token)) {
+            } else if (ITALIC.equals(token)) {
                 style |= SWT.ITALIC;
             }
         }
@@ -62,5 +65,25 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
             data.height = height;
         }
         return data;
+    }
+
+    public void save(TupleStyle object, Preferences preferences) {
+        final FontData[] fontList = get(object);
+        if (fontList == null) {
+            preferences.remove(key);
+            return;
+        }
+        final StringBuilder buf = new StringBuilder(40);
+        final FontData fontData = fontList[0];
+        buf.append('"').append(fontData.getName()).append('"').append(' ');
+        buf.append(fontData.height);
+        final int style = fontData.getStyle();
+        if ((style & SWT.BOLD) != 0) {
+            buf.append(' ').append(BOLD);
+        }
+        if ((style & SWT.ITALIC) != 0) {
+            buf.append(' ').append(ITALIC);
+        }
+        preferences.put(key, buf.toString());
     }
 }

@@ -351,6 +351,7 @@ public class MainWindow extends ApplicationWindow
 
     void saveTheme(String fileName) {
         try {
+            editor.getUI().save(themePreferences);
             themePreferences.save(fileName);
         } catch (IOException e) {
             handleException(e, "Error saving theme");

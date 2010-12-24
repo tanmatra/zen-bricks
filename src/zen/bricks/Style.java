@@ -25,6 +25,8 @@ public abstract class Style
 
     public abstract void load(Preferences preferences);
 
+    public abstract void save(Preferences preferences);
+
     public abstract IStyleEditor createEditor();
 
     public abstract void dispose();

@@ -25,6 +25,10 @@ import zen.bricks.styleeditor.IStyleEditor;
 
 public class SimpleBorder extends Border
 {
+    // ============================================================ Class Fields
+
+    static final String COLOR_KEY = "color";
+
     // ========================================================== Nested Classes
 
     public static class Factory <B extends SimpleBorder>
@@ -43,9 +47,8 @@ public class SimpleBorder extends Border
         }
 
         protected void init(B border, Preferences preferences, UI ui) {
-            final String colorStr = preferences.get("color", null);
-            final RGB rgb = ColorUtil.parse(ui.getDevice(), colorStr);
-            border.setColor(rgb);
+            final String colorStr = preferences.get(COLOR_KEY, null);
+            border.setColor(ColorUtil.parse(ui.getDevice(), colorStr));
         }
 
         public IStyleEditor createStyleEditor(
@@ -145,5 +148,9 @@ public class SimpleBorder extends Border
 
     public void setColor(RGB rgb) {
         this.color = new Color(ui.getDevice(), rgb);
+    }
+
+    public void save(Preferences prefs) {
+        prefs.put(COLOR_KEY, ColorUtil.format(color));
     }
 }

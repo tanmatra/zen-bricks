@@ -1,6 +1,7 @@
 package zen.bricks.properties;
 
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -23,6 +24,10 @@ import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class BorderProperty extends StyleProperty<Border>
 {
+    // ============================================================ Class Fields
+
+    private static final String TYPE_KEY = "type";
+
     // ============================================================ Constructors
 
     public BorderProperty(String title, String key) {
@@ -40,21 +45,36 @@ public class BorderProperty extends StyleProperty<Border>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final Preferences borderNode = preferences.node(key);
-        final String type = borderNode.get("type", null);
+        final Preferences borderPrefs = preferences.node(key);
+        final String type = borderPrefs.get(TYPE_KEY, null);
         if (type == null) {
             set(style, null);
         } else {
-            UI ui = style.getUI();
+            final UI ui = style.getUI();
             for (final BorderFactory<?> factory : ui.getBorderFactories()) {
                 if (factory.getName().equals(type)) {
-                    final Border border = factory.createBorder(ui, borderNode);
+                    final Border border = factory.createBorder(ui, borderPrefs);
                     set(style, border);
                     return;
                 }
             }
             throw new RuntimeException("Border type '" + type + "' not found");
         }
+    }
+
+    public void save(TupleStyle object, Preferences preferences) {
+        final Border border = get(object);
+        final Preferences borderPrefs = preferences.node(key);
+        if (border == null) {
+            try {
+                borderPrefs.removeNode();
+            } catch (BackingStoreException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        borderPrefs.put(TYPE_KEY, border.getFactory().getName());
+        border.save(borderPrefs);
     }
 
     protected StyleEditorPart<Border> newEditorPart(
@@ -188,4 +208,5 @@ public class BorderProperty extends StyleProperty<Border>
             }
         }
     }
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }

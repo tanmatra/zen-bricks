@@ -16,9 +16,13 @@ import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class LayoutProperty extends StyleProperty<TupleLayout>
 {
+    // ============================================================ Constructors
+
     public LayoutProperty(String title, String keySuffix) {
         super(title, keySuffix);
     }
+
+    // ================================================================= Methods
 
     public TupleLayout get(TupleStyle style) {
         return style.getLayout();
@@ -28,6 +32,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         style.setLayout(value);
     }
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     protected StyleEditorPart<TupleLayout> newEditorPart(
             final TupleStyle style)
     {
@@ -74,6 +79,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
             }
         };
     }
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     public void load(TupleStyle style, Preferences preferences) {
         final String value = preferences.get(key, null);
@@ -87,6 +93,15 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
                     return;
                 }
             }
+        }
+    }
+
+    public void save(TupleStyle object, Preferences preferences) {
+        final TupleLayout tupleLayout = get(object);
+        if (tupleLayout == null) {
+            preferences.remove(key);
+        } else {
+            preferences.put(key, tupleLayout.getName());
         }
     }
 }

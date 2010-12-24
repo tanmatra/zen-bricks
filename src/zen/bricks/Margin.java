@@ -1,6 +1,5 @@
 package zen.bricks;
 
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 public class Margin
@@ -9,14 +8,6 @@ public class Margin
     int top;
     int right;
     int bottom;
-
-    private static int parseInt(Properties props, String key) {
-        final String value = props.getProperty(key);
-        if (value == null) {
-            return 0;
-        }
-        return Integer.parseInt(value);
-    }
 
     public Margin() {
     }
@@ -41,11 +32,8 @@ public class Margin
         return margin;
     }
 
-    public void parse(Properties props, String keyPrefix) {
-        left   = parseInt(props, keyPrefix + ".left");
-        top    = parseInt(props, keyPrefix + ".top");
-        right  = parseInt(props, keyPrefix + ".right");
-        bottom = parseInt(props, keyPrefix + ".bottom");
+    public String format() {
+        return left + ", " + top + ", " + right + ", " + bottom;
     }
 
     public int getLeft() {

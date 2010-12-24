@@ -125,6 +125,12 @@ public class TupleStyle extends Style
         }
     }
 
+    public void save(Preferences preferences) {
+        for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
+            styleProperty.save(this, preferences);
+        }
+    }
+
     public boolean isTopLevel() {
         return topLevel;
     }

@@ -34,14 +34,17 @@ public class UI
     Color canvasBackgroundColor;
     int textAntialias;
 
+    private GlobalStyle globalStyle;
+
     private TupleStyle basicStyle;
+    private TupleStyle atomStyle;
     private TupleStyle listStyle;
     private TupleStyle selectedStyle;
 
-    private GlobalStyle globalStyle;
-
     private StyleChain basicChain;
+    private StyleChain atomChain;
     private StyleChain listChain;
+
     private ArrayList<TupleLayout> tupleLayouts;
     private ArrayList<BorderFactory<?>> borderFactories;
 
@@ -83,15 +86,18 @@ public class UI
 
         basicStyle = new TupleStyle(this, "Basic");
         basicStyle.setTopLevel(true);
+        atomStyle = new TupleStyle(this, "Atom");
         listStyle = new TupleStyle(this, "List");
         selectedStyle = new TupleStyle(this, "Selected");
 
         final Preferences stylesNode = prefs.node("styles");
         basicStyle.load(stylesNode.node("basic"));
+        atomStyle.load(stylesNode.node("atom"));
         listStyle.load(stylesNode.node("list"));
         selectedStyle.load(stylesNode.node("selected"));
 
         basicChain = basicStyle.createChain(null);
+        atomChain = atomStyle.createChain(basicChain);
         listChain = listStyle.createChain(basicChain);
     }
 
@@ -104,6 +110,10 @@ public class UI
             basicStyle.dispose();
             basicStyle = null;
         }
+        if (atomStyle != null) {
+            atomStyle.dispose();
+            atomStyle = null;
+        }
         if (listStyle != null) {
             listStyle.dispose();
             listStyle = null;
@@ -114,6 +124,15 @@ public class UI
         }
     }
 
+    public void save(Preferences preferences) {
+        globalStyle.save(preferences);
+        final Preferences stylesNode = preferences.node("styles");
+        basicStyle.save(stylesNode.node("basic"));
+        atomStyle.save(stylesNode.node("atom"));
+        listStyle.save(stylesNode.node("list"));
+        selectedStyle.save(stylesNode.node("selected"));
+    }
+
     /**
      * @param editor
      */
@@ -121,7 +140,7 @@ public class UI
         // what here ???
     }
 
-    public Boolean parseBoolean(Preferences preferences, String key) {
+    static Boolean parseBoolean(Preferences preferences, String key) {
         final String value = preferences.get(key, null);
         if (value == null) {
             return null;
@@ -129,17 +148,12 @@ public class UI
         return Boolean.valueOf(value);
     }
 
-    Color parseColor(Preferences preferences, String key) {
-        final String value = preferences.get(key, null);
-        return new Color(device, ColorUtil.parse(device, value));
-    }
-
-    public int parseInt(Properties properties, String key) {
+    static int parseInt(Properties properties, String key) {
         final String value = properties.getProperty(key);
         return Integer.parseInt(value);
     }
 
-    int parseState(Preferences preferences, String key) {
+    static int parseState(Preferences preferences, String key) {
         final String value = preferences.get(key, null);
         if ((value == null) || "default".equals(value)) {
             return SWT.DEFAULT;
@@ -149,6 +163,14 @@ public class UI
             return SWT.OFF;
         } else {
             throw new IllegalArgumentException("Wrong state: " + value);
+        }
+    }
+
+    static String stateToString(int state) {
+        switch (state) {
+            case SWT.ON: return "on";
+            case SWT.OFF: return "off";
+            default: return "default";
         }
     }
 
@@ -192,7 +214,7 @@ public class UI
         if (brick.isList()) {
             chain = listChain;
         } else {
-            chain = basicChain;
+            chain = atomChain;
         }
         if (brick == editor.getSelection()) {
             chain = selectedStyle.createChain(chain);
@@ -201,7 +223,8 @@ public class UI
     }
 
     public List<? extends Style> getStyles() {
-        return Arrays.asList(globalStyle, basicStyle, listStyle, selectedStyle);
+        return Arrays.asList(
+                globalStyle, basicStyle, atomStyle, listStyle, selectedStyle);
     }
 
     public List<TupleLayout> getTupleLayouts() {
@@ -216,6 +239,10 @@ public class UI
 
     class GlobalStyle extends Style
     {
+        private static final String ANTIALIAS_KEY = "antialias";
+        private static final String CANVAS_BACKGROUND_KEY = "canvasBackgroundColor";
+        private static final String TEXT_ANTIALIAS_KEY = "textAntialias";
+
         public GlobalStyle() {
             super(UI.this, "Global");
         }
@@ -225,10 +252,17 @@ public class UI
         }
 
         public void load(Preferences preferences) {
-            antialias = parseState(preferences, "antialias");
-            textAntialias = parseState(preferences, "textAntialias");
-            canvasBackgroundColor =
-                    parseColor(preferences, "canvasBackgroundColor");
+            antialias = parseState(preferences, ANTIALIAS_KEY);
+            textAntialias = parseState(preferences, TEXT_ANTIALIAS_KEY);
+            canvasBackgroundColor = ColorUtil.parseColor(device,
+                    preferences.get(CANVAS_BACKGROUND_KEY, null));
+        }
+
+        public void save(Preferences preferences) {
+            preferences.put(ANTIALIAS_KEY, stateToString(antialias));
+            preferences.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
+            preferences.put(CANVAS_BACKGROUND_KEY,
+                    ColorUtil.format(canvasBackgroundColor));
         }
 
         public void dispose() {

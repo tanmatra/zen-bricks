@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import java.util.prefs.Preferences;
+
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -22,4 +24,6 @@ public abstract class Border
     public BorderFactory<?> getFactory() {
         return factory;
     }
+
+    public abstract void save(Preferences prefs);
 }

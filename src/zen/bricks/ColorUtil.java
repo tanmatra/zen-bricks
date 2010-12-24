@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
 
@@ -61,6 +62,11 @@ public class ColorUtil
     private ColorUtil() {
     }
 
+    public static Color parseColor(Device device, String str) {
+        final RGB rgb = parse(device, str);
+        return (rgb != null) ? new Color(device, rgb) : null;
+    }
+
     public static RGB parse(Device device, String str) {
         if ((str == null) || str.isEmpty()) {
             return null;
@@ -93,5 +99,13 @@ public class ColorUtil
             return new RGB(r, g, b);
         }
         throw new IllegalArgumentException("Misformed color: " + str);
+    }
+
+    public static String format(Color color) {
+        return format(color.getRGB());
+    }
+
+    public static String format(RGB rgb) {
+        return String.format("#%02X%02X%02X", rgb.red, rgb.green, rgb.blue);
     }
 }

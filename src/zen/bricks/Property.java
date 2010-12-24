@@ -27,4 +27,6 @@ public abstract class Property<T, V>
     }
 
     public abstract void load(T object, Preferences preferences);
+
+    public abstract void save(T object, Preferences preferences);
 }
