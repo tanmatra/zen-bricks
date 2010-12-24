@@ -39,6 +39,12 @@ public class MainWindow extends ApplicationWindow
     private static final String DEFAULT_THEME_FILE =
             "themes/default.theme.properties";
 
+    static final String THEMES_DIR = "themes/";
+
+    static final String[] THEME_FILTER_NAMES = { "Properties" };
+
+    static final String[] THEME_FILTER_EXTENSIONS = { "*.properties" };
+
     // =========================================================== Class Methods
 
     public static void main(String[] args) {
@@ -93,6 +99,7 @@ public class MainWindow extends ApplicationWindow
         return mainMenu;
     }
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     private void createFileMenu(final MenuManager mainMenu) {
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
@@ -111,6 +118,7 @@ public class MainWindow extends ApplicationWindow
         fileMenu.add(exitAction);
     }
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     private void createNavigateMenu(MenuManager mainMenu) {
         final MenuManager navigateMenu = new MenuManager("&Navigate");
         mainMenu.add(navigateMenu);
@@ -170,12 +178,13 @@ public class MainWindow extends ApplicationWindow
         });
     }
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     private void createViewMenu(final MenuManager mainMenu) {
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
 
-        final Action editStylesAction = new Action("&Edit styles...")
-        {
+        // ---------------------------------------------------------------------
+        final Action editStylesAction = new Action("&Edit styles...") {
             private WeakReference<Style> lastStyleRef;
 
             public void run() {
@@ -202,6 +211,7 @@ public class MainWindow extends ApplicationWindow
         };
         viewMenu.add(editStylesAction);
 
+        // ---------------------------------------------------------------------
         final Action fontAction = new Action("&Font...") {
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
@@ -216,6 +226,7 @@ public class MainWindow extends ApplicationWindow
         };
         viewMenu.add(fontAction);
 
+        // ---------------------------------------------------------------------
         final Action adjustFontAction = new Action("&Adjust font...") {
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
@@ -230,14 +241,14 @@ public class MainWindow extends ApplicationWindow
         };
         viewMenu.add(adjustFontAction);
 
+        // ---------------------------------------------------------------------
         viewMenu.add(new Separator());
 
+        // ---------------------------------------------------------------------
         final Action loadThemeAction = new Action("&Load theme...") {
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-                dialog.setFilterNames(new String[] { "Properties" });
-                dialog.setFilterExtensions(new String[] { "*.properties" });
-                dialog.setFilterPath(new File("themes/").toString());
+                initThemesFileDialog(dialog);
                 final String fileName = dialog.open();
                 if (fileName == null) {
                     return;
@@ -248,6 +259,22 @@ public class MainWindow extends ApplicationWindow
         };
         viewMenu.add(loadThemeAction);
 
+        // ---------------------------------------------------------------------
+        final Action saveThemeAction = new Action("Save theme as...") {
+            public void run() {
+                final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
+                initThemesFileDialog(dialog);
+                dialog.setFileName(new File(themeFileName).getName());
+                final String fileName = dialog.open();
+                if (fileName == null) {
+                    return;
+                }
+                saveTheme(fileName);
+            }
+        };
+        viewMenu.add(saveThemeAction);
+
+        // ---------------------------------------------------------------------
         reloadThemeAction = new Action("&Reload theme\tF5") {
             public void run() {
                 if (themeFileName == null) {
@@ -258,13 +285,13 @@ public class MainWindow extends ApplicationWindow
         };
         reloadThemeAction.setEnabled(false);
         viewMenu.add(reloadThemeAction);
+    }
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        final Action saveThemeAction = new Action("Save theme") {
-            public void run() {
-                saveTheme();
-            }
-        };
-        viewMenu.add(saveThemeAction);
+    static void initThemesFileDialog(FileDialog dialog) {
+        dialog.setFilterNames(THEME_FILTER_NAMES);
+        dialog.setFilterExtensions(THEME_FILTER_EXTENSIONS);
+        dialog.setFilterPath(new File(THEMES_DIR).toString());
     }
 
     protected Control createContents(Composite parent) {
@@ -322,16 +349,14 @@ public class MainWindow extends ApplicationWindow
         reloadThemeAction.setEnabled(true);
     }
 
-    void saveTheme() {
-        final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
-        final String fileName = dialog.open();
-        if (fileName == null) {
-            return;
-        }
+    void saveTheme(String fileName) {
         try {
             themePreferences.save(fileName);
         } catch (IOException e) {
             handleException(e, "Error saving theme");
+            return;
         }
+        getStatusLineManager().setMessage(
+                "Saved theme \"" + fileName + "\"");
     }
 }
