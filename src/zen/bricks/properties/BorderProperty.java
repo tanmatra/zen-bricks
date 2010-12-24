@@ -24,10 +24,6 @@ import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class BorderProperty extends StyleProperty<Border>
 {
-    // ============================================================ Class Fields
-
-    private static final String TYPE_KEY = "type";
-
     // ============================================================ Constructors
 
     public BorderProperty(String title, String key) {
@@ -45,14 +41,14 @@ public class BorderProperty extends StyleProperty<Border>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final Preferences borderPrefs = preferences.node(key);
-        final String type = borderPrefs.get(TYPE_KEY, null);
+        final String type = preferences.get(key, null);
         if (type == null) {
             set(style, null);
         } else {
             final UI ui = style.getUI();
             for (final BorderFactory<?> factory : ui.getBorderFactories()) {
                 if (factory.getName().equals(type)) {
+                    final Preferences borderPrefs = preferences.node(key);
                     final Border border = factory.createBorder(ui, borderPrefs);
                     set(style, border);
                     return;
@@ -67,13 +63,14 @@ public class BorderProperty extends StyleProperty<Border>
         final Preferences borderPrefs = preferences.node(key);
         if (border == null) {
             try {
+                preferences.remove(key);
                 borderPrefs.removeNode();
             } catch (BackingStoreException e) {
                 throw new RuntimeException(e);
             }
             return;
         }
-        borderPrefs.put(TYPE_KEY, border.getFactory().getName());
+        preferences.put(key, border.getFactory().getName());
         border.save(borderPrefs);
     }
 
