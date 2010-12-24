@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.prefs.Preferences;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
@@ -18,6 +19,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.utils.RadioPanel;
@@ -47,6 +49,9 @@ public class UI
 
     private ArrayList<TupleLayout> tupleLayouts;
     private ArrayList<BorderFactory<?>> borderFactories;
+
+    int caretOffset;
+    int caretWidth = 2;
 
     // ============================================================ Constructors
 
@@ -239,6 +244,8 @@ public class UI
 
     class GlobalStyle extends Style
     {
+        private static final String CARET_WIDTH_KEY = "caretWidth";
+        private static final String CARET_OFFSET_KEY = "caretOffset";
         private static final String ANTIALIAS_KEY = "antialias";
         private static final String CANVAS_BACKGROUND_KEY = "canvasBackgroundColor";
         private static final String TEXT_ANTIALIAS_KEY = "textAntialias";
@@ -256,6 +263,8 @@ public class UI
             textAntialias = parseState(preferences, TEXT_ANTIALIAS_KEY);
             canvasBackgroundColor = ColorUtil.parseColor(device,
                     preferences.get(CANVAS_BACKGROUND_KEY, null));
+            caretOffset = preferences.getInt(CARET_OFFSET_KEY, 0);
+            caretWidth = preferences.getInt(CARET_WIDTH_KEY, 2);
         }
 
         public void save(Preferences preferences) {
@@ -263,6 +272,8 @@ public class UI
             preferences.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
             preferences.put(CANVAS_BACKGROUND_KEY,
                     ColorUtil.format(canvasBackgroundColor));
+            preferences.putInt(CARET_OFFSET_KEY, caretOffset);
+            preferences.putInt(CARET_WIDTH_KEY, caretWidth);
         }
 
         public void dispose() {
@@ -279,29 +290,49 @@ public class UI
         private RadioPanel antialiasPanel;
         private RadioPanel textAntialiasPanel;
         private ColorSelector canvasColorSelector;
+        private Spinner caretOffsetSpinner;
+        private Spinner caretWidthSpinner;
 
         public void createControl(Composite parent) {
             panel = new Composite(parent, SWT.NONE);
             GridLayoutFactory.swtDefaults().numColumns(2).applyTo(panel);
 
-            new Label(panel, SWT.NONE).setText("Antialias:");
+            new Label(panel, SWT.NONE).setText("Antialias");
 
             antialiasPanel = new RadioPanel(panel);
             antialiasPanel.setLabels(ANTIALIAS_LABELS);
             antialiasPanel.setValues(ANTIALIAS_VALUES);
             antialiasPanel.setValueSelected(antialias);
 
-            new Label(panel, SWT.NONE).setText("Text antialias:");
+            new Label(panel, SWT.NONE).setText("Text antialias");
 
             textAntialiasPanel = new RadioPanel(panel);
             textAntialiasPanel.setLabels(ANTIALIAS_LABELS);
             textAntialiasPanel.setValues(ANTIALIAS_VALUES);
             textAntialiasPanel.setValueSelected(textAntialias);
 
-            new Label(panel, SWT.NONE).setText("Canvas background:");
+            new Label(panel, SWT.NONE).setText("Canvas background");
 
             canvasColorSelector = new ColorSelector(panel);
             canvasColorSelector.setColorValue(canvasBackgroundColor.getRGB());
+
+            new Label(panel, SWT.NONE).setText("Caret");
+
+            final Composite caretPanel = new Composite(panel, SWT.NONE);
+            GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(4)
+                    .applyTo(caretPanel);
+            new Label(caretPanel, SWT.NONE).setText("offset:");
+            caretOffsetSpinner = new Spinner(caretPanel, SWT.BORDER);
+            caretOffsetSpinner.setMinimum(-10);
+            caretOffsetSpinner.setMaximum(10);
+            caretOffsetSpinner.setSelection(caretOffset);
+            final Label label = new Label(caretPanel, SWT.NONE);
+            label.setText("width:");
+            GridDataFactory.swtDefaults().indent(10, 0).applyTo(label);
+            caretWidthSpinner = new Spinner(caretPanel, SWT.BORDER);
+            caretWidthSpinner.setMinimum(-10);
+            caretWidthSpinner.setMaximum(10);
+            caretWidthSpinner.setSelection(caretWidth);
         }
 
         public Control getControl() {
@@ -317,6 +348,9 @@ public class UI
                 canvasBackgroundColor.dispose();
                 canvasBackgroundColor = new Color(device, rgb);
             }
+
+            caretOffset = caretOffsetSpinner.getSelection();
+            caretWidth = caretWidthSpinner.getSelection();
         }
 
         public void cancel() {

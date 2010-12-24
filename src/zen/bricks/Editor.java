@@ -14,12 +14,6 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public class Editor
 {
-    // ============================================================ Class Fields
-
-    private static final int CARET_OFFSET = -2;
-
-    private static final int CARET_WIDTH = 2;
-
     // ================================================================== Fields
 
     private final MainWindow mainWindow;
@@ -84,6 +78,7 @@ public class Editor
             root.canvasResized();
         }
         canvas.redraw();
+        displayCaretFor(selection);
     }
 
     static TupleBrick makeSample() {
@@ -331,16 +326,22 @@ public class Editor
         }
         if (newSel != null) {
             root.paintOnly(newSel);
-            final Rectangle rect = newSel.toScreen();
+        }
+        displayCaretFor(newSel);
+//        mainWindow.setStatus("Selected: " + newSel); // DEBUG
+        mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
+    }
+
+    void displayCaretFor(Brick brick) {
+        if (brick != null) {
+            final Rectangle rect = brick.toScreen();
             final Caret caret = canvas.getCaret();
-            caret.setBounds(rect.x + CARET_OFFSET, rect.y,
-                    CARET_WIDTH, rect.height);
+            caret.setBounds(rect.x + ui.caretOffset, rect.y,
+                    ui.caretWidth, rect.height);
             caret.setVisible(true);
         } else {
             canvas.getCaret().setVisible(false);
         }
-//        mainWindow.setStatus("Selected: " + newSel); // DEBUG
-        mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
     }
 
     private static boolean isTop(Brick brick) {
