@@ -2,6 +2,8 @@ package zen.bricks;
 
 import java.util.LinkedList;
 
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -178,7 +180,24 @@ public class Editor
 //            navigateNext(false);
 //        } else if (e.keyCode == ' ' && e.stateMask == 0) {
 //            scrollToSelected();
+        } else if (e.keyCode == SWT.CR && e.stateMask == 0) {
+            editBrick();
         }
+    }
+
+    private void editBrick() {
+        if (!(selection instanceof TupleBrick)) {
+            return;
+        }
+        final TupleBrick tupleBrick = (TupleBrick) selection;
+        final InputDialog dialog =
+                new InputDialog(mainWindow.getShell(), "Edit",
+                        "Brick text:", tupleBrick.text, null);
+        if (dialog.open() == Window.CANCEL) {
+            return;
+        }
+        tupleBrick.setText(dialog.getValue());
+        root.paintOnly(tupleBrick);
     }
 
     private void scrollPageUp() {
