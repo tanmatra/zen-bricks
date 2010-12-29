@@ -257,7 +257,7 @@ class ImportXMLAction extends Action
             editor.setDocument(root);
             mainWindow.setTitle(fileName);
         } catch (Exception e) {
-            mainWindow.handleException(e, "Import error");
+            mainWindow.showException(e, "Import error");
         }
     }
 

@@ -29,7 +29,6 @@ public class UI
     // ================================================================== Fields
 
     final Device device;
-    private GC savedGC;
 
     private Boolean advanced;
     int antialias;
@@ -53,16 +52,19 @@ public class UI
     int caretOffset;
     int caretWidth = 2;
 
+    private final List<Editor> editors = new ArrayList<Editor>();
+
     // ============================================================ Constructors
+
+    public UI(Device device) {
+        this.device = device;
+    }
 
     public UI(Device device, Preferences preferences) throws Exception {
         this.device = device;
-        savedGC = new GC(device);
         try {
-            init(preferences);
-            savedGC.setAntialias(antialias);
-            // TODO: pass antialias to all text styles
-        } catch (final Exception e) {
+            load(preferences);
+        } catch (Exception e) {
             dispose();
             throw e;
         }
@@ -70,7 +72,7 @@ public class UI
 
     // ================================================================= Methods
 
-    void init(Preferences prefs) throws Exception {
+    void load(Preferences prefs) throws Exception {
         globalStyle = new GlobalStyle();
         globalStyle.load(prefs);
 
@@ -104,12 +106,14 @@ public class UI
         basicChain = basicStyle.createChain(null);
         atomChain = atomStyle.createChain(basicChain);
         listChain = listStyle.createChain(basicChain);
+
+        fireChangedEvent();
     }
 
     void dispose() {
-        if (savedGC != null) {
-            savedGC.dispose();
-            savedGC = null;
+        if (canvasBackgroundColor != null) {
+            canvasBackgroundColor.dispose();
+            canvasBackgroundColor = null;
         }
         if (basicStyle != null) {
             basicStyle.dispose();
@@ -136,6 +140,20 @@ public class UI
         atomStyle.save(stylesNode.node("atom"));
         listStyle.save(stylesNode.node("list"));
         selectedStyle.save(stylesNode.node("selected"));
+    }
+
+    public void addEditor(Editor editor) {
+        editors.add(editor);
+    }
+
+    public void removeEditor(Editor editor) {
+        editors.remove(editor);
+    }
+
+    public void fireChangedEvent() {
+        for (final Editor editor : editors) {
+            editor.uiChanged();
+        }
     }
 
     /**
@@ -185,10 +203,6 @@ public class UI
 
     public Device getDevice() {
         return device;
-    }
-
-    GC getGC() {
-        return savedGC;
     }
 
     public void layout(TupleBrick brick, Editor editor) {

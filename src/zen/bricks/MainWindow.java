@@ -11,7 +11,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -21,11 +20,14 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.FontDialog;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.styleeditor.EditStylesDialog;
+import zen.bricks.utils.CustomImageRegistry;
 import zen.bricks.utils.PropertiesPreferences;
 import zen.bricks.utils.StoredPreferences;
 
@@ -48,24 +50,28 @@ public class MainWindow extends ApplicationWindow
     // =========================================================== Class Methods
 
     public static void main(String[] args) {
-        final ImageDescriptor imageDesc =
-                ImageDescriptor.createFromFile(MainWindow.class, "bricks.png");
-        final Image shellImage = imageDesc.createImage();
-        Window.setDefaultImage(shellImage);
-        final MainWindow window = new MainWindow();
-        window.setBlockOnOpen(true);
-        window.open();
-        shellImage.dispose();
-        Display.getCurrent().dispose();
+        final Display display = new Display();
+        try {
+            final CustomImageRegistry imageRegistry =
+                    new CustomImageRegistry(display, MainWindow.class,
+                            "/zen/bricks/");
+            final Image shellImage = imageRegistry.load("bricks.png");
+            Window.setDefaultImage(shellImage);
+            final MainWindow window = new MainWindow();
+            window.setBlockOnOpen(true);
+            window.open();
+        } finally {
+            display.dispose();
+        }
     }
 
     // ================================================================== Fields
 
+    UI ui;
+
     Editor editor;
 
     String themeFileName;
-
-    private Action reloadThemeAction;
 
     private final Preferences preferences;
 
@@ -83,8 +89,20 @@ public class MainWindow extends ApplicationWindow
     // ================================================================= Methods
 
     protected void configureShell(Shell shell) {
+        shell.addListener(SWT.Dispose, new Listener() {
+            public void handleEvent(Event e) {
+                disposed();
+            }
+        });
         super.configureShell(shell);
         shell.setText("Bricks");
+    }
+
+    void disposed() {
+        if (ui != null) {
+            ui.dispose();
+            ui = null;
+        }
     }
 
     protected Point getInitialSize() {
@@ -179,18 +197,19 @@ public class MainWindow extends ApplicationWindow
     }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    private void createViewMenu(final MenuManager mainMenu) {
+    private void createViewMenu(MenuManager mainMenu) {
         final MenuManager viewMenu = new MenuManager("&View");
         mainMenu.add(viewMenu);
 
         // ---------------------------------------------------------------------
-        final Action editStylesAction = new Action("&Edit styles...") {
+        final Action editStylesAction = new Action("&Edit styles...")
+        {
             private WeakReference<Style> lastStyleRef;
 
             public void run() {
                 Style lastStyle;
-                final EditStylesDialog dialog = new EditStylesDialog(
-                        getShell(), editor);
+                final EditStylesDialog dialog =
+                        new EditStylesDialog(getShell(), ui);
 
                 if (lastStyleRef != null) {
                     lastStyle = lastStyleRef.get();
@@ -275,7 +294,7 @@ public class MainWindow extends ApplicationWindow
         viewMenu.add(saveThemeAction);
 
         // ---------------------------------------------------------------------
-        reloadThemeAction = new Action("&Reload theme\tF5") {
+        final Action reloadThemeAction = new Action("&Reload theme\tF5") {
             public void run() {
                 if (themeFileName == null) {
                     return;
@@ -283,7 +302,6 @@ public class MainWindow extends ApplicationWindow
                 loadTheme();
             }
         };
-        reloadThemeAction.setEnabled(false);
         viewMenu.add(reloadThemeAction);
     }
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -300,53 +318,75 @@ public class MainWindow extends ApplicationWindow
         layout.marginHeight = layout.marginWidth = 5;
         contents.setLayout(layout);
 
-        editor = new Editor(this, contents);
+        ui = new UI(getShell().getDisplay());
 
-        themeFileName = preferences.get(LAST_THEME_KEY, DEFAULT_THEME_FILE);
-        loadTheme();
+        editor = new Editor(ui, this, contents);
+
+        loadStartupTheme();
 
         editor.setDocument(Editor.makeSample());
-
-        getStatusLineManager().setMessage("Ready.");
 
         return contents;
     }
 
-    void handleException(Exception e, String dialogTitle) {
-        e.printStackTrace();
-        final IStatus status = new Status(IStatus.ERROR, "zen.bricks",
-                e.getClass().getName(), e);
+    void showException(Throwable exception, String dialogTitle) {
+        exception.printStackTrace();
+        final IStatus status =
+                new Status(IStatus.ERROR, "zen.bricks",
+                        exception.getClass().getName(), exception);
         ErrorDialog.openError(getShell(), dialogTitle, null, status);
+    }
+
+    private void loadStartupTheme() {
+        themeFileName = preferences.get(LAST_THEME_KEY, null);
+        LOAD_LAST: if (themeFileName != null) {
+            try {
+                loadThemeImpl(themeFileName);
+            } catch (Exception e ) {
+                System.err.println(
+                        e.getMessage() + " : " + e.getCause().getMessage());
+                break LOAD_LAST;
+            }
+            getStatusLineManager().setMessage(
+                    "Loaded theme \"" + themeFileName + "\"");
+            return;
+        }
+        try {
+            loadThemeImpl(DEFAULT_THEME_FILE);
+        } catch (Exception e2) {
+            showException(e2.getCause(), e2.getMessage());
+            return;
+        }
+        getStatusLineManager().setMessage("Loaded default theme");
     }
 
     public void setTitle(String fileName) {
         getShell().setText("Bricks - " + fileName);
     }
 
-    void setEditorTheme(Preferences themePrefs) {
-        final UI ui;
+    private void loadThemeImpl(String file) throws Exception {
         try {
-            ui = new UI(getShell().getDisplay(), themePrefs);
-        } catch (Exception e) {
-            handleException(e, "Error setting theme");
-            return;
+            themePreferences = PropertiesPreferences.load(file);
+        } catch (IOException e) {
+            throw new Exception("Error loading theme", e);
         }
-        editor.setUI(ui);
+        try {
+            ui.load(themePreferences);
+        } catch (Exception e) {
+            throw new Exception("Error setting theme", e);
+        }
     }
 
     void loadTheme() {
-        preferences.put(LAST_THEME_KEY, themeFileName);
-
         try {
-            themePreferences = PropertiesPreferences.load(themeFileName);
-        } catch (IOException e) {
-            handleException(e, "Error loading theme");
+            loadThemeImpl(themeFileName);
+        } catch (Exception e) {
+            showException(e.getCause(), e.getMessage());
             return;
         }
-        setEditorTheme(themePreferences);
+        preferences.put(LAST_THEME_KEY, themeFileName);
         getStatusLineManager().setMessage(
                 "Loaded theme \"" + themeFileName + "\"");
-        reloadThemeAction.setEnabled(true);
     }
 
     void saveTheme(String fileName) {
@@ -354,7 +394,7 @@ public class MainWindow extends ApplicationWindow
             editor.getUI().save(themePreferences);
             themePreferences.save(fileName);
         } catch (IOException e) {
-            handleException(e, "Error saving theme");
+            showException(e, "Error saving theme");
             return;
         }
         getStatusLineManager().setMessage(

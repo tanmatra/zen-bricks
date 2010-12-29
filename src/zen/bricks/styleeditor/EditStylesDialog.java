@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.Style;
-import zen.bricks.Editor;
 import zen.bricks.UI;
 
 public class EditStylesDialog extends Dialog
@@ -55,16 +54,13 @@ public class EditStylesDialog extends Dialog
     private final Map<Style, IStyleEditor> styleEditors =
         new HashMap<Style, IStyleEditor>();
 
-    private final Editor editor;
-
     private Style selectedStyle;
 
     // ============================================================ Constructors
 
-    public EditStylesDialog(Shell shell, Editor editor) {
+    public EditStylesDialog(Shell shell, UI ui) {
         super(shell);
-        this.ui = editor.getUI();
-        this.editor = editor;
+        this.ui = ui;
     }
 
     // ================================================================= Methods
@@ -87,7 +83,7 @@ public class EditStylesDialog extends Dialog
         final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
 
-        //------------------------------------------------- styles table viewer
+        // ------------------------------------------------- styles table viewer
         final Composite listPanel = new Composite(sashForm, SWT.NONE);
         GridLayoutFactory.fillDefaults().extendedMargins(5, 0, 5, 5)
                 .applyTo(listPanel);
@@ -112,7 +108,7 @@ public class EditStylesDialog extends Dialog
             }
         });
 
-        //----------------------------------------------------- properties panel
+        // ---------------------------------------------------- properties panel
         final Composite propertiesPanel = new Composite(sashForm, SWT.NONE);
         GridLayoutFactory.fillDefaults().extendedMargins(0, 5, 5, 5)
                 .applyTo(propertiesPanel);
@@ -127,10 +123,10 @@ public class EditStylesDialog extends Dialog
         stackLayout = new StackLayout();
         stackPanel.setLayout(stackLayout);
 
-        //----------------------------------------------------------------------
+        // ---------------------------------------------------------------------
         sashForm.setWeights(new int[] { 20, 80 });
 
-        if ((selectedStyle == null) && (styles.size() > 0)) {
+        if ((selectedStyle == null) && (!styles.isEmpty())) {
             selectedStyle = styles.get(0);
         }
         stylesViewer.setSelection(
@@ -186,7 +182,7 @@ public class EditStylesDialog extends Dialog
         for (IStyleEditor styleEditor : styleEditors.values()) {
             styleEditor.apply();
         }
-        editor.refresh();
+        ui.fireChangedEvent();
     }
 
     void cancelEditors() {

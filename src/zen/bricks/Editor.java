@@ -39,11 +39,16 @@ public class Editor
                 | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
 
         final Caret caret = new Caret(canvas, SWT.NONE);
-//        canvas.setCaret(caret);
         caret.setVisible(false);
 
         createListeners();
         root = new RootBrick(this);
+    }
+
+    public Editor(UI ui, MainWindow mainWindow, Composite parent) {
+        this(mainWindow, parent);
+        this.ui = ui;
+        ui.addEditor(this);
     }
 
     // ================================================================= Methods
@@ -54,10 +59,14 @@ public class Editor
 
     public void setUI(UI ui) {
         if (this.ui != null) {
-            this.ui.dispose();
+            this.ui.removeEditor(this);
         }
         this.ui = ui;
         ui.applyTo(this);
+        ui.addEditor(this);
+    }
+
+    public void uiChanged() {
         refresh();
     }
 
