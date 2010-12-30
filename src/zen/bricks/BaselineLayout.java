@@ -39,7 +39,7 @@ public class BaselineLayout extends TupleLayout
         boolean firstLine = true;
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {
-                child.calculateSize(editor);
+                child.validate(editor);
                 child.x = currX;
                 currX += child.width + spacing;
                 lineAscent = Math.max(lineAscent, child.ascent);

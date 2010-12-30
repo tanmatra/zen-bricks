@@ -85,7 +85,7 @@ public class Editor
     public void refresh() {
         if (root != null) {
             root.realize(this);
-            root.calculateSize(this);
+            root.validate(this);
             root.canvasResized();
         }
         canvas.redraw();
@@ -206,7 +206,10 @@ public class Editor
             return;
         }
         tupleBrick.setText(dialog.getValue());
-        root.paintOnly(tupleBrick);
+        tupleBrick.invalidate();
+//        root.paintOnly(tupleBrick); // LATER
+        root.validate(this);
+        root.paintAll();
     }
 
     private void scrollPageUp() {

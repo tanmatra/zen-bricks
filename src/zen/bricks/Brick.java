@@ -7,6 +7,8 @@ import org.eclipse.swt.widgets.Event;
 
 public abstract class Brick
 {
+    // ================================================================== Fields
+
     ContainerBrick parent;
     int index;
     int x;
@@ -14,6 +16,9 @@ public abstract class Brick
     int width;
     int height;
     int ascent;
+    boolean valid;
+
+    // ============================================================ Constructors
 
     protected Brick(ContainerBrick parent) {
         this.parent = parent;
@@ -21,6 +26,8 @@ public abstract class Brick
             parent.addChild(this);
         }
     }
+
+    // ================================================================= Methods
 
     public ContainerBrick getParent() {
         return parent;
@@ -60,12 +67,23 @@ public abstract class Brick
     public abstract void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                                Editor editor);
 
-    /**
-     * @param editor
-     */
-    void calculateSize(Editor editor) {
-        // todo
+    public void invalidate() {
+        Brick brick = this;
+        do {
+            brick.valid = false;
+            brick = brick.parent;
+        } while (brick != null);
     }
+
+    void validate(Editor editor) {
+        if (valid) {
+            return;
+        }
+        doLayout(editor);
+        valid = true;
+    }
+
+    protected abstract void doLayout(Editor editor);
 
     public void setWidth(int width) {
         this.width = width;

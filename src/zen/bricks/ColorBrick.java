@@ -36,6 +36,10 @@ public class ColorBrick extends Brick
         super.dispose();
     }
 
+    protected void doLayout(Editor editor) {
+        // do nothing
+    }
+
     public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                       Editor editor)
     {

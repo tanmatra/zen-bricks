@@ -110,9 +110,9 @@ public class RootBrick extends ContainerBrick
         x = newX;
     }
 
-    void calculateSize(Editor editor) {
+    protected void doLayout(Editor editor) {
         if (document != null) {
-            document.calculateSize(editor);
+            document.validate(editor);
             width = document.width + padding.getHorizontalSum();
             height = document.height + padding.getVerticalSum();
         }
@@ -184,6 +184,10 @@ public class RootBrick extends ContainerBrick
         }
     }
 
+    void paintAll() {
+        canvas.redraw();
+    }
+
     public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                       Editor editor)
     {
@@ -194,6 +198,7 @@ public class RootBrick extends ContainerBrick
 
     protected void addChild(Brick child) {
         document = child;
+        valid = false;
         child.parent = this;
         child.index = 0;
         child.x = padding.getTop();
