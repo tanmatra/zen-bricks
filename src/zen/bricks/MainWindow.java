@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.styleeditor.EditStylesDialog;
 import zen.bricks.utils.CustomImageRegistry;
+import zen.bricks.utils.DOMPreferences;
 import zen.bricks.utils.PropertiesPreferences;
 import zen.bricks.utils.StoredPreferences;
 
@@ -292,6 +293,29 @@ public class MainWindow extends ApplicationWindow
             }
         };
         viewMenu.add(saveThemeAction);
+
+        // ---------------------------------------------------------------------
+        final Action saveXMLThemeAction = new Action("Save theme as XML...") {
+            public void run() {
+                final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
+                dialog.setFilterNames(new String[] { "XML files" });
+                dialog.setFilterExtensions(new String[] { "*.xml" });
+                dialog.setFilterPath(new File(THEMES_DIR).toString());
+//                dialog.setFileName(new File(themeFileName).getName());
+                final String fileName = dialog.open();
+                if (fileName == null) {
+                    return;
+                }
+                final DOMPreferences domPrefs = new DOMPreferences();
+                ui.save(domPrefs);
+                try {
+                    domPrefs.save(fileName);
+                } catch (IOException e) {
+                    showException(e, "Error saving theme");
+                }
+            }
+        };
+        viewMenu.add(saveXMLThemeAction);
 
         // ---------------------------------------------------------------------
         final Action reloadThemeAction = new Action("&Reload theme\tF5") {
