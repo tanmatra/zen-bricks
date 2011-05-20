@@ -39,7 +39,10 @@ public abstract class Brick
     public void attach(Editor editor) {
     }
 
-    void dispose() {
+    /**
+     * @param editor
+     */
+    public void detach(Editor editor) {
     }
 
     public boolean contains(int x, int y) {

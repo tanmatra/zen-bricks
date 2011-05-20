@@ -74,7 +74,7 @@ public class Editor
         selection = null;
         canvas.getCaret().setVisible(false);
         if (document != null) {
-            document.dispose();
+            document.detach(this);
         }
         document = documentBrick;
         root.addChild(documentBrick);
@@ -140,8 +140,8 @@ public class Editor
 
     void disposed() {
         if (root != null) {
-            root.dispose();
-            //            root = null;
+            root.detach(this);
+//            root = null;
         }
         if (ui != null) {
             ui.dispose();

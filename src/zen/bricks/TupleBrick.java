@@ -118,11 +118,11 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
-    void dispose() {
+    public void detach(Editor editor) {
         for (final Brick brick : children) {
-            brick.dispose();
+            brick.detach(editor);
         }
-        super.dispose();
+        super.detach(editor);
     }
 
     protected void addChild(Brick child) {

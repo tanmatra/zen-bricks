@@ -29,10 +29,10 @@ public class ColorBrick extends Brick
         backColor = new Color(device, back);
     }
 
-    void dispose() {
+    public void detach(Editor editor) {
         foreColor.dispose();
         backColor.dispose();
-        super.dispose();
+        super.detach(editor);
     }
 
     protected boolean doLayout(Editor editor) {
