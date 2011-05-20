@@ -110,12 +110,14 @@ public class RootBrick extends ContainerBrick
         x = newX;
     }
 
-    protected void doLayout(Editor editor) {
+    protected boolean doLayout(Editor editor) {
         if (document != null) {
             document.validate(editor);
             final int width = document.getWidth() + padding.getHorizontalSum();
             final int height = document.getHeight() + padding.getVerticalSum();
-            resize(width, height);
+            return resize(width, height);
+        } else {
+            return false;
         }
     }
 

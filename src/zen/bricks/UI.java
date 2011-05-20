@@ -205,11 +205,14 @@ public class UI
         return device;
     }
 
-    public void layout(TupleBrick brick, Editor editor) {
+    /**
+     * @return <code>true</code> if brick has really changed its size
+     */
+    public boolean layout(TupleBrick brick, Editor editor) {
         final StyleChain styleChain = getStyleChain(brick, editor);
         final TupleStyle style = TupleStyle.LAYOUT.find(styleChain);
         final TupleLayout layout = style.getLayout();
-        layout.doLayout(brick, editor);
+        return layout.doLayout(brick, editor);
     }
 
     public Color getCanvasBackgroundColor() {

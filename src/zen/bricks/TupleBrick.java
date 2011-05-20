@@ -226,8 +226,8 @@ public class TupleBrick extends ContainerBrick
         return min;
     }
 
-    protected void doLayout(Editor editor) {
-        editor.getUI().layout(this, editor);
+    protected boolean doLayout(Editor editor) {
+        return editor.getUI().layout(this, editor);
     }
 
     public String toString() {

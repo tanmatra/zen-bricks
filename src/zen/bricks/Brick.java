@@ -83,7 +83,10 @@ public abstract class Brick
         valid = true;
     }
 
-    protected abstract void doLayout(Editor editor);
+    /**
+     * @return <code>true</code> if brick has really changed its size
+     */
+    protected abstract boolean doLayout(Editor editor);
 
     /**
      * @param width
