@@ -111,20 +111,6 @@ public class TupleBrick extends ContainerBrick
         this.text = text;
     }
 
-    public void attach(Editor editor) {
-        super.attach(editor);
-        for (final Brick brick : children) {
-            brick.attach(editor);
-        }
-    }
-
-    public void detach(Editor editor) {
-        for (final Brick brick : children) {
-            brick.detach(editor);
-        }
-        super.detach(editor);
-    }
-
     protected void addChild(Brick child) {
         int endIndex = children.size();
         child.index = endIndex;

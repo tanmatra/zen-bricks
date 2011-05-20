@@ -28,4 +28,20 @@ public abstract class ContainerBrick extends Brick
         }
         return getChild(childrenCount() - 1).getLastDescendantOrSelf();
     }
+
+    public void attach(Editor editor) {
+        super.attach(editor);
+        final int count = childrenCount();
+        for (int i = 0; i < count; i++) {
+            getChild(i).attach(editor);
+        }
+    }
+
+    public void detach(Editor editor) {
+        final int count = childrenCount();
+        for (int i = 0; i < count; i++) {
+            getChild(i).detach(editor);
+        }
+        super.detach(editor);
+    }
 }
