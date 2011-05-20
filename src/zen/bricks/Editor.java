@@ -16,6 +16,12 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public class Editor
 {
+    // ============================================================ Class Fields
+
+    private static final int CANVAS_STYLE = SWT.V_SCROLL | SWT.H_SCROLL
+            | SWT.BORDER | SWT.DOUBLE_BUFFERED /* | SWT.NO_BACKGROUND */
+            | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS;
+
     // ================================================================== Fields
 
     private final MainWindow mainWindow;
@@ -35,9 +41,7 @@ public class Editor
     public Editor(UI ui, MainWindow mainWindow, Composite parent) {
         this.mainWindow = mainWindow;
         this.ui = ui;
-        canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER
-                | SWT.DOUBLE_BUFFERED /*| SWT.NO_BACKGROUND*/
-                | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
+        canvas = new Canvas(parent, CANVAS_STYLE);
 
         final Caret caret = new Caret(canvas, SWT.NONE);
         caret.setVisible(false);
