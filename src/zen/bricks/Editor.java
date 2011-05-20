@@ -32,8 +32,9 @@ public class Editor
 
     // ============================================================ Constructors
 
-    public Editor(MainWindow mainWindow, Composite parent) {
+    public Editor(UI ui, MainWindow mainWindow, Composite parent) {
         this.mainWindow = mainWindow;
+        this.ui = ui;
         canvas = new Canvas(parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER
                 | SWT.DOUBLE_BUFFERED /*| SWT.NO_BACKGROUND*/
                 | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
@@ -43,11 +44,7 @@ public class Editor
 
         createListeners();
         root = new RootBrick(this);
-    }
 
-    public Editor(UI ui, MainWindow mainWindow, Composite parent) {
-        this(mainWindow, parent);
-        this.ui = ui;
         ui.addEditor(this);
     }
 
