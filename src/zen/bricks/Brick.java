@@ -36,7 +36,7 @@ public abstract class Brick
     /**
      * @param editor
      */
-    void realize(Editor editor) {
+    public void attach(Editor editor) {
     }
 
     void dispose() {

@@ -111,10 +111,10 @@ public class TupleBrick extends ContainerBrick
         this.text = text;
     }
 
-    void realize(Editor editor) {
-        super.realize(editor);
+    public void attach(Editor editor) {
+        super.attach(editor);
         for (final Brick brick : children) {
-            brick.realize(editor);
+            brick.attach(editor);
         }
     }
 

@@ -78,13 +78,13 @@ public class Editor
         }
         document = documentBrick;
         root.addChild(documentBrick);
-        documentBrick.realize(this);
+        documentBrick.attach(this);
         refresh();
     }
 
     public void refresh() {
         if (root != null) {
-            root.realize(this);
+            root.attach(this);
             root.validate(this);
             root.canvasResized();
         }

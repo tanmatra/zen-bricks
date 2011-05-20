@@ -158,12 +158,12 @@ public class RootBrick extends ContainerBrick
         }
     }
 
-    void realize(Editor editor) {
+    public void attach(Editor editor) {
         canvas.setBackground(editor.getUI().getCanvasBackgroundColor());
 //        if (document != null) {
 //            document.realize(editor);
 //        }
-        super.realize(editor);
+        super.attach(editor);
     }
 
     void paint(GC gc) {

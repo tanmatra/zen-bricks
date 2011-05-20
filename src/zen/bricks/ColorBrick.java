@@ -23,7 +23,7 @@ public class ColorBrick extends Brick
         ascent = height;
     }
 
-    void realize(Editor editor) {
+    public void attach(Editor editor) {
         final Display device = editor.getCanvas().getDisplay();
         foreColor = new Color(device, fore);
         backColor = new Color(device, back);
