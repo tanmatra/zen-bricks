@@ -113,8 +113,8 @@ public class RootBrick extends ContainerBrick
     protected void doLayout(Editor editor) {
         if (document != null) {
             document.validate(editor);
-            final int width = document.width + padding.getHorizontalSum();
-            final int height = document.height + padding.getVerticalSum();
+            final int width = document.getWidth() + padding.getHorizontalSum();
+            final int height = document.getHeight() + padding.getVerticalSum();
             resize(width, height);
         }
     }
@@ -124,11 +124,11 @@ public class RootBrick extends ContainerBrick
         boolean needRepaint = false;
 
         final ScrollBar verticalBar = canvas.getVerticalBar();
-        verticalBar.setMaximum(height);
-        verticalBar.setThumb(Math.min(height, clientArea.height));
+        verticalBar.setMaximum(getHeight());
+        verticalBar.setThumb(Math.min(getHeight(), clientArea.height));
         verticalBar.setPageIncrement(clientArea.height); // TODO
         int vertSelection = verticalBar.getSelection();
-        final int vertGap = height - clientArea.height;
+        final int vertGap = getHeight() - clientArea.height;
         if (vertSelection >= vertGap) {
             if (vertGap <= 0) {
                 vertSelection = 0;
@@ -138,11 +138,11 @@ public class RootBrick extends ContainerBrick
         }
 
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
-        horizontalBar.setMaximum(width);
-        horizontalBar.setThumb(Math.min(width, clientArea.width));
+        horizontalBar.setMaximum(getWidth());
+        horizontalBar.setThumb(Math.min(getWidth(), clientArea.width));
         horizontalBar.setPageIncrement(clientArea.width); // TODO
         int horizSelection = horizontalBar.getSelection();
-        final int horizGap = width - clientArea.width;
+        final int horizGap = getWidth() - clientArea.width;
         if (horizSelection >= horizGap) {
             if (horizGap <= 0) {
                 horizSelection = 0;

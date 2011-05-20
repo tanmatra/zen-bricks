@@ -13,8 +13,8 @@ public abstract class Brick
     int index;
     int x;
     int y;
-    int width;
-    int height;
+    private int width;
+    private int height;
     int ascent;
     boolean valid;
 

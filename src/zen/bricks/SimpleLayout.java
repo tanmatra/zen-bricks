@@ -26,7 +26,7 @@ public class SimpleLayout extends TupleLayout
         brick.textExtent = ui.getStyleChain(brick, editor).getTextExtent(brick.text);
         int width = textMargin.getLeft() + brick.textExtent.x;
 
-        int currX = brick.width + spacing;
+        int currX = width + spacing;
         int currY = brickPadding.getTop();
         int currLineHeight = textMargin.getTop() + brick.textExtent.y;
 
@@ -35,8 +35,8 @@ public class SimpleLayout extends TupleLayout
                 child.validate(editor);
                 child.x = currX;
                 child.y = currY;
-                currLineHeight = Math.max(currLineHeight, child.height);
-                currX += child.width + spacing;
+                currLineHeight = Math.max(currLineHeight, child.getHeight());
+                currX += child.getWidth() + spacing;
             }
             // line ended
             line.height = currLineHeight;

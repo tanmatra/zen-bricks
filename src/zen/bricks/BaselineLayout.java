@@ -41,7 +41,7 @@ public class BaselineLayout extends TupleLayout
             for (final Brick child : line) {
                 child.validate(editor);
                 child.x = currX;
-                currX += child.width + spacing;
+                currX += child.getWidth() + spacing;
                 lineAscent = Math.max(lineAscent, child.ascent);
             }
             int lineHeight;
@@ -56,7 +56,7 @@ public class BaselineLayout extends TupleLayout
             for (final Brick child : line) {
                 final int margin = lineAscent - child.ascent;
                 child.y = lineY + margin;
-                lineHeight = Math.max(lineHeight, child.height + margin);
+                lineHeight = Math.max(lineHeight, child.getHeight() + margin);
             }
             line.y = lineY;
             line.height = lineHeight;
