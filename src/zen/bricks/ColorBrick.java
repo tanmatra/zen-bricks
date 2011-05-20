@@ -17,8 +17,7 @@ public class ColorBrick extends Brick
             RGB fore, RGB back)
     {
         super(parent);
-        this.width = width;
-        this.height = height;
+        resize(width, height);
         this.fore = fore;
         this.back = back;
         ascent = height;

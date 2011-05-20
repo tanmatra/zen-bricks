@@ -13,7 +13,7 @@ public class SimpleLayout extends TupleLayout
         return "simple";
     }
 
-    public void doLayout(TupleBrick brick, Editor editor) {
+    public boolean doLayout(TupleBrick brick, Editor editor) {
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
@@ -24,7 +24,7 @@ public class SimpleLayout extends TupleLayout
         brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
         brick.textExtent = ui.getStyleChain(brick, editor).getTextExtent(brick.text);
-        brick.width = textMargin.getLeft() + brick.textExtent.x;
+        int width = textMargin.getLeft() + brick.textExtent.x;
 
         int currX = brick.width + spacing;
         int currY = brickPadding.getTop();
@@ -41,14 +41,15 @@ public class SimpleLayout extends TupleLayout
             // line ended
             line.height = currLineHeight;
             line.y = currY;
-            brick.width = Math.max(brick.width, currX - spacing);
+            width = Math.max(width, currX - spacing);
             // prepare new line
             currX = brickPadding.getLeft();
             currY += currLineHeight + lineSpacing;
             currLineHeight = 0;
         }
 
-        brick.width += brickPadding.getRight();
-        brick.height = currY - lineSpacing + brickPadding.getBottom();
+        width += brickPadding.getRight();
+        final int height = currY - lineSpacing + brickPadding.getBottom();
+        return brick.resize(width, height);
     }
 }

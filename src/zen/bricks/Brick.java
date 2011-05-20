@@ -85,6 +85,21 @@ public abstract class Brick
 
     protected abstract void doLayout(Editor editor);
 
+    /**
+     * @param width
+     * @param height
+     * @return <code>true</code> if brick has really changed its size
+     */
+    public boolean resize(int width, int height) {
+        if ((this.width != width) || (this.height != height)) {
+            this.width  = width;
+            this.height = height;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public int getWidth() {
         return width;
     }

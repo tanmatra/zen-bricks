@@ -113,8 +113,9 @@ public class RootBrick extends ContainerBrick
     protected void doLayout(Editor editor) {
         if (document != null) {
             document.validate(editor);
-            width = document.width + padding.getHorizontalSum();
-            height = document.height + padding.getVerticalSum();
+            final int width = document.width + padding.getHorizontalSum();
+            final int height = document.height + padding.getVerticalSum();
+            resize(width, height);
         }
     }
 

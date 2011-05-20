@@ -15,7 +15,7 @@ public class BaselineLayout extends TupleLayout
         return "baseline";
     }
 
-    public void doLayout(TupleBrick brick, Editor editor) {
+    public boolean doLayout(TupleBrick brick, Editor editor) {
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
@@ -67,7 +67,8 @@ public class BaselineLayout extends TupleLayout
             lineAscent = 0;
         }
 
-        brick.width = width + brickPadding.getRight();
-        brick.height = lineY - lineSpacing + brickPadding.getBottom();
+        width = width + brickPadding.getRight();
+        final int height = lineY - lineSpacing + brickPadding.getBottom();
+        return brick.resize(width, height);
     }
 }
