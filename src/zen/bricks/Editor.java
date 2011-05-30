@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -22,19 +24,31 @@ public class Editor
             | SWT.BORDER | SWT.DOUBLE_BUFFERED /* | SWT.NO_BACKGROUND */
             | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS;
 
+    private static final int VERT_SCROLL_INCREMENT = 10;
+
+    private static final int HORIZ_SCROLL_INCREMENT = 10;
+
     // ================================================================== Fields
 
     private final MainWindow mainWindow;
 
     final Canvas canvas;
 
-    final RootBrick root;
-
     Brick document;
 
     private UI ui;
 
     private Brick selection;
+
+    private Rectangle clientArea;
+
+    private ScrollBar verticalBar;
+
+    private ScrollBar horizontalBar;
+
+    private final Margin frameMargin = new Margin(10, 10, 10, 10);
+
+    private final Margin scrollMargin = new Margin(10, 10, 10, 10);
 
     // ============================================================ Constructors
 
@@ -43,16 +57,135 @@ public class Editor
         this.ui = ui;
         canvas = new Canvas(parent, CANVAS_STYLE);
 
+        verticalBar = canvas.getVerticalBar();
+        horizontalBar = canvas.getHorizontalBar();
+        initScrollBars();
+
+        canvas.addListener(SWT.Resize, new Listener() {
+            public void handleEvent(Event event) {
+                canvasResized();
+            }
+        });
+        canvas.addListener(SWT.Paint, new Listener() {
+            public void handleEvent(Event event) {
+                paint(event.gc);
+            }
+        });
+
         final Caret caret = new Caret(canvas, SWT.NONE);
         caret.setVisible(false);
 
         createListeners();
-        root = new RootBrick(this);
 
         ui.addEditor(this);
     }
 
     // ================================================================= Methods
+
+    private void initScrollBars() {
+        final ScrollBar verticalBar = canvas.getVerticalBar();
+        verticalBar.setIncrement(VERT_SCROLL_INCREMENT);
+        verticalBar.setPageIncrement(100);
+        verticalBar.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                scrollCanvasVertically();
+            }
+        });
+        final ScrollBar horizontalBar = canvas.getHorizontalBar();
+        horizontalBar.setIncrement(HORIZ_SCROLL_INCREMENT);
+        horizontalBar.setPageIncrement(100);
+        horizontalBar.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                scrollCanvasHorizontally();
+            }
+        });
+    }
+
+    void paint(GC gc) {
+        final Caret caret = canvas.getCaret();
+        final boolean caretVisible = caret.getVisible();
+        if (caretVisible) {
+            caret.setVisible(false);
+        }
+        ui.preparePaint(gc);
+        if (document != null) {
+            document.repaint(gc, 0, 0, gc.getClipping(), this); // ?? 0,0
+        }
+        if (caretVisible) {
+            caret.setVisible(true);
+        }
+    }
+
+    void canvasResized() {
+        clientArea = canvas.getClientArea();
+        boolean needRepaint = false;
+
+        final ScrollBar verticalBar = canvas.getVerticalBar();
+        final int height = document.getHeight() + frameMargin.getVerticalSum(); // FIXME
+        verticalBar.setMaximum(height);
+        verticalBar.setThumb(Math.min(height, clientArea.height));
+        verticalBar.setPageIncrement(clientArea.height); // TODO
+        int vertSelection = verticalBar.getSelection();
+        final int vertGap = height - clientArea.height;
+        if (vertSelection >= vertGap) {
+            if (vertGap <= 0) {
+                vertSelection = 0;
+            }
+            needRepaint = true;
+            document.y = frameMargin.getTop() - vertSelection; // ???
+        }
+
+        final ScrollBar horizontalBar = canvas.getHorizontalBar();
+        final int width = document.getWidth() + frameMargin.getHorizontalSum(); // FIXME
+        horizontalBar.setMaximum(width);
+        horizontalBar.setThumb(Math.min(width, clientArea.width));
+        horizontalBar.setPageIncrement(clientArea.width); // TODO
+        int horizSelection = horizontalBar.getSelection();
+        final int horizGap = width - clientArea.width;
+        if (horizSelection >= horizGap) {
+            if (horizGap <= 0) {
+                horizSelection = 0;
+            }
+            needRepaint = true;
+            document.x = frameMargin.getLeft() - horizSelection; // ???
+        }
+
+        if (needRepaint) {
+            canvas.redraw();
+        }
+    }
+
+    void scrollCanvasVertically() {
+        final int newY = frameMargin.getTop() - verticalBar.getSelection();
+        final int yDelta = newY - document.y;
+        canvas.scroll(
+                0, yDelta, /* destX, destY */
+                0, 0, /* sourceX, sourceY */
+                clientArea.width, clientArea.height,
+                false);
+
+        final Caret caret = canvas.getCaret();
+        final Point p = caret.getLocation();
+        caret.setLocation(p.x, p.y + yDelta);
+
+        document.y = newY;
+    }
+
+    void scrollCanvasHorizontally() {
+        final int newX = frameMargin.getLeft() - horizontalBar.getSelection();
+        final int xDelta = newX - document.x;
+        canvas.scroll(
+                xDelta, 0, /* destX, destY */
+                0, 0, /* sourceX, sourceY */
+                clientArea.width, clientArea.height,
+                false);
+
+        final Caret caret = canvas.getCaret();
+        final Point p = caret.getLocation();
+        caret.setLocation(p.x + xDelta, p.y);
+
+        document.x = newX;
+    }
 
     public UI getUI() {
         return ui;
@@ -68,26 +201,27 @@ public class Editor
     }
 
     public void uiChanged() {
+        canvas.setBackground(ui.getCanvasBackgroundColor());
         refresh();
     }
 
-    public void setDocument(TupleBrick documentBrick) {
+    public void setDocument(Brick document) {
         selection = null;
         canvas.getCaret().setVisible(false);
-        if (document != null) {
-            document.detach(this);
+        if (this.document != null) {
+            this.document.detach(this);
         }
-        document = documentBrick;
-        root.addChild(documentBrick);
-        documentBrick.attach(this);
+        this.document = document;
+        document.x = frameMargin.getTop();
+        document.y = frameMargin.getLeft();
+        document.attach(this);
         refresh();
     }
 
     public void refresh() {
-        if (root != null) {
-            root.attach(this);
-            root.validate(this);
-            root.canvasResized();
+        if (document != null) {
+            document.doLayout(this);
+            canvasResized(); // ??
         }
         canvas.redraw();
         displayCaretFor(selection);
@@ -140,9 +274,9 @@ public class Editor
 
 
     void disposed() {
-        if (root != null) {
-            root.detach(this);
-//            root = null;
+        if (document != null) {
+            document.detach(this);
+            document = null;
         }
         if (ui != null) {
             ui.dispose();
@@ -155,7 +289,7 @@ public class Editor
     }
 
     void handleMouseEvent(Event event) {
-        Brick target = root;
+        Brick target = document;
         int x = event.x;
         int y = event.y;
         while (target != null) {
@@ -207,38 +341,58 @@ public class Editor
             return;
         }
         tupleBrick.setText(dialog.getValue());
-        tupleBrick.invalidate();
-//        root.paintOnly(tupleBrick); // LATER
-        root.validate(this);
-        root.paintAll();
+        revalidate(tupleBrick);
+        paintOnly(tupleBrick);
     }
+
+    void revalidate(Brick brick) {
+        while (brick != null) {
+            boolean changed = brick.doLayout(this);
+            if (!changed) {
+                paintOnly(brick);
+                // TODO
+                return;
+            }
+            brick = brick.getParent();
+        }
+        // here brick == null, so the whole document is changed
+        canvasResized(); // ???
+    }
+
+    void paintOnly(Brick brick) {
+//        canvas.update();
+        final Rectangle rect = brick.toScreen();
+        if (rect.intersects(clientArea)) {
+            canvas.redraw(rect.x, rect.y, rect.width, rect.height, false);
+        }
+     }
 
     private void scrollPageUp() {
         final ScrollBar bar = canvas.getVerticalBar();
         final int increment = bar.getPageIncrement();
         bar.setSelection(bar.getSelection() - increment);
-        root.vertScroll();
+        scrollCanvasVertically();
     }
 
     private void scrollPageDown() {
         final ScrollBar bar = canvas.getVerticalBar();
         final int increment = bar.getPageIncrement();
         bar.setSelection(bar.getSelection() + increment);
-        root.vertScroll();
+        scrollCanvasVertically();
     }
 
     private void scrollLineUp() {
         final ScrollBar bar = canvas.getVerticalBar();
         final int increment = bar.getIncrement();
         bar.setSelection(bar.getSelection() - increment);
-        root.vertScroll();
+        scrollCanvasVertically();
     }
 
     private void scrollLineDown() {
         final ScrollBar bar = canvas.getVerticalBar();
         final int increment = bar.getIncrement();
         bar.setSelection(bar.getSelection() + increment);
-        root.vertScroll();
+        scrollCanvasVertically();
     }
 
     void navigateLevelUp() {
@@ -246,7 +400,7 @@ public class Editor
             return;
         }
         final Brick parent = selection.getParent();
-        if (!(parent instanceof RootBrick)) {
+        if (parent != null) {
             setSelection(parent, true);
         }
     }
@@ -262,7 +416,7 @@ public class Editor
             return;
         }
         brick = brick.getParent();
-        if (!isTop(brick)) {
+        if (brick != null) {
             setSelection(brick, true);
         }
     }
@@ -284,7 +438,7 @@ public class Editor
                 return;
             }
             brick = brick.getParent();
-        } while (!isTop(brick));
+        } while (brick != null);
     }
 
     void navigatePrevious(boolean allowParent) {
@@ -300,10 +454,9 @@ public class Editor
             return;
         }
         previous = selection.getParent();
-        if (isTop(previous)) {
-            return;
+        if (previous != null) {
+            setSelection(previous, true);
         }
-        setSelection(previous, true);
     }
 
     void navigateNext(boolean allowParent) {
@@ -320,14 +473,14 @@ public class Editor
             return;
         }
         next = brick.getParent();
-        if ((next != null) && !(next instanceof RootBrick)) {
+        if (next != null) {
             setSelection(next, true);
         }
     }
 
     void navigateNextOrUp() {
         Brick brick = selection;
-        while (!isTop(brick)) {
+        while (brick != null) {
             final Brick next = brick.getNextSibling();
             if (next != null) {
                 setSelection(next, true);
@@ -339,14 +492,14 @@ public class Editor
 
     void scrollToSelected() {
         if (selection != null) {
-            root.scrollTo(selection);
+            scrollTo(selection);
         }
     }
 
     public void setSelection(Brick newSel, boolean scroll) {
         setSelection(newSel);
         if (scroll && (newSel != null)) {
-            root.scrollTo(newSel);
+            scrollTo(newSel);
         }
     }
 
@@ -354,14 +507,60 @@ public class Editor
         final Brick oldSel = selection;
         selection = newSel;
         if (oldSel != null) {
-            root.paintOnly(oldSel);
+            paintOnly(oldSel);
         }
         if (newSel != null) {
-            root.paintOnly(newSel);
+            paintOnly(newSel);
         }
         displayCaretFor(newSel);
 //        mainWindow.setStatus("Selected: " + newSel); // DEBUG
         mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
+    }
+
+    public void scrollTo(Brick brick) {
+        final Rectangle rect = brick.toScreen();
+        final int dy = verticalScrollNeeded(rect);
+        final int dx = horizontalScrollNeeded(rect);
+        horizontalBar.setSelection(horizontalBar.getSelection() - dx);
+        verticalBar.setSelection(verticalBar.getSelection() - dy);
+        scrollCanvasVertically();
+        scrollCanvasHorizontally();
+    }
+
+    private int verticalScrollNeeded(Rectangle rect) {
+        final int frameTop = clientArea.y + scrollMargin.getTop();
+        if (rect.y < frameTop) {
+            return frameTop - rect.y;
+        }
+        final int frameHeight = clientArea.height - scrollMargin.getVerticalSum();
+        if (rect.height >= frameHeight) {
+            return frameTop - rect.y;
+        }
+        final int brickBottom = rect.y + rect.height;
+        final int frameBottom =
+                clientArea.y + clientArea.height - scrollMargin.getBottom();
+        if (brickBottom > frameBottom) {
+            return frameBottom - brickBottom;
+        }
+        return 0;
+    }
+
+    private int horizontalScrollNeeded(Rectangle rect) {
+        final int frameLeft = clientArea.x + scrollMargin.getLeft();
+        if (rect.x < frameLeft) {
+            return frameLeft - rect.x;
+        }
+        final int frameWidth = clientArea.width - scrollMargin.getHorizontalSum();
+        if (rect.width >= frameWidth) {
+            return frameLeft - rect.x;
+        }
+        final int brickRight = rect.x + rect.width;
+        final int frameRight =
+                clientArea.x + clientArea.width - scrollMargin.getRight();
+        if (brickRight > frameRight) {
+            return frameRight - brickRight;
+        }
+        return 0;
     }
 
     void displayCaretFor(Brick brick) {
@@ -376,13 +575,9 @@ public class Editor
         }
     }
 
-    private static boolean isTop(Brick brick) {
-        return (brick == null) || (brick instanceof RootBrick);
-    }
-
     private static String getPath(Brick brick) {
         final LinkedList<String> list = new LinkedList<String>();
-        while ((brick != null) && !(brick instanceof RootBrick)) {
+        while (brick != null) {
             if (brick instanceof TupleBrick) {
                 final TupleBrick tuple = (TupleBrick) brick;
                 list.addFirst(brick.index + ":" +

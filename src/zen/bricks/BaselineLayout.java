@@ -39,7 +39,7 @@ public class BaselineLayout extends TupleLayout
         boolean firstLine = true;
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {
-                child.validate(editor);
+                child.doLayout(editor);
                 child.x = currX;
                 currX += child.getWidth() + spacing;
                 lineAscent = Math.max(lineAscent, child.ascent);
@@ -67,7 +67,7 @@ public class BaselineLayout extends TupleLayout
             lineAscent = 0;
         }
 
-        width = width + brickPadding.getRight();
+        width += brickPadding.getRight();
         final int height = lineY - lineSpacing + brickPadding.getBottom();
         return brick.resize(width, height);
     }

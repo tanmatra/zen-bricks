@@ -32,7 +32,7 @@ public class SimpleLayout extends TupleLayout
 
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {
-                child.validate(editor);
+                child.doLayout(editor);
                 child.x = currX;
                 child.y = currY;
                 currLineHeight = Math.max(currLineHeight, child.getHeight());

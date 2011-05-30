@@ -16,7 +16,6 @@ public abstract class Brick
     private int width;
     private int height;
     int ascent;
-    boolean valid;
 
     // ============================================================ Constructors
 
@@ -56,35 +55,34 @@ public abstract class Brick
 
     /**
      * Paints only if intersects with clipping.
+     *
+     * @param parentX absolute canvas-based
+     * @param parentY absolute canvas-based
+     * @param clipping absolute canvas-based
      */
-    public void repaint(GC gc, int baseX, int baseY, Rectangle clipping,
+    public void repaint(GC gc, int parentX, int parentY, Rectangle clipping,
                         Editor editor)
     {
-        final int brickX = baseX + x;
-        final int brickY = baseY + y;
+        final int brickX = parentX + x;
+        final int brickY = parentY + y;
         if (clipping.intersects(brickX, brickY, width, height)) {
             paint(gc, brickX, brickY, clipping, editor);
         }
     }
 
-    public abstract void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-                               Editor editor);
-
-    public void invalidate() {
-        Brick brick = this;
-        do {
-            brick.valid = false;
-            brick = brick.parent;
-        } while (brick != null);
-    }
-
-    void validate(Editor editor) {
-        if (valid) {
-            return;
-        }
-        doLayout(editor);
-        valid = true;
-    }
+    /**
+     * Paint this brick in canvas.
+     * <p>
+     * {@link #x} and {@link #y} should not be taken into account in this method
+     *
+     * @param gc graphic context
+     * @param baseX absolute canvas-based X coordinate
+     * @param baseY absolute canvas-based Y coordinate
+     * @param clipping clipping area relative to canvas
+     * @param editor editor
+     */
+    protected abstract void paint(GC gc, int baseX, int baseY,
+            Rectangle clipping, Editor editor);
 
     /**
      * @return <code>true</code> if brick has really changed its size
@@ -171,6 +169,9 @@ public abstract class Brick
     }
 
     public Brick getPreviousSibling() {
+        if (parent == null) {
+            return null;
+        }
         final int prevIndex = index - 1;
         if (!parent.isValidIndex(prevIndex)) {
             return null;
@@ -179,6 +180,9 @@ public abstract class Brick
     }
 
     public Brick getNextSibling() {
+        if (parent == null) {
+            return null;
+        }
         final int nextIndex = index + 1;
         if (!parent.isValidIndex(nextIndex)) {
             return null;

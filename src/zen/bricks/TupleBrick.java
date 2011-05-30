@@ -213,7 +213,9 @@ public class TupleBrick extends ContainerBrick
     }
 
     protected boolean doLayout(Editor editor) {
-        return editor.getUI().layout(this, editor);
+        final StyleChain styleChain = editor.getUI().getStyleChain(this, editor);
+        final TupleStyle style = TupleStyle.LAYOUT.find(styleChain);
+        return style.getLayout().doLayout(this, editor);
     }
 
     public String toString() {

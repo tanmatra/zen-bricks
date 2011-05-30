@@ -208,6 +208,7 @@ public class UI
     /**
      * @return <code>true</code> if brick has really changed its size
      */
+    @Deprecated
     public boolean layout(TupleBrick brick, Editor editor) {
         final StyleChain styleChain = getStyleChain(brick, editor);
         final TupleStyle style = TupleStyle.LAYOUT.find(styleChain);
