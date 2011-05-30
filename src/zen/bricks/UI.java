@@ -26,6 +26,15 @@ import zen.bricks.utils.RadioPanel;
 
 public class UI
 {
+    // ============================================================ Class Fields
+
+    private static final String GLOBAL_KEY = "global";
+    private static final String STYLES_KEY = "styles";
+    private static final String BASIC_STYLE_KEY = "basic";
+    private static final String ATOM_STYLE_KEY = "atom";
+    private static final String LIST_STYLE_KEY = "list";
+    private static final String SELECTED_STYLE_KEY = "selected";
+
     // ================================================================== Fields
 
     final Device device;
@@ -72,44 +81,6 @@ public class UI
 
     // ================================================================= Methods
 
-    void load(Preferences prefs) throws Exception {
-        globalStyle = new GlobalStyle();
-        globalStyle.load(prefs);
-
-        final ServiceLoader<TupleLayout> layoutsLoader =
-                ServiceLoader.load(TupleLayout.class);
-        tupleLayouts = new ArrayList<TupleLayout>();
-        for (final TupleLayout layout : layoutsLoader) {
-            tupleLayouts.add(layout);
-        }
-
-        @SuppressWarnings("rawtypes")
-        final ServiceLoader<BorderFactory> bordersLoader =
-                ServiceLoader.load(BorderFactory.class);
-        borderFactories = new ArrayList<BorderFactory<?>>();
-        for (final BorderFactory<?> borderFactory : bordersLoader) {
-            borderFactories.add(borderFactory);
-        }
-
-        basicStyle = new TupleStyle(this, "Basic");
-        basicStyle.setTopLevel(true);
-        atomStyle = new TupleStyle(this, "Atom");
-        listStyle = new TupleStyle(this, "List");
-        selectedStyle = new TupleStyle(this, "Selected");
-
-        final Preferences stylesNode = prefs.node("styles");
-        basicStyle.load(stylesNode.node("basic"));
-        atomStyle.load(stylesNode.node("atom"));
-        listStyle.load(stylesNode.node("list"));
-        selectedStyle.load(stylesNode.node("selected"));
-
-        basicChain = basicStyle.createChain(null);
-        atomChain = atomStyle.createChain(basicChain);
-        listChain = listStyle.createChain(basicChain);
-
-        fireChangedEvent();
-    }
-
     void dispose() {
         if (canvasBackgroundColor != null) {
             canvasBackgroundColor.dispose();
@@ -133,13 +104,51 @@ public class UI
         }
     }
 
+    void load(Preferences preferences) throws Exception {
+        globalStyle = new GlobalStyle();
+        globalStyle.load(preferences.node(GLOBAL_KEY));
+
+        final ServiceLoader<TupleLayout> layoutsLoader =
+                ServiceLoader.load(TupleLayout.class);
+        tupleLayouts = new ArrayList<TupleLayout>();
+        for (final TupleLayout layout : layoutsLoader) {
+            tupleLayouts.add(layout);
+        }
+
+        @SuppressWarnings("rawtypes")
+        final ServiceLoader<BorderFactory> bordersLoader =
+                ServiceLoader.load(BorderFactory.class);
+        borderFactories = new ArrayList<BorderFactory<?>>();
+        for (final BorderFactory<?> borderFactory : bordersLoader) {
+            borderFactories.add(borderFactory);
+        }
+
+        basicStyle = new TupleStyle(this, "Basic");
+        basicStyle.setTopLevel(true);
+        atomStyle = new TupleStyle(this, "Atom");
+        listStyle = new TupleStyle(this, "List");
+        selectedStyle = new TupleStyle(this, "Selected");
+
+        final Preferences stylesNode = preferences.node(STYLES_KEY);
+        basicStyle.load(stylesNode.node(BASIC_STYLE_KEY));
+        atomStyle.load(stylesNode.node(ATOM_STYLE_KEY));
+        listStyle.load(stylesNode.node(LIST_STYLE_KEY));
+        selectedStyle.load(stylesNode.node(SELECTED_STYLE_KEY));
+
+        basicChain = basicStyle.createChain(null);
+        atomChain = atomStyle.createChain(basicChain);
+        listChain = listStyle.createChain(basicChain);
+
+        fireChangedEvent();
+    }
+
     public void save(Preferences preferences) {
-        globalStyle.save(preferences);
-        final Preferences stylesNode = preferences.node("styles");
-        basicStyle.save(stylesNode.node("basic"));
-        atomStyle.save(stylesNode.node("atom"));
-        listStyle.save(stylesNode.node("list"));
-        selectedStyle.save(stylesNode.node("selected"));
+        globalStyle.save(preferences.node(GLOBAL_KEY));
+        final Preferences stylesNode = preferences.node(STYLES_KEY);
+        basicStyle.save(stylesNode.node(BASIC_STYLE_KEY));
+        atomStyle.save(stylesNode.node(ATOM_STYLE_KEY));
+        listStyle.save(stylesNode.node(LIST_STYLE_KEY));
+        selectedStyle.save(stylesNode.node(SELECTED_STYLE_KEY));
     }
 
     public void addEditor(Editor editor) {
