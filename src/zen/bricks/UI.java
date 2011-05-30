@@ -108,20 +108,8 @@ public class UI
         globalStyle = new GlobalStyle();
         globalStyle.load(preferences.node(GLOBAL_KEY));
 
-        final ServiceLoader<TupleLayout> layoutsLoader =
-                ServiceLoader.load(TupleLayout.class);
-        tupleLayouts = new ArrayList<TupleLayout>();
-        for (final TupleLayout layout : layoutsLoader) {
-            tupleLayouts.add(layout);
-        }
-
-        @SuppressWarnings("rawtypes")
-        final ServiceLoader<BorderFactory> bordersLoader =
-                ServiceLoader.load(BorderFactory.class);
-        borderFactories = new ArrayList<BorderFactory<?>>();
-        for (final BorderFactory<?> borderFactory : bordersLoader) {
-            borderFactories.add(borderFactory);
-        }
+        loadLayoutFactories();
+        loadBorderFactories();
 
         basicStyle = new TupleStyle(this, "Basic");
         basicStyle.setTopLevel(true);
@@ -149,6 +137,25 @@ public class UI
         atomStyle.save(stylesNode.node(ATOM_STYLE_KEY));
         listStyle.save(stylesNode.node(LIST_STYLE_KEY));
         selectedStyle.save(stylesNode.node(SELECTED_STYLE_KEY));
+    }
+
+    private void loadLayoutFactories() {
+        final ServiceLoader<TupleLayout> layoutsLoader =
+                ServiceLoader.load(TupleLayout.class);
+        tupleLayouts = new ArrayList<TupleLayout>();
+        for (final TupleLayout layout : layoutsLoader) {
+            tupleLayouts.add(layout);
+        }
+    }
+
+    private void loadBorderFactories() {
+        @SuppressWarnings("rawtypes")
+        final ServiceLoader<BorderFactory> bordersLoader =
+                ServiceLoader.load(BorderFactory.class);
+        borderFactories = new ArrayList<BorderFactory<?>>();
+        for (final BorderFactory<?> borderFactory : bordersLoader) {
+            borderFactories.add(borderFactory);
+        }
     }
 
     public void addEditor(Editor editor) {
