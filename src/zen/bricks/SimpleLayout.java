@@ -23,7 +23,8 @@ public class SimpleLayout extends TupleLayout
 
         brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
-        brick.textExtent = ui.getStyleChain(brick, editor).getTextExtent(brick.text);
+        brick.textExtent = ui.getStyleChain(brick, editor)
+                .getTextExtent(brick.getText());
         int width = textMargin.getLeft() + brick.textExtent.x;
 
         int currX = width + spacing;

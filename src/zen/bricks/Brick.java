@@ -92,7 +92,11 @@ public abstract class Brick
     /**
      * @return <code>true</code> if brick has really changed its size
      */
-    protected abstract boolean doLayout(Editor editor);
+    public boolean doLayout(Editor editor) {
+        return doLayout(editor, false);
+    }
+
+    public abstract boolean doLayout(Editor editor, boolean force);
 
     /**
      * @param width

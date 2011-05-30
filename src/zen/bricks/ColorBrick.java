@@ -35,7 +35,7 @@ public class ColorBrick extends Brick
         super.detach(editor);
     }
 
-    protected boolean doLayout(Editor editor) {
+    public boolean doLayout(Editor editor, boolean force) {
         return false;
     }
 

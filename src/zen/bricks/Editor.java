@@ -339,21 +339,19 @@ public class Editor
         final TupleBrick tupleBrick = (TupleBrick) selection;
         final InputDialog dialog =
                 new InputDialog(mainWindow.getShell(), "Edit",
-                        "Brick text:", tupleBrick.text, null);
+                        "Brick text:", tupleBrick.getText(), null);
         if (dialog.open() == Window.CANCEL) {
             return;
         }
         tupleBrick.setText(dialog.getValue());
         revalidate(tupleBrick);
-        paintOnly(tupleBrick);
     }
 
     void revalidate(Brick brick) {
         while (brick != null) {
-            boolean changed = brick.doLayout(this);
+            boolean changed = brick.doLayout(this, true);
             if (!changed) {
                 paintOnly(brick);
-                // TODO
                 return;
             }
             brick = brick.getParent();
@@ -584,7 +582,7 @@ public class Editor
             if (brick instanceof TupleBrick) {
                 final TupleBrick tuple = (TupleBrick) brick;
                 list.addFirst(brick.index + ":" +
-                        Strings.removeChar(tuple.text, '\n'));
+                        Strings.removeChar(tuple.getText(), '\n'));
             } else {
                 list.addFirst(brick.index + ":" +
                         brick.getClass().getName());

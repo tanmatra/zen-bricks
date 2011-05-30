@@ -82,15 +82,16 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
-
     // ================================================================== Fields
 
-    String text;
+    private String text;
     Point textExtent;
     int textX;
     int textY;
     final ArrayList<Brick> children = new ArrayList<Brick>();
     final private ArrayList<Line> lines = new ArrayList<Line>(1);
+
+    private boolean valid;
 
     // ============================================================ Constructors
 
@@ -106,8 +107,13 @@ public class TupleBrick extends ContainerBrick
 
     // ================================================================= Methods
 
+    public String getText() {
+        return text;
+    }
+
     public void setText(String text) {
         this.text = text;
+        invalidate();
     }
 
     protected void addChild(Brick child) {
@@ -118,6 +124,7 @@ public class TupleBrick extends ContainerBrick
 
         final Line lastLine = lines.get(lines.size() - 1);
         lastLine.endIndex = endIndex;
+        //invalidate();
     }
 
     void newLine() {
@@ -126,6 +133,7 @@ public class TupleBrick extends ContainerBrick
         final Line line = new Line(endIndex, endIndex);
         lines.add(line);
         // ???
+        //invalidate();
     }
 
     protected int childrenCount() {
@@ -211,10 +219,19 @@ public class TupleBrick extends ContainerBrick
         return min;
     }
 
-    protected boolean doLayout(Editor editor) {
+    public void invalidate() {
+        valid = false;
+    }
+
+    public boolean doLayout(Editor editor, boolean force) {
+        if (valid && !force) {
+            return false;
+        }
         final StyleChain styleChain = editor.getUI().getStyleChain(this, editor);
         final TupleStyle style = TupleStyle.LAYOUT.find(styleChain);
-        return style.getLayout().doLayout(this, editor);
+        final boolean changed = style.getLayout().doLayout(this, editor);
+        valid = true;
+        return changed;
     }
 
     public String toString() {
@@ -223,10 +240,6 @@ public class TupleBrick extends ContainerBrick
                 "index=%d, lines=%d, screen=%s]",
                 this, parent, text, x, y, getWidth(), getHeight(),
                 index, lines.size(), toScreen());
-    }
-
-    protected void childResized(Brick child) {
-        // TODO
     }
 
     protected Brick findChildAt(int x, int y) {
