@@ -9,7 +9,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Event;
 
 public class TupleBrick extends ContainerBrick
 {
@@ -228,15 +227,6 @@ public class TupleBrick extends ContainerBrick
 
     protected void childResized(Brick child) {
         // TODO
-    }
-
-    public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
-        final Brick child = findChildAt(mouseX, mouseY);
-        if (child == null) {
-            return super.mouseEvent(mouseX, mouseY, event, editor); // TODO
-        } else {
-            return child;
-        }
     }
 
     protected Brick findChildAt(int x, int y) {

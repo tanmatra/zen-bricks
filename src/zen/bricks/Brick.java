@@ -44,9 +44,14 @@ public abstract class Brick
     public void detach(Editor editor) {
     }
 
+    /**
+     * Note: this.x and this.y is not handled by brick itself.
+     *
+     * @param x coordintate relative to this brick
+     * @param y coordintate relative to this brick
+     */
     public boolean contains(int x, int y) {
-        return (x >= this.x) && (y >= this.y)
-                && (x < (this.x + width)) && (y < (this.y + height));
+        return (x >= 0) && (y >= 0) && (x < width) && (y < height);
     }
 
     public boolean intersects(Rectangle rect, int baseX, int baseY) {
@@ -123,10 +128,21 @@ public abstract class Brick
     /**
      * @param mouseX
      * @param mouseY
+     * @param event
+     * @param editor
+     *
+     * @return another brick to what event must be propagated
+     *         or <code>null</code> to stop propagation
      */
-    public Brick mouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
+    public Brick handleMouseEvent(int mouseX, int mouseY, Event event,
+                                  Editor editor)
+    {
         // debugMouseEvent(event);
+        if (!contains(mouseX, mouseY)) {
+            return null;
+        }
         if (event.type == SWT.MouseDown) {
+            event.doit = false;
             editor.setSelection(this);
         }
         return null;

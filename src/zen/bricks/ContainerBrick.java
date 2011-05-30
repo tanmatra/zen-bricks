@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import org.eclipse.swt.widgets.Event;
+
 public abstract class ContainerBrick extends Brick
 {
     public ContainerBrick(ContainerBrick parent) {
@@ -43,5 +45,18 @@ public abstract class ContainerBrick extends Brick
             getChild(i).detach(editor);
         }
         super.detach(editor);
+    }
+
+    protected abstract Brick findChildAt(int x, int y);
+
+    public Brick handleMouseEvent(int mouseX, int mouseY, Event event,
+                                  Editor editor)
+    {
+        final Brick child = findChildAt(mouseX, mouseY);
+        if (child == null) {
+            return super.handleMouseEvent(mouseX, mouseY, event, editor);
+        } else {
+            return child;
+        }
     }
 }

@@ -295,7 +295,10 @@ public class Editor
         while (target != null) {
             x -= target.x;
             y -= target.y;
-            target = target.mouseEvent(x, y, event, this);
+            target = target.handleMouseEvent(x, y, event, this);
+        }
+        if (event.doit && (event.type == SWT.MouseDown)) {
+            setSelection(null);
         }
     }
 
