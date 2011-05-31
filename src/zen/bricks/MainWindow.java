@@ -273,14 +273,20 @@ public class MainWindow extends ApplicationWindow
                 if (fileName == null) {
                     return;
                 }
-                themeFileName = fileName;
-                loadTheme();
+                loadTheme(fileName);
             }
         };
         viewMenu.add(loadThemeAction);
 
         // ---------------------------------------------------------------------
-        final Action saveThemeAction = new Action("Save theme as...") {
+        viewMenu.add(new Action("&Save theme") {
+            public void run() {
+                saveTheme(themeFileName);
+            }
+        });
+
+        // ---------------------------------------------------------------------
+        final Action saveThemeAction = new Action("Sa&ve theme as...") {
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
                 initThemesFileDialog(dialog);
@@ -295,7 +301,7 @@ public class MainWindow extends ApplicationWindow
         viewMenu.add(saveThemeAction);
 
         // ---------------------------------------------------------------------
-        final Action saveXMLThemeAction = new Action("Save theme as XML...") {
+        final Action saveXMLThemeAction = new Action("Save theme as &XML...") {
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
                 dialog.setFilterNames(new String[] { "XML files" });
@@ -323,7 +329,7 @@ public class MainWindow extends ApplicationWindow
                 if (themeFileName == null) {
                     return;
                 }
-                loadTheme();
+                loadTheme(themeFileName);
             }
         };
         viewMenu.add(reloadThemeAction);
@@ -362,13 +368,13 @@ public class MainWindow extends ApplicationWindow
     }
 
     private void loadStartupTheme() {
-        themeFileName = preferences.get(LAST_THEME_KEY, null);
-        LOAD_LAST: if (themeFileName != null) {
+        final String fileName = preferences.get(LAST_THEME_KEY, null);
+        LOAD_LAST: if (fileName != null) {
             try {
-                loadThemeImpl(themeFileName);
-            } catch (Exception e ) {
+                loadThemeImpl(fileName);
+            } catch (Exception ex) {
                 System.err.println(
-                        e.getMessage() + " : " + e.getCause().getMessage());
+                        ex.getMessage() + " : " + ex.getCause().getMessage());
                 break LOAD_LAST;
             }
             getStatusLineManager().setMessage(
@@ -377,8 +383,8 @@ public class MainWindow extends ApplicationWindow
         }
         try {
             loadThemeImpl(DEFAULT_THEME_FILE);
-        } catch (Exception e2) {
-            showException(e2.getCause(), e2.getMessage());
+        } catch (Exception ex2) {
+            showException(ex2.getCause(), ex2.getMessage());
             return;
         }
         getStatusLineManager().setMessage("Loaded default theme");
@@ -388,37 +394,39 @@ public class MainWindow extends ApplicationWindow
         getShell().setText("Bricks - " + fileName);
     }
 
-    private void loadThemeImpl(String file) throws Exception {
+    /* Does not interact with GUI */
+    private void loadThemeImpl(String fileName) throws Exception {
         try {
-            themePreferences = PropertiesPreferences.load(file);
-        } catch (IOException e) {
-            throw new Exception("Error loading theme", e);
+            themePreferences = PropertiesPreferences.load(fileName);
+        } catch (IOException ex) {
+            throw new Exception("Error loading theme", ex);
         }
         try {
             ui.load(themePreferences);
-        } catch (Exception e) {
-            throw new Exception("Error setting theme", e);
+        } catch (Exception ex) {
+            throw new Exception("Error setting theme", ex);
         }
+        themeFileName = fileName;
+        preferences.put(LAST_THEME_KEY, fileName);
     }
 
-    void loadTheme() {
+    void loadTheme(String fileName) {
         try {
-            loadThemeImpl(themeFileName);
-        } catch (Exception e) {
-            showException(e.getCause(), e.getMessage());
+            loadThemeImpl(fileName);
+        } catch (Exception ex) {
+            showException(ex.getCause(), ex.getMessage());
             return;
         }
-        preferences.put(LAST_THEME_KEY, themeFileName);
         getStatusLineManager().setMessage(
-                "Loaded theme \"" + themeFileName + "\"");
+                "Loaded theme \"" + fileName + "\"");
     }
 
     void saveTheme(String fileName) {
         try {
             editor.getUI().save(themePreferences);
             themePreferences.save(fileName);
-        } catch (IOException e) {
-            showException(e, "Error saving theme");
+        } catch (IOException ex) {
+            showException(ex, "Error saving theme");
             return;
         }
         getStatusLineManager().setMessage(
