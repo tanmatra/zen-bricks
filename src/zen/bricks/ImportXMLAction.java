@@ -76,14 +76,14 @@ class ImportXMLAction extends Action
             if (brick != null) {
                 brick.newLine();
             }
-            TupleBrick elementBrick = new TupleBrick(brick, qName);
+            TupleBrick elementBrick = appendBrick(brick, qName);
 
             final int attLen = attributes.getLength();
             if (attLen > 0) {
                 final TupleBrick attrParent;
                 if (groupText != null) {
                     TupleBrick allAttrsBrick =
-                            new TupleBrick(elementBrick, groupText);
+                            appendBrick(elementBrick, groupText);
                     attrParent = allAttrsBrick;
                 } else {
                     attrParent = elementBrick;
@@ -95,11 +95,11 @@ class ImportXMLAction extends Action
                     }
                     final String attName = attributes.getQName(i);
                     final TupleBrick attNameBrick =
-                        new TupleBrick(attrParent, prefix + attName + suffix);
+                        appendBrick(attrParent, prefix + attName + suffix);
                     if (i == 0) {
                     }
                     final String attValue = removeCRs(attributes.getValue(i));
-                    new TupleBrick(attNameBrick, attValue);
+                    appendBrick(attNameBrick, attValue);
                 }
             }
             brick = elementBrick;
@@ -111,8 +111,7 @@ class ImportXMLAction extends Action
                 if (str.length() != 0) {
                     if (brick != null) {
                         brick.newLine();
-                        @SuppressWarnings("unused")
-                        final Brick plainText = new TupleBrick(brick, str);
+                        appendBrick(brick, str);
                     }
                 }
                 buffer.setLength(0);
@@ -131,12 +130,20 @@ class ImportXMLAction extends Action
             handleString();
             if (brick.childrenCount() == 0 && fillEmpty) {
                 brick.newLine();
-                new TupleBrick(brick, "");
+                appendBrick(brick, "");
             }
             final TupleBrick parent = (TupleBrick) brick.getParent();
             if (parent != null) {
                 brick = parent;
             }
+        }
+
+        private static TupleBrick appendBrick(TupleBrick parent, String text) {
+            final TupleBrick result = new TupleBrick(parent, text);
+            if (parent != null) {
+                parent.addChild(result);
+            }
+            return result;
         }
     }
 

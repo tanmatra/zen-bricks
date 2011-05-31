@@ -21,9 +21,6 @@ public abstract class Brick
 
     protected Brick(ContainerBrick parent) {
         this.parent = parent;
-        if (parent != null) {
-            parent.addChild(this);
-        }
     }
 
     // ================================================================= Methods
