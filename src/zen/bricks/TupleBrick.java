@@ -175,6 +175,7 @@ public class TupleBrick extends ContainerBrick
         if (!(old instanceof LineBreak)) {
             contentCount--;
         }
+        invalidate();
         return old;
     }
 
