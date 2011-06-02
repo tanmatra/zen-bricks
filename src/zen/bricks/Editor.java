@@ -433,7 +433,7 @@ public class Editor
         final Brick old = parent.removeChild(index);
         old.detach(this);
         revalidate(parent);
-        setSelection(parent); // FIXME
+        setSelection(parent.getChild(index));
     }
 
     void revalidate(Brick brick) {
