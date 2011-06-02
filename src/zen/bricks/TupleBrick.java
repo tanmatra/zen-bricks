@@ -21,9 +21,11 @@ public class TupleBrick extends ContainerBrick
         int startIndex;
         int endIndex;
 
-        Line(int startIndex, int endIndex) {
+        Line(int startIndex, int endIndex, int y, int height) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
+            this.y = y;
+            this.height = height;
         }
 
         int getBottom() {
@@ -85,19 +87,25 @@ public class TupleBrick extends ContainerBrick
     // ================================================================== Fields
 
     private String text;
+    
     Point textExtent;
+    
     int textX;
+    
     int textY;
+    
     final ArrayList<Brick> children = new ArrayList<Brick>();
-    final private ArrayList<Line> lines = new ArrayList<Line>(1);
+
+    private List<Line> lines;
 
     private boolean valid;
+
+    private int contentCount;
 
     // ============================================================ Constructors
 
     TupleBrick(TupleBrick parent) {
         super(parent);
-        lines.add(new Line(0, 0));
     }
 
     TupleBrick(TupleBrick parent, String text) {
@@ -120,20 +128,22 @@ public class TupleBrick extends ContainerBrick
         int endIndex = children.size();
         child.index = endIndex;
         children.add(child);
-        endIndex++;
-
-        final Line lastLine = lines.get(lines.size() - 1);
-        lastLine.endIndex = endIndex;
         //invalidate();
+        if (!(child instanceof LineBreak)) {
+            contentCount++;
+        }
     }
 
     void newLine() {
-        final Line prevLine = lines.get(lines.size() - 1);
-        final int endIndex = prevLine.endIndex;
-        final Line line = new Line(endIndex, endIndex);
-        lines.add(line);
-        // ???
-        //invalidate();
+        addChild(new LineBreak(this));
+    }
+
+    void setLines(List<Line> lines) {
+        this.lines = lines;
+    }
+
+    List<Brick> getChildrenList() {
+        return children;
     }
 
     protected int childrenCount() {
@@ -144,12 +154,16 @@ public class TupleBrick extends ContainerBrick
         return children.get(i);
     }
 
-    public ArrayList<Line> getLines() {
+    public List<Line> getLines() {
         return lines;
     }
 
+    public int getContentCount() {
+        return contentCount;
+    }
+
     public boolean isList() {
-        return !children.isEmpty();
+        return getContentCount() > 0;
     }
 
     @Override
@@ -219,8 +233,19 @@ public class TupleBrick extends ContainerBrick
         return min;
     }
 
-    public void invalidate() {
+    protected void invalidate() {
         valid = false;
+    }
+
+    public void invalidate(boolean all) {
+        super.invalidate(all);
+        invalidate();
+        if (all) {
+            final int count = childrenCount();
+            for (int i = 0; i < count; i++) {
+                getChild(i).invalidate(all);
+            }
+        }
     }
 
     public boolean doLayout(Editor editor, boolean force) {
@@ -236,10 +261,8 @@ public class TupleBrick extends ContainerBrick
 
     public String toString() {
         return String.format(
-                "TextBrick[@%H, parent=@%H, '%s', x=%d, y=%d, w=%d, h=%d, " +
-                "index=%d, lines=%d, screen=%s]",
-                this, parent, text, x, y, getWidth(), getHeight(),
-                index, lines.size(), toScreen());
+                "(TextBrick \"%s\" (%d %d %d %d) (index %d))",
+                text, x, y, getWidth(), getHeight(), index);
     }
 
     protected Brick findChildAt(int x, int y) {

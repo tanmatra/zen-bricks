@@ -35,18 +35,12 @@ public class ColorBrick extends Brick
         super.detach(editor);
     }
 
-    public boolean doLayout(Editor editor, boolean force) {
-        return false;
-    }
-
     public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                       Editor editor)
     {
-//        System.out.println("base x, y: " + baseX + ", " + baseY);
         gc.setForeground(foreColor);
         gc.setBackground(backColor);
         gc.fillRoundRectangle(baseX, baseY, getWidth(), getHeight(), 6, 6);
         gc.drawRoundRectangle(baseX, baseY, getWidth() - 1, getHeight() - 1, 6, 6);
-//        gc.fillRectangle(baseX, baseY, width, height);
     }
 }

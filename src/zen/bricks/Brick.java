@@ -93,7 +93,20 @@ public abstract class Brick
         return doLayout(editor, false);
     }
 
-    public abstract boolean doLayout(Editor editor, boolean force);
+    /**
+     * @param editor
+     * @param force to ignore cached layout and do it again
+     * @return <code>true</code> if brick has really changed its size
+     */
+    public boolean doLayout(Editor editor, boolean force) {
+        return false;
+    }
+
+    /**
+     * @param all
+     */
+    public void invalidate(boolean all) {
+    }
 
     /**
      * @param width

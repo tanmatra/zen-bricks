@@ -220,7 +220,8 @@ public class Editor
 
     public void refresh() {
         if (document != null) {
-            document.doLayout(this);
+            document.invalidate(true);
+            document.doLayout(this, false);
             canvasResized(); // ??
         }
         canvas.redraw();
