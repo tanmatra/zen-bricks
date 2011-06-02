@@ -8,22 +8,7 @@ import zen.bricks.TupleBrick.Line;
 
 public class BaselineLayout extends TupleLayout
 {
-    private static final boolean DEBUG = true;
-
-    private int indent;
-
     public BaselineLayout() {
-    }
-
-    @SuppressWarnings("unused")
-    private void debug(String fmt, Object... args) {
-        if (!DEBUG) {
-            return;
-        }
-        for (int i = 0; i < indent; i++) {
-            System.out.print("  ");
-        }
-        System.out.format(fmt, args);
     }
 
     public String getTitle() {
@@ -35,9 +20,6 @@ public class BaselineLayout extends TupleLayout
     }
 
     public boolean doLayout(TupleBrick brick, Editor editor) {
-        debug("BEGIN %s%n", brick);
-        indent++;
-
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.getTextMargin();
@@ -49,8 +31,6 @@ public class BaselineLayout extends TupleLayout
         final ArrayList<Line> lines = new ArrayList<TupleBrick.Line>(1);
 
         final Point textExtent = chain.getTextExtent(brick.getText());
-        debug("Extent '%s' = %d x %d%n", brick.getText(),
-                textExtent.x, textExtent.y);
         brick.textX = textMargin.getLeft();
         brick.textExtent = textExtent;
         final int textAscent = chain.getTextAscent();
@@ -73,7 +53,6 @@ public class BaselineLayout extends TupleLayout
             // PRIMARY LINE LOOP
             for (lineEnd = lineStart; lineEnd < count; lineEnd++) {
                 final Brick child = brick.getChild(lineEnd);
-                debug("i = %d, child = %s%n", lineEnd, child);
                 child.doLayout(editor);
                 child.x = currX;
                 currX += child.getWidth() + spacing;
@@ -83,7 +62,6 @@ public class BaselineLayout extends TupleLayout
                     break;
                 }
             }
-            debug("line #%d = (%d..%d)%n", lines.size(), lineStart, lineEnd);
             // END OF LINE
             int lineHeight;
             if (firstLine) {
@@ -94,16 +72,12 @@ public class BaselineLayout extends TupleLayout
             } else {
                 lineHeight = 0;
             }
-            debug("line #%d height1 = %d, ascent1 = %d%n",
-                    lines.size(), lineHeight, lineAscent);
             // SECONDARY LINE LOOP
             for (int j = lineStart; j < lineEnd; j++) {
                 if (j >= count) {
-                    debug("break on EOF (%d >= %d)%n", j, count);
                     break;
                 }
                 final Brick child = brick.getChild(j);
-                debug("j = %d, child = %s%n", j, child);
                 final int margin;
                 if (child instanceof LineBreak) {
                     margin = 0;
@@ -117,11 +91,8 @@ public class BaselineLayout extends TupleLayout
                 child.y = lineY + margin;
                 lineHeight = Math.max(lineHeight, child.getHeight() + margin);
             }
-            debug("line #%d height2 = %d, ascent2 = %d%n",
-                    lines.size(), lineHeight, lineAscent);
             width = Math.max(width, currX - spacing);
 
-            debug("lineY = %d%n", lineY);
             final Line line =
                     brick.new Line(lineStart, lineEnd, lineY, lineHeight);
             lines.add(line);
@@ -139,9 +110,6 @@ public class BaselineLayout extends TupleLayout
         brick.setLines(lines);
         width += brickPadding.getRight();
         final int height = lineY - lineSpacing + brickPadding.getBottom();
-
-        indent--;
-        debug("END %d x %d -> %s%n", width, height, brick);
         return brick.resize(width, height);
     }
 }
