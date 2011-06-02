@@ -125,6 +125,14 @@ public class TupleBrick extends ContainerBrick
         invalidate();
     }
 
+    public boolean isValidInsertIndex(int position) {
+        return (position >= 0) && (position < children.size());
+    }
+
+    public boolean isValidDeleteIndex(int position) {
+        return (position >= 0) && (position < children.size() - 1);
+    }
+
     public void appendChild(Brick child) {
         checkChild(child);
         final int childIndex = children.size() - 1;
@@ -137,8 +145,11 @@ public class TupleBrick extends ContainerBrick
         invalidate();
     }
 
-    public boolean isValidInsertIndex(int index) {
-        return (index >= 0) && (index < children.size());
+    private void reindex(int startIndex) {
+        final int count = children.size();
+        for (int i = startIndex; i < count; i++) {
+            children.get(i).index = i;
+        }
     }
 
     public void insertChild(int position, Brick child) {
@@ -147,14 +158,24 @@ public class TupleBrick extends ContainerBrick
             throw new RuntimeException("Invalid insert index: " + position);
         }
         children.add(position, child);
-        final int count = children.size();
-        for (int i = position; i < count; i++) {
-            children.get(i).index = i;
-        }
+        reindex(position);
         if (!(child instanceof LineBreak)) {
             contentCount++;
         }
         invalidate();
+    }
+
+    public Brick removeChild(int position) {
+        if (!isValidDeleteIndex(position)) {
+            throw new RuntimeException("Invalid delete index:" + position);
+        }
+        final Brick old = children.get(position);
+        children.remove(position);
+        reindex(position);
+        if (!(old instanceof LineBreak)) {
+            contentCount--;
+        }
+        return old;
     }
 
     public void newLine() {

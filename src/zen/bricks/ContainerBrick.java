@@ -12,6 +12,8 @@ public abstract class ContainerBrick extends Brick
 
     public abstract void insertChild(int position, Brick child);
 
+    public abstract Brick removeChild(int index);
+
     public abstract Brick getChild(int i);
 
     public abstract int childrenCount();
@@ -19,6 +21,10 @@ public abstract class ContainerBrick extends Brick
     public boolean isValidIndex(int index) {
         return (index >= 0) && (index < childrenCount());
     }
+
+    public abstract boolean isValidInsertIndex(int position);
+
+    public abstract boolean isValidDeleteIndex(int position);
 
     public Brick getFirstChild() {
         return (childrenCount() < 1) ? null : getChild(0);

@@ -340,6 +340,8 @@ public class Editor
             insertBrick();
         } else if (e.keyCode == SWT.CR && e.stateMask == 0) {
             insertLineBreak();
+        } else if (e.keyCode == SWT.DEL && e.stateMask == 0) {
+            deleteBrick();
         }
     }
 
@@ -374,6 +376,10 @@ public class Editor
             warning();
             return;
         }
+        if (!parent.isValidInsertIndex(index)) {
+            warning();
+            return;
+        }
         final InputDialog dialog =
                 new InputDialog(mainWindow.getShell(), "Insert",
                         "Brick text:", "", null);
@@ -398,11 +404,36 @@ public class Editor
             warning();
             return;
         }
+        if (!parent.isValidInsertIndex(index)) {
+            warning();
+            return;
+        }
         final Brick newBrick = new LineBreak(parent);
         parent.insertChild(index, newBrick);
         newBrick.attach(this);
         revalidate(newBrick);
         setSelection(newBrick);
+    }
+
+    private void deleteBrick() {
+        if (selection == null) {
+            warning();
+            return;
+        }
+        final int index = selection.index;
+        final ContainerBrick parent = selection.getParent();
+        if (parent == null) {
+            warning();
+            return;
+        }
+        if (!parent.isValidDeleteIndex(index)) {
+            warning();
+            return;
+        }
+        final Brick old = parent.removeChild(index);
+        old.detach(this);
+        revalidate(parent);
+        setSelection(parent); // FIXME
     }
 
     void revalidate(Brick brick) {
