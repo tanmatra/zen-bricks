@@ -342,6 +342,8 @@ public class Editor
             insertLineBreak();
         } else if (e.keyCode == SWT.DEL && e.stateMask == 0) {
             deleteBrick();
+        } else if (e.keyCode == SWT.BS && e.stateMask == 0) {
+            backspaceBrick();
         }
     }
 
@@ -421,6 +423,27 @@ public class Editor
             return;
         }
         final int index = selection.index;
+        final ContainerBrick parent = selection.getParent();
+        if (parent == null) {
+            warning();
+            return;
+        }
+        if (!parent.isValidDeleteIndex(index)) {
+            warning();
+            return;
+        }
+        final Brick old = parent.removeChild(index);
+        old.detach(this);
+        revalidate(parent);
+        setSelection(parent.getChild(index));
+    }
+
+    private void backspaceBrick() {
+        if (selection == null) {
+            warning();
+            return;
+        }
+        final int index = selection.index - 1;
         final ContainerBrick parent = selection.getParent();
         if (parent == null) {
             warning();
