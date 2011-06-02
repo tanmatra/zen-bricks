@@ -8,13 +8,13 @@ public abstract class ContainerBrick extends Brick
         super(parent);
     }
 
-    protected abstract void addChild(Brick child);
+    public abstract void appendChild(Brick child);
 
-    protected abstract Brick getChild(int i);
+    public abstract Brick getChild(int i);
 
-    protected abstract int childrenCount();
+    public abstract int childrenCount();
 
-    protected boolean isValidIndex(int index) {
+    public boolean isValidIndex(int index) {
         return (index >= 0) && (index < childrenCount());
     }
 

@@ -87,14 +87,14 @@ public class TupleBrick extends ContainerBrick
     // ================================================================== Fields
 
     private String text;
-    
+
     Point textExtent;
-    
+
     int textX;
-    
+
     int textY;
-    
-    final ArrayList<Brick> children = new ArrayList<Brick>();
+
+    final ArrayList<Brick> children = new ArrayList<Brick>(2);
 
     private List<Line> lines;
 
@@ -104,11 +104,12 @@ public class TupleBrick extends ContainerBrick
 
     // ============================================================ Constructors
 
-    TupleBrick(TupleBrick parent) {
+    public TupleBrick(TupleBrick parent) {
         super(parent);
+        children.add(new LineBreak(this));
     }
 
-    TupleBrick(TupleBrick parent, String text) {
+    public TupleBrick(TupleBrick parent, String text) {
         this(parent);
         this.text = text;
     }
@@ -124,18 +125,19 @@ public class TupleBrick extends ContainerBrick
         invalidate();
     }
 
-    protected void addChild(Brick child) {
-        int endIndex = children.size();
-        child.index = endIndex;
-        children.add(child);
-        //invalidate();
+    public void appendChild(Brick child) {
+        final int childIndex = children.size() - 1;
+        children.get(childIndex).index++; // for final line break
+        child.index = childIndex;
+        children.add(childIndex, child);
         if (!(child instanceof LineBreak)) {
             contentCount++;
         }
+        invalidate();
     }
 
-    void newLine() {
-        addChild(new LineBreak(this));
+    public void newLine() {
+        appendChild(new LineBreak(this));
     }
 
     void setLines(List<Line> lines) {
@@ -146,11 +148,11 @@ public class TupleBrick extends ContainerBrick
         return children;
     }
 
-    protected int childrenCount() {
+    public int childrenCount() {
         return children.size();
     }
 
-    protected Brick getChild(int i) {
+    public Brick getChild(int i) {
         return children.get(i);
     }
 

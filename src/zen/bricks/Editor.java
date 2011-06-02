@@ -230,7 +230,7 @@ public class Editor
 
     private static TupleBrick appendBrick(TupleBrick parent, String text) {
         final TupleBrick result = new TupleBrick(parent, text);
-        parent.addChild(result);
+        parent.appendChild(result);
         return result;
     }
 
@@ -238,18 +238,18 @@ public class Editor
         final TupleBrick rootBrick = new TupleBrick(null,
                 "Quick brown fox\njumps over the lazy dog");
 
-        rootBrick.addChild(new ColorBrick(rootBrick, 200, 50,
+        rootBrick.appendChild(new ColorBrick(rootBrick, 200, 50,
                 new RGB(192, 64, 64),
                 new RGB(255, 128, 128)));
         rootBrick.newLine();
         final TupleBrick b1 = appendBrick(rootBrick, "Jumps over");
         appendBrick(b1, "the lazy dog.");
         rootBrick.newLine();
-        rootBrick.addChild(new ColorBrick(rootBrick, 50, 100,
+        rootBrick.appendChild(new ColorBrick(rootBrick, 50, 100,
                 new RGB(64, 192, 64),
                 new RGB(128, 255, 128)));
         rootBrick.newLine();
-        rootBrick.addChild(new ColorBrick(rootBrick, 100, 100,
+        rootBrick.appendChild(new ColorBrick(rootBrick, 100, 100,
                 new RGB(64, 64, 192),
                 new RGB(128, 128, 255)));
 

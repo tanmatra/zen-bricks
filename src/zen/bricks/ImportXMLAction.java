@@ -73,6 +73,9 @@ class ImportXMLAction extends Action
                 String qName, Attributes attributes) throws SAXException
         {
             handleString();
+            if (brick != null) {
+                brick.newLine();
+            }
             final TupleBrick elementBrick = appendBrick(brick, qName);
 
             final int attLen = attributes.getLength();
@@ -85,20 +88,16 @@ class ImportXMLAction extends Action
                 } else {
                     attrParent = elementBrick;
                 }
-                elementBrick.newLine();
                 for (int i = 0; i < attLen; i++) {
+                    if (i != 0) {
+                        attrParent.newLine();
+                    }
                     final String attName = attributes.getQName(i);
                     final TupleBrick attNameBrick =
                             appendBrick(attrParent, prefix + attName + suffix);
                     final String attValue = removeCRs(attributes.getValue(i));
-                    final TupleBrick attValueBrick =
-                            appendBrick(attNameBrick, attValue);
-                    attValueBrick.newLine();
-                    attNameBrick.newLine();
-                    attrParent.newLine();
+                    appendBrick(attNameBrick, attValue);
                 }
-            } else { // no attributes
-                elementBrick.newLine();
             }
             brick = elementBrick;
         }
@@ -108,9 +107,8 @@ class ImportXMLAction extends Action
                 final String str = removeCRs(buffer.toString().trim());
                 if (str.length() != 0) {
                     if (brick != null) {
-                        final TupleBrick textBrick = appendBrick(brick, str);
-                        textBrick.newLine();
                         brick.newLine();
+                        appendBrick(brick, str);
                     }
                 }
                 buffer.setLength(0);
@@ -128,13 +126,11 @@ class ImportXMLAction extends Action
         {
             handleString();
             if ((brick.getContentCount() == 0) && fillEmpty) {
-                final TupleBrick exmptyTextBrick = appendBrick(brick, "");
-                exmptyTextBrick.newLine();
                 brick.newLine();
+                appendBrick(brick, "");
             }
             final TupleBrick parent = (TupleBrick) brick.getParent();
             if (parent != null) {
-                parent.newLine();
                 brick = parent;
             }
         }
@@ -142,7 +138,7 @@ class ImportXMLAction extends Action
         private static TupleBrick appendBrick(TupleBrick parent, String text) {
             final TupleBrick result = new TupleBrick(parent, text);
             if (parent != null) {
-                parent.addChild(result);
+                parent.appendChild(result);
             }
             return result;
         }
