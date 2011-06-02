@@ -23,4 +23,8 @@ public class LineBreak extends Brick
 //        gc.setBackground(device.getSystemColor(SWT.COLOR_WHITE));
 //        gc.fillRectangle(baseX + 1, baseY + 2, getWidth() - 2, getHeight() - 4);
     }
+
+    public boolean doLayout(Editor editor, boolean force) {
+        return force;
+    }
 }

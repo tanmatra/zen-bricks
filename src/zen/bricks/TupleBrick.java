@@ -104,12 +104,12 @@ public class TupleBrick extends ContainerBrick
 
     // ============================================================ Constructors
 
-    public TupleBrick(TupleBrick parent) {
+    public TupleBrick(ContainerBrick parent) {
         super(parent);
         children.add(new LineBreak(this));
     }
 
-    public TupleBrick(TupleBrick parent, String text) {
+    public TupleBrick(ContainerBrick parent, String text) {
         this(parent);
         this.text = text;
     }
@@ -126,10 +126,31 @@ public class TupleBrick extends ContainerBrick
     }
 
     public void appendChild(Brick child) {
+        checkChild(child);
         final int childIndex = children.size() - 1;
         children.get(childIndex).index++; // for final line break
         child.index = childIndex;
         children.add(childIndex, child);
+        if (!(child instanceof LineBreak)) {
+            contentCount++;
+        }
+        invalidate();
+    }
+
+    public boolean isValidInsertIndex(int index) {
+        return (index >= 0) && (index < children.size());
+    }
+
+    public void insertChild(int position, Brick child) {
+        checkChild(child);
+        if (!isValidInsertIndex(position)) {
+            throw new RuntimeException("Invalid insert index: " + position);
+        }
+        children.add(position, child);
+        final int count = children.size();
+        for (int i = position; i < count; i++) {
+            children.get(i).index = i;
+        }
         if (!(child instanceof LineBreak)) {
             contentCount++;
         }

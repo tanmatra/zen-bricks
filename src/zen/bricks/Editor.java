@@ -334,13 +334,22 @@ public class Editor
 //            navigateNext(false);
 //        } else if (e.keyCode == ' ' && e.stateMask == 0) {
 //            scrollToSelected();
-        } else if (e.keyCode == SWT.CR && e.stateMask == 0) {
+        } else if (e.keyCode == SWT.F2 && e.stateMask == 0) {
             editBrick();
+        } else if (e.keyCode == SWT.INSERT && e.stateMask == 0) {
+            insertBrick();
+        } else if (e.keyCode == SWT.CR && e.stateMask == 0) {
+            insertLineBreak();
         }
+    }
+
+    private void warning() {
+        canvas.getDisplay().beep();
     }
 
     private void editBrick() {
         if (!(selection instanceof TupleBrick)) {
+            warning();
             return;
         }
         final TupleBrick tupleBrick = (TupleBrick) selection;
@@ -352,6 +361,48 @@ public class Editor
         }
         tupleBrick.setText(dialog.getValue());
         revalidate(tupleBrick);
+    }
+
+    private void insertBrick() {
+        if (selection == null) {
+            warning();
+            return;
+        }
+        final int index = selection.index;
+        final ContainerBrick parent = selection.getParent();
+        if (parent == null) {
+            warning();
+            return;
+        }
+        final InputDialog dialog =
+                new InputDialog(mainWindow.getShell(), "Insert",
+                        "Brick text:", "", null);
+        if (dialog.open() == Window.CANCEL) {
+            return;
+        }
+        final Brick newBrick = new TupleBrick(parent, dialog.getValue());
+        parent.insertChild(index, newBrick);
+        newBrick.attach(this);
+        revalidate(newBrick);
+        setSelection(newBrick);
+    }
+
+    private void insertLineBreak() {
+        if (selection == null) {
+            warning();
+            return;
+        }
+        final int index = selection.index;
+        final ContainerBrick parent = selection.getParent();
+        if (parent == null) {
+            warning();
+            return;
+        }
+        final Brick newBrick = new LineBreak(parent);
+        parent.insertChild(index, newBrick);
+        newBrick.attach(this);
+        revalidate(newBrick);
+        setSelection(newBrick);
     }
 
     void revalidate(Brick brick) {

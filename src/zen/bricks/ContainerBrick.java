@@ -10,6 +10,8 @@ public abstract class ContainerBrick extends Brick
 
     public abstract void appendChild(Brick child);
 
+    public abstract void insertChild(int position, Brick child);
+
     public abstract Brick getChild(int i);
 
     public abstract int childrenCount();
@@ -55,6 +57,12 @@ public abstract class ContainerBrick extends Brick
             return super.handleMouseEvent(mouseX, mouseY, event, editor);
         } else {
             return child;
+        }
+    }
+
+    protected void checkChild(Brick child) {
+        if (child.getParent() != this) {
+            throw new RuntimeException("Wrong parent");
         }
     }
 }
