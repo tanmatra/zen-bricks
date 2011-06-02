@@ -412,7 +412,7 @@ public class Editor
         parent.insertChild(index, newBrick);
         newBrick.attach(this);
         revalidate(newBrick);
-        setSelection(newBrick);
+        setSelection(parent.getChild(index + 1));
     }
 
     private void deleteBrick() {
