@@ -123,6 +123,8 @@ public class MainWindow extends ApplicationWindow
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
 
+        fileMenu.add(new SaveAction(this, "&Save\tCtrl+S"));
+
         final Action importXmlAction =
                 new ImportXMLAction(this, "Import XML...\tF3");
         fileMenu.add(importXmlAction);
