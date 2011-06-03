@@ -65,7 +65,7 @@ public class SaveAction extends Action
         if (brick instanceof TupleBrick) {
             final TupleBrick tupleBrick = (TupleBrick) brick;
             writer.write('(');
-            writer.write(tupleBrick.getText());
+            writeTupleText(writer, tupleBrick.getText());
             writer.write('\n');
             final int count = tupleBrick.childrenCount() - 1;
             for (int i = 0; i < count; i++) {
@@ -78,6 +78,18 @@ public class SaveAction extends Action
             writer.write('[');
             writer.write(brick.getClass().getName());
             writer.write("]\n");
+        }
+    }
+
+    private void writeTupleText(Writer writer, String text) throws IOException {
+        final int length = text.length();
+        for (int i = 0; i < length; i++) {
+            final char c = text.charAt(i);
+            switch (c) {
+                case '\n': writer.write("\\n"); break;
+                case '\\': writer.write("\\\\"); break;
+                default: writer.write(c);
+            }
         }
     }
 }
