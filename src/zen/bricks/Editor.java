@@ -63,7 +63,7 @@ public class Editor
 
         canvas.addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
-                canvasResized();
+                canvasResized(false);
             }
         });
         canvas.addListener(SWT.Paint, new Listener() {
@@ -116,9 +116,8 @@ public class Editor
         }
     }
 
-    void canvasResized() {
+    void canvasResized(boolean needRepaint) {
         clientArea = canvas.getClientArea();
-        boolean needRepaint = false;
 
         final ScrollBar verticalBar = canvas.getVerticalBar();
         final int height = document.getHeight() + frameMargin.getVerticalSum(); // FIXME
@@ -222,7 +221,7 @@ public class Editor
         if (document != null) {
             document.invalidate(true);
             document.doLayout(this, false);
-            canvasResized(); // ??
+            canvasResized(false); // ??
         }
         canvas.redraw();
         displayCaretFor(selection);
@@ -469,7 +468,7 @@ public class Editor
             brick = brick.getParent();
         }
         // here brick == null, so the whole document is changed
-        canvasResized(); // ???
+        canvasResized(true);
     }
 
     void paintOnly(Brick brick) {
