@@ -35,6 +35,7 @@ public class SaveAction extends Action
         dialog.setFilterExtensions(FILTER_EXTENSIONS);
         dialog.setFilterNames(FILTER_NAMES);
         dialog.setOverwrite(true);
+
         final String fileName = dialog.open();
         if (fileName == null) {
             return;
@@ -66,18 +67,17 @@ public class SaveAction extends Action
             final TupleBrick tupleBrick = (TupleBrick) brick;
             writer.write('(');
             writeTupleText(writer, tupleBrick.getText());
-            writer.write('\n');
             final int count = tupleBrick.childrenCount() - 1;
             for (int i = 0; i < count; i++) {
                 writeBrick(tupleBrick.getChild(i), writer);
             }
-            writer.write(")\n");
+            writer.write(')');
         } else if (brick instanceof LineBreak) {
-            writer.write("|\n");
+            writer.write('\n');
         } else {
             writer.write('[');
             writer.write(brick.getClass().getName());
-            writer.write("]\n");
+            writer.write(']');
         }
     }
 
@@ -86,9 +86,15 @@ public class SaveAction extends Action
         for (int i = 0; i < length; i++) {
             final char c = text.charAt(i);
             switch (c) {
-                case '\n': writer.write("\\n"); break;
-                case '\\': writer.write("\\\\"); break;
-                default: writer.write(c);
+                case '\n':
+                    writer.write("\\n");
+                    break;
+                case '\\': case '(': case ')': case '[': case ']':
+                    writer.write('\\');
+                    writer.write(c);
+                    break;
+                default:
+                    writer.write(c);
             }
         }
     }
