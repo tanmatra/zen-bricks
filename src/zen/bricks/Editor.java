@@ -387,11 +387,11 @@ public class Editor
         if (dialog.open() == Window.CANCEL) {
             return;
         }
-        final Brick newBrick = new TupleBrick(parent, dialog.getValue());
+        final TupleBrick newBrick = new TupleBrick(parent, dialog.getValue());
         parent.insertChild(index, newBrick);
         newBrick.attach(this);
         revalidate(newBrick);
-        setSelection(newBrick);
+        setSelection(newBrick.getFirstChild());
     }
 
     private void insertLineBreak() {
