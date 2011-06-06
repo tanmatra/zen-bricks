@@ -6,6 +6,7 @@ public class LineSpacingProperty extends IntegerProperty
 {
     public LineSpacingProperty(String title, String keySuffix) {
         super(title, keySuffix);
+        setMinimum(-1);
     }
 
     public Integer get(TupleStyle style) {
