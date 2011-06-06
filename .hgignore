@@ -1,4 +1,4 @@
-syntax: regexp
-^build$
-^samples$
-^test$
+build$
+samples$
+test$
+themes/.*(?<!\.theme)\.properties$
