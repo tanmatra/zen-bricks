@@ -9,9 +9,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
 
-public class SaveAction extends SaveActionBase
+public class SaveAsAction extends SaveActionBase
 {
-    public SaveAction(MainWindow mainWindow, String text) {
+    public SaveAsAction(MainWindow mainWindow, String text) {
         super(mainWindow, text);
     }
 

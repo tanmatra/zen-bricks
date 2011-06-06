@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.actions.ImportXMLAction;
 import zen.bricks.actions.OpenAction;
-import zen.bricks.actions.SaveAction;
+import zen.bricks.actions.SaveAsAction;
 import zen.bricks.styleeditor.EditStylesDialog;
 import zen.bricks.utils.CustomImageRegistry;
 import zen.bricks.utils.DOMPreferences;
@@ -130,7 +130,7 @@ public class MainWindow extends ApplicationWindow
 
         fileMenu.add(new OpenAction(this, "&Open...\tCtrl+O"));
 
-        fileMenu.add(new SaveAction(this, "&Save...\tCtrl+S"));
+        fileMenu.add(new SaveAsAction(this, "Save &as...\tCtrl+Shift+S"));
 
         final Action importXmlAction =
                 new ImportXMLAction(this, "Import XML...\tF3");
