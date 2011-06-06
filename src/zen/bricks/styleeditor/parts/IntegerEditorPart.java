@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
+import zen.bricks.swt.LabelSpinnerPair;
 
 public class IntegerEditorPart extends CheckedEditorPart<Integer>
 {

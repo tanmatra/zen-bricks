@@ -1,11 +1,11 @@
-package zen.bricks.styleeditor.parts;
+package zen.bricks.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-class LabelSpinnerPair
+public class LabelSpinnerPair
 {
     private final Label label;
     private final Spinner spinner;

@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import zen.bricks.Margin;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
+import zen.bricks.swt.LabelSpinnerPair;
 
 public class MarginEditorPart extends CheckedEditorPart<Margin>
 {
