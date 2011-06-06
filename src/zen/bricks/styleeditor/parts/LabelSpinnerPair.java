@@ -16,6 +16,10 @@ class LabelSpinnerPair
         spinner = new Spinner(parent, SWT.BORDER);
     }
 
+    public void setMinimum(int minimum) {
+        spinner.setMinimum(minimum);
+    }
+
     public int getSelection() {
         return spinner.getSelection();
     }
