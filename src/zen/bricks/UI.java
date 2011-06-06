@@ -34,6 +34,7 @@ public class UI
     private static final String ATOM_STYLE_KEY = "atom";
     private static final String LIST_STYLE_KEY = "list";
     private static final String SELECTED_STYLE_KEY = "selected";
+    private static final String SELECTED_PARENT_STYLE_KEY = "selectedParent";
 
     // ================================================================== Fields
 
@@ -50,6 +51,7 @@ public class UI
     private TupleStyle atomStyle;
     private TupleStyle listStyle;
     private TupleStyle selectedStyle;
+    private TupleStyle selectedParentStyle;
 
     private StyleChain basicChain;
     private StyleChain atomChain;
@@ -116,12 +118,14 @@ public class UI
         atomStyle = new TupleStyle(this, "Atom");
         listStyle = new TupleStyle(this, "List");
         selectedStyle = new TupleStyle(this, "Selected");
+        selectedParentStyle = new TupleStyle(this, "Selected parent");
 
         final Preferences stylesNode = preferences.node(STYLES_KEY);
         basicStyle.load(stylesNode.node(BASIC_STYLE_KEY));
         atomStyle.load(stylesNode.node(ATOM_STYLE_KEY));
         listStyle.load(stylesNode.node(LIST_STYLE_KEY));
         selectedStyle.load(stylesNode.node(SELECTED_STYLE_KEY));
+        selectedParentStyle.load(stylesNode.node(SELECTED_PARENT_STYLE_KEY));
 
         basicChain = basicStyle.createChain(null);
         atomChain = atomStyle.createChain(basicChain);
@@ -137,6 +141,7 @@ public class UI
         atomStyle.save(stylesNode.node(ATOM_STYLE_KEY));
         listStyle.save(stylesNode.node(LIST_STYLE_KEY));
         selectedStyle.save(stylesNode.node(SELECTED_STYLE_KEY));
+        selectedParentStyle.save(stylesNode.node(SELECTED_PARENT_STYLE_KEY));
     }
 
     private void loadLayoutFactories() {
@@ -255,15 +260,22 @@ public class UI
         } else {
             chain = atomChain;
         }
-        if (brick == editor.getSelection()) {
+        final Brick editorSelection = editor.getSelection();
+        if (brick == editorSelection) {
             chain = selectedStyle.createChain(chain);
+        }
+        if ((editorSelection instanceof LineBreak) &&
+                (brick == editorSelection.getParent()))
+        {
+            chain = selectedParentStyle.createChain(chain);
         }
         return chain;
     }
 
     public List<? extends Style> getStyles() {
         return Arrays.asList(
-                globalStyle, basicStyle, atomStyle, listStyle, selectedStyle);
+                globalStyle, basicStyle, atomStyle, listStyle, selectedStyle,
+                selectedParentStyle);
     }
 
     public List<TupleLayout> getTupleLayouts() {

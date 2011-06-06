@@ -637,10 +637,18 @@ public class Editor
         final Brick oldSel = selection;
         selection = newSel;
         if (oldSel != null) {
-            paintOnly(oldSel);
+            if (oldSel instanceof LineBreak) {
+                paintOnly(oldSel.getParent());
+            } else {
+                paintOnly(oldSel);
+            }
         }
         if (newSel != null) {
-            paintOnly(newSel);
+            if (newSel instanceof LineBreak) {
+                paintOnly(newSel.getParent());
+            } else {
+                paintOnly(newSel);
+            }
         }
         displayCaretFor(newSel);
 //        mainWindow.setStatus("Selected: " + newSel); // DEBUG
