@@ -30,6 +30,10 @@ public abstract class ContainerBrick extends Brick
         return (childrenCount() < 1) ? null : getChild(0);
     }
 
+    public Brick getLastChild() {
+        return (childrenCount() < 1) ? null : getChild(childrenCount() - 1);
+    }
+
     public Brick getLastDescendantOrSelf() {
         if (childrenCount() < 1) {
             return super.getLastDescendantOrSelf();

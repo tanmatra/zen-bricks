@@ -609,15 +609,13 @@ public class Editor
     }
 
     private void navigateEnd() {
-        if (selection == null) {
-            return;
+        if (selection instanceof ContainerBrick) {
+            final ContainerBrick container = (ContainerBrick) selection;
+            setSelection(container.getLastChild());
+        } else if (selection instanceof LineBreak) {
+            final ContainerBrick container = selection.getParent();
+            setSelection(container.getLastChild());
         }
-        final ContainerBrick parent = selection.getParent();
-        if (parent == null) {
-            return;
-        }
-        final Brick child = parent.getChild(parent.childrenCount() - 1);
-        setSelection(child);
     }
 
     void scrollToSelected() {
