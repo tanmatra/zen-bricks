@@ -343,6 +343,8 @@ public class Editor
             deleteBrick();
         } else if (e.keyCode == SWT.BS && e.stateMask == 0) {
             backspaceBrick();
+        } else if (e.keyCode == SWT.END && e.stateMask == 0) {
+            navigateEnd();
         }
     }
 
@@ -600,6 +602,18 @@ public class Editor
             }
             brick = brick.getParent();
         }
+    }
+
+    private void navigateEnd() {
+        if (selection == null) {
+            return;
+        }
+        final ContainerBrick parent = selection.getParent();
+        if (parent == null) {
+            return;
+        }
+        final Brick child = parent.getChild(parent.childrenCount() - 1);
+        setSelection(child);
     }
 
     void scrollToSelected() {
