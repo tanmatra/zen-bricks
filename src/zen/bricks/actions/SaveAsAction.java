@@ -25,7 +25,7 @@ public class SaveAsAction extends SaveActionBase
         final File file = new File(fileName);
         String path = file.getParent();
         if (path == null) {
-            path = "samples/";
+            path = DEFAULT_PATH;
         }
         final FileDialog dialog =
                 new FileDialog(mainWindow.getShell(), SWT.SAVE);

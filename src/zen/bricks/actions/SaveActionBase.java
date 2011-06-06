@@ -21,6 +21,8 @@ public class SaveActionBase extends Action
     protected static final String[] FILTER_EXTENSIONS =
             new String[] { "*.zen" };
 
+    protected static final String DEFAULT_PATH = "samples/";
+
     protected final MainWindow mainWindow;
 
     protected SaveActionBase(MainWindow mainWindow, String text) {
