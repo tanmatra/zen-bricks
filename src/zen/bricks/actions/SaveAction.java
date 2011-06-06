@@ -43,6 +43,9 @@ public class SaveAction extends SaveActionBase
         }
         if (unnamedFile) {
             mainWindow.setEditorFileName(fileName);
+            mainWindow.setStatus("File saved as: " + fileName);
+        } else {
+            mainWindow.setStatus("File saved.");
         }
     }
 }

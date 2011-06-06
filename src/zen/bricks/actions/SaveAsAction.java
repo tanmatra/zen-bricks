@@ -46,5 +46,6 @@ public class SaveAsAction extends SaveActionBase
             mainWindow.showException(ex, "Error saving file");
         }
         mainWindow.setEditorFileName(fileName);
+        mainWindow.setStatus("File saved as: " + fileName);
     }
 }
