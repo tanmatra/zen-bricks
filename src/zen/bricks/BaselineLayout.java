@@ -44,7 +44,7 @@ public class BaselineLayout extends TupleLayout
         int width = currX;
         boolean firstLine = true;
 
-        final int count = brick.childrenCount();
+        final int count = brick.getChildCount();
         int lineStart = 0;
 
         for (;;) {

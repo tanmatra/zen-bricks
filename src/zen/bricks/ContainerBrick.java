@@ -16,10 +16,10 @@ public abstract class ContainerBrick extends Brick
 
     public abstract Brick getChild(int i);
 
-    public abstract int childrenCount();
+    public abstract int getChildCount();
 
     public boolean isValidIndex(int index) {
-        return (index >= 0) && (index < childrenCount());
+        return (index >= 0) && (index < getChildCount());
     }
 
     public abstract boolean isValidInsertIndex(int position);
@@ -27,30 +27,30 @@ public abstract class ContainerBrick extends Brick
     public abstract boolean isValidDeleteIndex(int position);
 
     public Brick getFirstChild() {
-        return (childrenCount() < 1) ? null : getChild(0);
+        return (getChildCount() < 1) ? null : getChild(0);
     }
 
     public Brick getLastChild() {
-        return (childrenCount() < 1) ? null : getChild(childrenCount() - 1);
+        return (getChildCount() < 1) ? null : getChild(getChildCount() - 1);
     }
 
     public Brick getLastDescendantOrSelf() {
-        if (childrenCount() < 1) {
+        if (getChildCount() < 1) {
             return super.getLastDescendantOrSelf();
         }
-        return getChild(childrenCount() - 1).getLastDescendantOrSelf();
+        return getChild(getChildCount() - 1).getLastDescendantOrSelf();
     }
 
     public void attach(Editor editor) {
         super.attach(editor);
-        final int count = childrenCount();
+        final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             getChild(i).attach(editor);
         }
     }
 
     public void detach(Editor editor) {
-        final int count = childrenCount();
+        final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             getChild(i).detach(editor);
         }

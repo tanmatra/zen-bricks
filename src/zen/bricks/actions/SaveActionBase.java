@@ -49,7 +49,7 @@ public class SaveActionBase extends Action
             final TupleBrick tupleBrick = (TupleBrick) brick;
             writer.write('(');
             writeTupleText(writer, tupleBrick.getText());
-            final int count = tupleBrick.childrenCount() - 1;
+            final int count = tupleBrick.getChildCount() - 1;
             for (int i = 0; i < count; i++) {
                 writeBrick(tupleBrick.getChild(i), writer);
             }

@@ -191,7 +191,7 @@ public class TupleBrick extends ContainerBrick
         return children;
     }
 
-    public int childrenCount() {
+    public int getChildCount() {
         return children.size();
     }
 
@@ -286,7 +286,7 @@ public class TupleBrick extends ContainerBrick
         super.invalidate(all);
         invalidate();
         if (all) {
-            final int count = childrenCount();
+            final int count = getChildCount();
             for (int i = 0; i < count; i++) {
                 getChild(i).invalidate(all);
             }
