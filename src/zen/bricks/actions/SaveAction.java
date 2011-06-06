@@ -1,5 +1,6 @@
 package zen.bricks.actions;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,14 +35,21 @@ public class SaveAction extends Action
             return;
         }
 
+        String fileName = mainWindow.getEditorFileName();
+        final File file = new File(fileName);
+        String path = file.getParent();
+        if (path == null) {
+            path = "samples/";
+        }
         final FileDialog dialog =
                 new FileDialog(mainWindow.getShell(), SWT.SAVE);
-        dialog.setFilterPath("samples/");
+        dialog.setFilterPath(path);
+        dialog.setFileName(file.getName());
         dialog.setFilterExtensions(FILTER_EXTENSIONS);
         dialog.setFilterNames(FILTER_NAMES);
         dialog.setOverwrite(true);
 
-        final String fileName = dialog.open();
+        fileName = dialog.open();
         if (fileName == null) {
             return;
         }
