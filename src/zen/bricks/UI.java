@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import zen.bricks.styleeditor.IStyleEditor;
-import zen.bricks.utils.RadioPanel;
+import zen.bricks.swt.RadioPanel;
 
 public class UI
 {

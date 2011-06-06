@@ -1,4 +1,4 @@
-package zen.bricks.utils;
+package zen.bricks.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
