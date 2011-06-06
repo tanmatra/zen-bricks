@@ -78,6 +78,8 @@ public class MainWindow extends ApplicationWindow
 
     private StoredPreferences themePreferences;
 
+    private String editorFileName = "";
+
     // ============================================================ Constructors
 
     public MainWindow() {
@@ -394,8 +396,13 @@ public class MainWindow extends ApplicationWindow
         getStatusLineManager().setMessage("Loaded default theme");
     }
 
-    public void setTitle(String fileName) {
+    public void setEditorFileName(String fileName) {
+        editorFileName = fileName;
         getShell().setText("Bricks - " + fileName);
+    }
+
+    public String getEditorFileName() {
+        return editorFileName;
     }
 
     /* Does not interact with GUI */

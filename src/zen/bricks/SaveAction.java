@@ -46,6 +46,7 @@ public class SaveAction extends Action
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error saving file");
         }
+        mainWindow.setEditorFileName(fileName);
     }
 
     private void save(Brick document, String fileName) throws IOException {

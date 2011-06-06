@@ -259,7 +259,7 @@ class ImportXMLAction extends Action
             final Editor editor = mainWindow.editor;
             final TupleBrick root = parse(fileName, handler);
             editor.setDocument(root);
-            mainWindow.setTitle(fileName);
+            mainWindow.setEditorFileName(fileName);
         } catch (Exception ex) {
             mainWindow.showException(ex, "Import error");
         }

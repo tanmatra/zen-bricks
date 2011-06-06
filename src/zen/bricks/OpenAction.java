@@ -44,6 +44,7 @@ public class OpenAction extends Action
             return;
         }
         mainWindow.editor.setDocument(document);
+        mainWindow.setEditorFileName(fileName);
     }
 
     private Brick load(String fileName) throws IOException {
