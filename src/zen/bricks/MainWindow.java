@@ -26,6 +26,9 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import zen.bricks.actions.ImportXMLAction;
+import zen.bricks.actions.OpenAction;
+import zen.bricks.actions.SaveAction;
 import zen.bricks.styleeditor.EditStylesDialog;
 import zen.bricks.utils.CustomImageRegistry;
 import zen.bricks.utils.DOMPreferences;
@@ -70,7 +73,7 @@ public class MainWindow extends ApplicationWindow
 
     UI ui;
 
-    Editor editor;
+    private Editor editor;
 
     String themeFileName;
 
@@ -151,54 +154,54 @@ public class MainWindow extends ApplicationWindow
         navigateMenu.add(new Action("Go to &up level") {
             { setAccelerator(SWT.HOME); }
             public void run() {
-                editor.navigateLevelUp();
+                getEditor().navigateLevelUp();
             }
         });
 
         navigateMenu.add(new Action("Go to preceding") {
             { setAccelerator(SWT.ARROW_LEFT); }
             public void run() {
-                editor.navigatePreceding();
+                getEditor().navigatePreceding();
             }
         });
 
         navigateMenu.add(new Action("Go to following") {
             { setAccelerator(SWT.ARROW_RIGHT); }
             public void run() {
-                editor.navigateFollowing();
+                getEditor().navigateFollowing();
             }
         });
 
         navigateMenu.add(new Action("Go to previous") {
             { setAccelerator(SWT.ARROW_UP); }
             public void run() {
-                editor.navigatePrevious(true);
+                getEditor().navigatePrevious(true);
             }
         });
         navigateMenu.add(new Action("Go to previous only") {
             { setAccelerator(SWT.ARROW_UP | SWT.ALT); }
             public void run() {
-                editor.navigatePrevious(false);
+                getEditor().navigatePrevious(false);
             }
         });
 
         navigateMenu.add(new Action("Go to next") {
             { setAccelerator(SWT.ARROW_DOWN); }
             public void run() {
-                editor.navigateNextOrUp();
+                getEditor().navigateNextOrUp();
             }
         });
         navigateMenu.add(new Action("Go to next only") {
             { setAccelerator(SWT.ARROW_DOWN | SWT.ALT); }
             public void run() {
-                editor.navigateNext(false);
+                getEditor().navigateNext(false);
             }
         });
         navigateMenu.add(new Separator());
         navigateMenu.add(new Action("&Scroll to selected") {
             { setAccelerator(' '); }
             public void run() {
-                editor.scrollToSelected();
+                getEditor().scrollToSelected();
             }
         });
     }
@@ -241,6 +244,7 @@ public class MainWindow extends ApplicationWindow
         final Action fontAction = new Action("&Font...") {
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
+                final Editor editor = getEditor();
                 final UI ui = editor.getUI();
                 fontDialog.setFontList(ui.getBasicStyle().getFontList());
                 if (fontDialog.open() == null) {
@@ -256,6 +260,7 @@ public class MainWindow extends ApplicationWindow
         final Action adjustFontAction = new Action("&Adjust font...") {
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
+                final Editor editor = getEditor();
                 final UI ui = editor.getUI();
                 dialog.setFontList(ui.getBasicStyle().getFontList());
                 if (dialog.open() != Window.OK) {
@@ -365,7 +370,11 @@ public class MainWindow extends ApplicationWindow
         return contents;
     }
 
-    void showException(Throwable exception, String dialogTitle) {
+    public Editor getEditor() {
+        return editor;
+    }
+
+    public void showException(Throwable exception, String dialogTitle) {
         exception.printStackTrace();
         final IStatus status =
                 new Status(IStatus.ERROR, "zen.bricks",

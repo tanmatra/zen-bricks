@@ -1,4 +1,4 @@
-package zen.bricks;
+package zen.bricks.actions;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-class ImportXMLAction extends Action
+import zen.bricks.Editor;
+import zen.bricks.MainWindow;
+import zen.bricks.TupleBrick;
+
+public class ImportXMLAction extends Action
 {
     // ========================================================== Nested Classes
 
@@ -229,7 +233,7 @@ class ImportXMLAction extends Action
 
     // ============================================================ Constructors
 
-    ImportXMLAction(MainWindow mainWindow, String text) {
+    public ImportXMLAction(MainWindow mainWindow, String text) {
         super(text);
         this.mainWindow = mainWindow;
     }
@@ -256,7 +260,7 @@ class ImportXMLAction extends Action
 
         path = new File(fileName).getParent();
         try {
-            final Editor editor = mainWindow.editor;
+            final Editor editor = mainWindow.getEditor();
             final TupleBrick root = parse(fileName, handler);
             editor.setDocument(root);
             mainWindow.setEditorFileName(fileName);

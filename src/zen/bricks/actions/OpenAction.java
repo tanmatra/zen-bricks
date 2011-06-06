@@ -1,4 +1,4 @@
-package zen.bricks;
+package zen.bricks.actions;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,6 +10,11 @@ import java.io.Reader;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+
+import zen.bricks.Brick;
+import zen.bricks.LineBreak;
+import zen.bricks.MainWindow;
+import zen.bricks.TupleBrick;
 
 public class OpenAction extends Action
 {
@@ -43,7 +48,7 @@ public class OpenAction extends Action
             mainWindow.showException(ex, "Error loading file");
             return;
         }
-        mainWindow.editor.setDocument(document);
+        mainWindow.getEditor().setDocument(document);
         mainWindow.setEditorFileName(fileName);
     }
 

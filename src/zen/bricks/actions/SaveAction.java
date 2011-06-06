@@ -1,4 +1,4 @@
-package zen.bricks;
+package zen.bricks.actions;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +9,11 @@ import java.io.Writer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+
+import zen.bricks.Brick;
+import zen.bricks.LineBreak;
+import zen.bricks.MainWindow;
+import zen.bricks.TupleBrick;
 
 public class SaveAction extends Action
 {
@@ -24,7 +29,7 @@ public class SaveAction extends Action
     }
 
     public void run() {
-        final Brick document = mainWindow.editor.document;
+        final Brick document = mainWindow.getEditor().getDocument();
         if (document == null) {
             return;
         }

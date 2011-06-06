@@ -34,7 +34,7 @@ public class Editor
 
     final Canvas canvas;
 
-    Brick document;
+    private Brick document;
 
     private UI ui;
 
@@ -202,6 +202,10 @@ public class Editor
     public void uiChanged() {
         canvas.setBackground(ui.getCanvasBackgroundColor());
         refresh();
+    }
+
+    public Brick getDocument() {
+        return document;
     }
 
     public void setDocument(Brick document) {
