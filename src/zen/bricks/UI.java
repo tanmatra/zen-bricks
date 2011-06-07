@@ -71,16 +71,6 @@ public class UI
         this.device = device;
     }
 
-    public UI(Device device, Preferences preferences) throws Exception {
-        this.device = device;
-        try {
-            load(preferences);
-        } catch (Exception e) {
-            dispose();
-            throw e;
-        }
-    }
-
     // ================================================================= Methods
 
     void dispose() {
