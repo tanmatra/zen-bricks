@@ -234,10 +234,12 @@ public class TupleBrick extends ContainerBrick
             return;
         }
 
-        gc.setFont(chain.getFont());
-        gc.setForeground(chain.getForegroundColor());
+        gc.setFont(chain.find(TupleStyle.FONT).getFont());
+        gc.setForeground(
+                chain.find(TupleStyle.FOREGROUND).getForegroundColor());
 
-        final TupleStyle backgroundStyle = chain.findTextBackground();
+        final TupleStyle backgroundStyle =
+                chain.find(TupleStyle.TEXT_BACKGROUND);
         final Color color = backgroundStyle.getTextBackground().getColor();
         int flags = StyleChain.TEXT_FLAGS;
         if (color != null) {

@@ -1,8 +1,6 @@
 package zen.bricks;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.Point;
 
@@ -35,24 +33,12 @@ public class StyleChain
                 property.getTitle(), property.getKey()));
     }
 
+    public <V> V get(StyleProperty<V> property) {
+        return property.get(find(property));
+    }
+
     private TupleStyle findFont() {
         return find(TupleStyle.FONT);
-    }
-
-    public TupleStyle findTextBackground() {
-        return find(TupleStyle.TEXT_BACKGROUND);
-    }
-
-    public Color getForegroundColor() {
-        return find(TupleStyle.FOREGROUND).getForegroundColor();
-    }
-
-    public Color getBackgroundColor() {
-        return find(TupleStyle.BACKGROUND).getBackgroundColor();
-    }
-
-    public Font getFont() {
-        return find(TupleStyle.FONT).getFont();
     }
 
     public Point getTextExtent(String text) {
@@ -63,21 +49,5 @@ public class StyleChain
         final TupleStyle st = findFont();
         final FontMetrics fm = st.fontMetrics;
         return fm.getAscent() + fm.getLeading();
-    }
-
-    public Margin getPadding() {
-        return find(TupleStyle.PADDING).getPadding();
-    }
-
-    public Margin getTextMargin() {
-        return find(TupleStyle.TEXT_MARGIN).getTextMargin();
-    }
-
-    public int getLineSpacing() {
-        return find(TupleStyle.LINE_SPACING).getLineSpacing();
-    }
-
-    public int getSpacing() {
-        return find(TupleStyle.CHILDREN_SPACING).getSpacing();
     }
 }

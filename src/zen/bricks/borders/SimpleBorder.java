@@ -119,7 +119,8 @@ public class SimpleBorder extends Border
     {
         final TupleBrick tupleBrick = (TupleBrick) brick;
         final StyleChain styleChain = ui.getStyleChain(tupleBrick, editor);
-        final Color backgroundColor = styleChain.getBackgroundColor();
+        final Color backgroundColor =
+                styleChain.find(TupleStyle.BACKGROUND).getBackgroundColor();
         paintBackground(gc, x, y, brick, backgroundColor);
 
         paintBorder(gc, x, y, brick, clipping, color);
