@@ -34,8 +34,6 @@ public class UI
     Color canvasBackgroundColor;
     int textAntialias;
 
-    private GlobalStyle globalStyle;
-
     private TupleStyle basicStyle;
     private TupleStyle atomStyle;
     private TupleStyle listStyle;
@@ -66,7 +64,7 @@ public class UI
     // ================================================================= Methods
 
     private void createStyles() {
-        allStyles.add(globalStyle = new GlobalStyle("global", "Global"));
+        allStyles.add(new GlobalStyle("global", "Global"));
         allStyles.add(basicStyle = new TupleStyle(this, "basic", "Basic"));
         basicStyle.setTopLevel(true);
         allStyles.add(atomStyle = new TupleStyle(this, "atom", "Atom"));
@@ -104,13 +102,9 @@ public class UI
         loadLayoutFactories();
         loadBorderFactories();
 
-        globalStyle.load(preferences);
-
-        basicStyle.load(preferences);
-        atomStyle.load(preferences);
-        listStyle.load(preferences);
-        selectedStyle.load(preferences);
-        selectedParentStyle.load(preferences);
+        for (final Style style : allStyles) {
+            style.load(preferences);
+        }
 
         basicChain = basicStyle.createChain(null);
         atomChain = atomStyle.createChain(basicChain);
@@ -120,12 +114,9 @@ public class UI
     }
 
     public void save(Preferences preferences) {
-        globalStyle.save(preferences);
-        basicStyle.save(preferences);
-        atomStyle.save(preferences);
-        listStyle.save(preferences);
-        selectedStyle.save(preferences);
-        selectedParentStyle.save(preferences);
+        for (final Style style : allStyles) {
+            style.save(preferences);
+        }
     }
 
     private void loadLayoutFactories() {
