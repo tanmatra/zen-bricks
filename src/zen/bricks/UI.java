@@ -69,9 +69,20 @@ public class UI
 
     public UI(Device device) {
         this.device = device;
+        createStyles();
     }
 
     // ================================================================= Methods
+
+    private void createStyles() {
+        globalStyle = new GlobalStyle();
+        basicStyle = new TupleStyle(this, "Basic");
+        basicStyle.setTopLevel(true);
+        atomStyle = new TupleStyle(this, "Atom");
+        listStyle = new TupleStyle(this, "List");
+        selectedStyle = new TupleStyle(this, "Selected");
+        selectedParentStyle = new TupleStyle(this, "Selected parent");
+    }
 
     void dispose() {
         if (canvasBackgroundColor != null) {
@@ -97,18 +108,10 @@ public class UI
     }
 
     void load(Preferences preferences) throws Exception {
-        globalStyle = new GlobalStyle();
         globalStyle.load(preferences.node(GLOBAL_KEY));
 
         loadLayoutFactories();
         loadBorderFactories();
-
-        basicStyle = new TupleStyle(this, "Basic");
-        basicStyle.setTopLevel(true);
-        atomStyle = new TupleStyle(this, "Atom");
-        listStyle = new TupleStyle(this, "List");
-        selectedStyle = new TupleStyle(this, "Selected");
-        selectedParentStyle = new TupleStyle(this, "Selected parent");
 
         final Preferences stylesNode = preferences.node(STYLES_KEY);
         basicStyle.load(stylesNode.node(BASIC_STYLE_KEY));
