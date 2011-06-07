@@ -114,21 +114,23 @@ public class TupleStyle extends Style
 
     // ============================================================ Constructors
 
-    public TupleStyle(UI ui, String name) {
-        super(ui, name);
+    public TupleStyle(UI ui, String key, String name) {
+        super(ui, key, name);
     }
 
     // ================================================================= Methods
 
     public void load(Preferences preferences) {
+        final Preferences node = getStyleNode(preferences);
         for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
-            styleProperty.load(this, preferences);
+            styleProperty.load(this, node);
         }
     }
 
     public void save(Preferences preferences) {
+        final Preferences node = getStyleNode(preferences);
         for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
-            styleProperty.save(this, preferences);
+            styleProperty.save(this, node);
         }
     }
 

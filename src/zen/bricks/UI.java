@@ -26,16 +26,6 @@ import zen.bricks.swt.RadioPanel;
 
 public class UI
 {
-    // ============================================================ Class Fields
-
-    private static final String GLOBAL_KEY = "global";
-    private static final String STYLES_KEY = "styles";
-    private static final String BASIC_STYLE_KEY = "basic";
-    private static final String ATOM_STYLE_KEY = "atom";
-    private static final String LIST_STYLE_KEY = "list";
-    private static final String SELECTED_STYLE_KEY = "selected";
-    private static final String SELECTED_PARENT_STYLE_KEY = "selectedParent";
-
     // ================================================================== Fields
 
     private final Device device;
@@ -75,13 +65,14 @@ public class UI
     // ================================================================= Methods
 
     private void createStyles() {
-        globalStyle = new GlobalStyle();
-        basicStyle = new TupleStyle(this, "Basic");
+        globalStyle = new GlobalStyle("global", "Global");
+        basicStyle = new TupleStyle(this, "basic", "Basic");
         basicStyle.setTopLevel(true);
-        atomStyle = new TupleStyle(this, "Atom");
-        listStyle = new TupleStyle(this, "List");
-        selectedStyle = new TupleStyle(this, "Selected");
-        selectedParentStyle = new TupleStyle(this, "Selected parent");
+        atomStyle = new TupleStyle(this, "atom", "Atom");
+        listStyle = new TupleStyle(this, "list", "List");
+        selectedStyle = new TupleStyle(this, "selected", "Selected");
+        selectedParentStyle = new TupleStyle(this, "selectedParent",
+                "Selected parent");
     }
 
     void dispose() {
@@ -108,17 +99,16 @@ public class UI
     }
 
     void load(Preferences preferences) throws Exception {
-        globalStyle.load(preferences.node(GLOBAL_KEY));
-
         loadLayoutFactories();
         loadBorderFactories();
 
-        final Preferences stylesNode = preferences.node(STYLES_KEY);
-        basicStyle.load(stylesNode.node(BASIC_STYLE_KEY));
-        atomStyle.load(stylesNode.node(ATOM_STYLE_KEY));
-        listStyle.load(stylesNode.node(LIST_STYLE_KEY));
-        selectedStyle.load(stylesNode.node(SELECTED_STYLE_KEY));
-        selectedParentStyle.load(stylesNode.node(SELECTED_PARENT_STYLE_KEY));
+        globalStyle.load(preferences);
+
+        basicStyle.load(preferences);
+        atomStyle.load(preferences);
+        listStyle.load(preferences);
+        selectedStyle.load(preferences);
+        selectedParentStyle.load(preferences);
 
         basicChain = basicStyle.createChain(null);
         atomChain = atomStyle.createChain(basicChain);
@@ -128,13 +118,12 @@ public class UI
     }
 
     public void save(Preferences preferences) {
-        globalStyle.save(preferences.node(GLOBAL_KEY));
-        final Preferences stylesNode = preferences.node(STYLES_KEY);
-        basicStyle.save(stylesNode.node(BASIC_STYLE_KEY));
-        atomStyle.save(stylesNode.node(ATOM_STYLE_KEY));
-        listStyle.save(stylesNode.node(LIST_STYLE_KEY));
-        selectedStyle.save(stylesNode.node(SELECTED_STYLE_KEY));
-        selectedParentStyle.save(stylesNode.node(SELECTED_PARENT_STYLE_KEY));
+        globalStyle.save(preferences);
+        basicStyle.save(preferences);
+        atomStyle.save(preferences);
+        listStyle.save(preferences);
+        selectedStyle.save(preferences);
+        selectedParentStyle.save(preferences);
     }
 
     private void loadLayoutFactories() {
@@ -278,8 +267,8 @@ public class UI
         private static final String CANVAS_BACKGROUND_KEY = "canvasBackgroundColor";
         private static final String TEXT_ANTIALIAS_KEY = "textAntialias";
 
-        public GlobalStyle() {
-            super(UI.this, "Global");
+        public GlobalStyle(String key, String title) {
+            super(UI.this, key, title);
         }
 
         public IStyleEditor createEditor() {
@@ -287,21 +276,23 @@ public class UI
         }
 
         public void load(Preferences preferences) {
-            antialias = parseState(preferences, ANTIALIAS_KEY);
-            textAntialias = parseState(preferences, TEXT_ANTIALIAS_KEY);
+            final Preferences node = getStyleNode(preferences);
+            antialias = parseState(node, ANTIALIAS_KEY);
+            textAntialias = parseState(node, TEXT_ANTIALIAS_KEY);
             canvasBackgroundColor = ColorUtil.parseColor(getDevice(),
-                    preferences.get(CANVAS_BACKGROUND_KEY, null));
-            caretOffset = preferences.getInt(CARET_OFFSET_KEY, 0);
-            caretWidth = preferences.getInt(CARET_WIDTH_KEY, 2);
+                    node.get(CANVAS_BACKGROUND_KEY, null));
+            caretOffset = node.getInt(CARET_OFFSET_KEY, 0);
+            caretWidth = node.getInt(CARET_WIDTH_KEY, 2);
         }
 
         public void save(Preferences preferences) {
-            preferences.put(ANTIALIAS_KEY, stateToString(antialias));
-            preferences.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
-            preferences.put(CANVAS_BACKGROUND_KEY,
+            final Preferences node = getStyleNode(preferences);
+            node.put(ANTIALIAS_KEY, stateToString(antialias));
+            node.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
+            node.put(CANVAS_BACKGROUND_KEY,
                     ColorUtil.format(canvasBackgroundColor));
-            preferences.putInt(CARET_OFFSET_KEY, caretOffset);
-            preferences.putInt(CARET_WIDTH_KEY, caretWidth);
+            node.putInt(CARET_OFFSET_KEY, caretOffset);
+            node.putInt(CARET_WIDTH_KEY, caretWidth);
         }
 
         public void dispose() {

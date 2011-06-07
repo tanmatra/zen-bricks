@@ -6,12 +6,15 @@ import zen.bricks.styleeditor.IStyleEditor;
 
 public abstract class Style
 {
+    private final String key;
+
     private final String name;
 
     protected final UI ui;
 
-    public Style(UI ui, String name) {
+    public Style(UI ui, String key, String name) {
         this.ui = ui;
+        this.key = key;
         this.name = name;
     }
 
@@ -21,6 +24,10 @@ public abstract class Style
 
     public String getName() {
         return name;
+    }
+
+    protected Preferences getStyleNode(Preferences preferences) {
+        return preferences.node(key);
     }
 
     public abstract void load(Preferences preferences);
