@@ -27,15 +27,7 @@ public abstract class StyleProperty<V> extends Property<TupleStyle, V>
 
     protected abstract StyleEditorPart<V> newEditorPart(TupleStyle style);
 
-    public TupleStyle find(StyleChain chain) {
-        do {
-            final TupleStyle style = chain.style;
-            if (isDefined(style)) {
-                return style;
-            }
-            chain = chain.parent;
-        } while (chain != null);
-        throw new Error("Style property \"" + title + "\" (" + key +
-                ") not found in chain");
+    public String getKey() {
+        return key;
     }
 }

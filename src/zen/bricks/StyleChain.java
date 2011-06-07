@@ -21,24 +21,38 @@ public class StyleChain
         this.parent = parent;
     }
 
+    public TupleStyle find(StyleProperty<?> property) {
+        StyleChain chain = this;
+        do {
+            final TupleStyle style = chain.style;
+            if (property.isDefined(style)) {
+                return style;
+            }
+            chain = chain.parent;
+        } while (chain != null);
+        throw new Error(String.format(
+                "Style property \"%s\" (%s) not found in chain",
+                property.getTitle(), property.getKey()));
+    }
+
     private TupleStyle findFont() {
-        return TupleStyle.FONT.find(this);
+        return find(TupleStyle.FONT);
     }
 
     public TupleStyle findTextBackground() {
-        return TupleStyle.TEXT_BACKGROUND.find(this);
+        return find(TupleStyle.TEXT_BACKGROUND);
     }
 
     public Color getForegroundColor() {
-        return TupleStyle.FOREGROUND.find(this).getForegroundColor();
+        return find(TupleStyle.FOREGROUND).getForegroundColor();
     }
 
     public Color getBackgroundColor() {
-        return TupleStyle.BACKGROUND.find(this).getBackgroundColor();
+        return find(TupleStyle.BACKGROUND).getBackgroundColor();
     }
 
     public Font getFont() {
-        return TupleStyle.FONT.find(this).getFont();
+        return find(TupleStyle.FONT).getFont();
     }
 
     public Point getTextExtent(String text) {
@@ -52,18 +66,18 @@ public class StyleChain
     }
 
     public Margin getPadding() {
-        return TupleStyle.PADDING.find(this).getPadding();
+        return find(TupleStyle.PADDING).getPadding();
     }
 
     public Margin getTextMargin() {
-        return TupleStyle.TEXT_MARGIN.find(this).getTextMargin();
+        return find(TupleStyle.TEXT_MARGIN).getTextMargin();
     }
 
     public int getLineSpacing() {
-        return TupleStyle.LINE_SPACING.find(this).getLineSpacing();
+        return find(TupleStyle.LINE_SPACING).getLineSpacing();
     }
 
     public int getSpacing() {
-        return TupleStyle.CHILDREN_SPACING.find(this).getSpacing();
+        return find(TupleStyle.CHILDREN_SPACING).getSpacing();
     }
 }

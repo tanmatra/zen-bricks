@@ -218,7 +218,7 @@ public class TupleBrick extends ContainerBrick
         final UI ui = editor.getUI();
         final StyleChain chain = ui.getStyleChain(this, editor);
 
-        final Border border = TupleStyle.BORDER.find(chain).getBorder();
+        final Border border = chain.find(TupleStyle.BORDER).getBorder();
         border.paint(gc, baseX, baseY, this, clipping, editor);
 
         paintText(gc, baseX, baseY, clipping, chain);
@@ -298,7 +298,7 @@ public class TupleBrick extends ContainerBrick
             return false;
         }
         final StyleChain styleChain = editor.getUI().getStyleChain(this, editor);
-        final TupleStyle style = TupleStyle.LAYOUT.find(styleChain);
+        final TupleStyle style = styleChain.find(TupleStyle.LAYOUT);
         final boolean changed = style.getLayout().doLayout(this, editor);
         valid = true;
         return changed;
