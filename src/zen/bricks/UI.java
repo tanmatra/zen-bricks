@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
+import zen.bricks.LineBreak.LineBreakStyle;
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.swt.RadioPanel;
 
@@ -39,6 +40,8 @@ public class UI
     private TupleStyle listStyle;
     private TupleStyle selectedStyle;
     private TupleStyle selectedParentStyle;
+
+    private LineBreakStyle lineBreakStyle;
 
     private List<Style> allStyles = new ArrayList<Style>();
 
@@ -73,6 +76,8 @@ public class UI
                 new TupleStyle(this, "selected", "Selected"));
         allStyles.add(selectedParentStyle =
                 new TupleStyle(this, "selectedParent", "Selected parent"));
+        allStyles.add(lineBreakStyle =
+                new LineBreak.LineBreakStyle(this, "linebreak", "Line break"));
     }
 
     void dispose() {
@@ -234,6 +239,10 @@ public class UI
             chain = selectedParentStyle.createChain(chain);
         }
         return chain;
+    }
+
+    public LineBreakStyle getLineBreakStyle() {
+        return lineBreakStyle;
     }
 
     public List<? extends Style> getAllStyles() {

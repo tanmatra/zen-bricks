@@ -1,27 +1,63 @@
 package zen.bricks;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Device;
+import java.util.prefs.Preferences;
+
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
+import zen.bricks.styleeditor.IStyleEditor;
+
 public class LineBreak extends Brick
 {
+    // ========================================================== Nested Classes
+
+    public static class LineBreakStyle extends Style
+    {
+        private static final String COLOR_KEY = "color";
+
+        Color color;
+
+        public LineBreakStyle(UI ui, String key, String name) {
+            super(ui, key, name);
+        }
+
+        protected void loadImpl(Preferences node) {
+            color = ColorUtil.parseColor(
+                    ui.getDevice(), node.get(COLOR_KEY, null));
+        }
+
+        protected void saveImpl(Preferences node) {
+            node.put(COLOR_KEY, ColorUtil.format(color));
+        }
+
+        public IStyleEditor createEditor() {
+            return null; // TODO
+        }
+
+        public void dispose() {
+            if (color != null) {
+                color.dispose();
+                color = null;
+            }
+        }
+    }
+
+    // ============================================================ Constructors
+
     public LineBreak(ContainerBrick parent) {
         super(parent);
         resize(2, 4);
     }
 
+    // ================================================================= Methods
+
     protected void paint(GC gc, int baseX, int baseY, Rectangle clipping,
             Editor editor)
     {
-        final Device device = gc.getDevice();
-        gc.setBackground(device.getSystemColor(SWT.COLOR_CYAN));
+        final LineBreakStyle style = editor.getUI().getLineBreakStyle();
+        gc.setBackground(style.color);
         gc.fillRectangle(baseX, baseY, getWidth(), getHeight());
-//        gc.setForeground(device.getSystemColor(SWT.COLOR_GRAY));
-//        gc.drawRectangle(baseX, baseY + 1, getWidth() - 1, getHeight() - 3);
-//        gc.setBackground(device.getSystemColor(SWT.COLOR_WHITE));
-//        gc.fillRectangle(baseX + 1, baseY + 2, getWidth() - 2, getHeight() - 4);
     }
 
     public boolean doLayout(Editor editor, boolean force) {
