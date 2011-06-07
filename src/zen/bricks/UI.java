@@ -1,7 +1,6 @@
 package zen.bricks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -43,6 +42,8 @@ public class UI
     private TupleStyle selectedStyle;
     private TupleStyle selectedParentStyle;
 
+    private List<Style> allStyles = new ArrayList<Style>();
+
     private StyleChain basicChain;
     private StyleChain atomChain;
     private StyleChain listChain;
@@ -65,14 +66,15 @@ public class UI
     // ================================================================= Methods
 
     private void createStyles() {
-        globalStyle = new GlobalStyle("global", "Global");
-        basicStyle = new TupleStyle(this, "basic", "Basic");
+        allStyles.add(globalStyle = new GlobalStyle("global", "Global"));
+        allStyles.add(basicStyle = new TupleStyle(this, "basic", "Basic"));
         basicStyle.setTopLevel(true);
-        atomStyle = new TupleStyle(this, "atom", "Atom");
-        listStyle = new TupleStyle(this, "list", "List");
-        selectedStyle = new TupleStyle(this, "selected", "Selected");
-        selectedParentStyle = new TupleStyle(this, "selectedParent",
-                "Selected parent");
+        allStyles.add(atomStyle = new TupleStyle(this, "atom", "Atom"));
+        allStyles.add(listStyle = new TupleStyle(this, "list", "List"));
+        allStyles.add(selectedStyle =
+                new TupleStyle(this, "selected", "Selected"));
+        allStyles.add(selectedParentStyle =
+                new TupleStyle(this, "selectedParent", "Selected parent"));
     }
 
     void dispose() {
@@ -243,10 +245,8 @@ public class UI
         return chain;
     }
 
-    public List<? extends Style> getStyles() {
-        return Arrays.asList(
-                globalStyle, basicStyle, atomStyle, listStyle, selectedStyle,
-                selectedParentStyle);
+    public List<? extends Style> getAllStyles() {
+        return allStyles;
     }
 
     public List<TupleLayout> getTupleLayouts() {

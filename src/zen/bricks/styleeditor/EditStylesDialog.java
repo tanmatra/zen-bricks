@@ -78,7 +78,7 @@ public class EditStylesDialog extends Dialog
 
     @Override
     protected Control createDialogArea(Composite parent) {
-        final List<? extends Style> styles = ui.getStyles();
+        final List<? extends Style> styles = ui.getAllStyles();
 
         final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
