@@ -120,15 +120,13 @@ public class TupleStyle extends Style
 
     // ================================================================= Methods
 
-    public void load(Preferences preferences) {
-        final Preferences node = getStyleNode(preferences);
+    protected void loadImpl(Preferences node) {
         for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
             styleProperty.load(this, node);
         }
     }
 
-    public void save(Preferences preferences) {
-        final Preferences node = getStyleNode(preferences);
+    protected void saveImpl(Preferences node) {
         for (final StyleProperty<?> styleProperty : ALL_PROPERTIES) {
             styleProperty.save(this, node);
         }

@@ -26,13 +26,21 @@ public abstract class Style
         return name;
     }
 
-    protected Preferences getStyleNode(Preferences preferences) {
+    private Preferences getStyleNode(Preferences preferences) {
         return preferences.node(key);
     }
 
-    public abstract void load(Preferences preferences);
+    public final void load(Preferences preferences) {
+        loadImpl(getStyleNode(preferences));
+    }
 
-    public abstract void save(Preferences preferences);
+    public final void save(Preferences preferences) {
+        saveImpl(getStyleNode(preferences));
+    }
+
+    protected abstract void loadImpl(Preferences node);
+
+    protected abstract void saveImpl(Preferences node);
 
     public abstract IStyleEditor createEditor();
 

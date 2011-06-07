@@ -275,8 +275,7 @@ public class UI
             return new GlobalStyleEditor();
         }
 
-        public void load(Preferences preferences) {
-            final Preferences node = getStyleNode(preferences);
+        protected void loadImpl(Preferences node) {
             antialias = parseState(node, ANTIALIAS_KEY);
             textAntialias = parseState(node, TEXT_ANTIALIAS_KEY);
             canvasBackgroundColor = ColorUtil.parseColor(getDevice(),
@@ -285,8 +284,7 @@ public class UI
             caretWidth = node.getInt(CARET_WIDTH_KEY, 2);
         }
 
-        public void save(Preferences preferences) {
-            final Preferences node = getStyleNode(preferences);
+        protected void saveImpl(Preferences node) {
             node.put(ANTIALIAS_KEY, stateToString(antialias));
             node.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
             node.put(CANVAS_BACKGROUND_KEY,
