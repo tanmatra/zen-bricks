@@ -12,6 +12,10 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public class TupleBrick extends ContainerBrick
 {
+    // ============================================================ Class Fields
+
+    static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
+
     // ========================================================== Nested Classes
 
     class Line implements Iterable<Brick>
@@ -241,7 +245,7 @@ public class TupleBrick extends ContainerBrick
         final TupleStyle backgroundStyle =
                 chain.find(TupleStyle.TEXT_BACKGROUND);
         final Color color = backgroundStyle.getTextBackground().getColor();
-        int flags = StyleChain.TEXT_FLAGS;
+        int flags = TEXT_FLAGS;
         if (color != null) {
             gc.setBackground(color);
         } else {

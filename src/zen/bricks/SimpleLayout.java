@@ -1,5 +1,6 @@
 package zen.bricks;
 
+
 public class SimpleLayout extends TupleLayout
 {
     public SimpleLayout() {
@@ -22,7 +23,9 @@ public class SimpleLayout extends TupleLayout
 
         brick.textX = textMargin.getLeft();
         brick.textY = textMargin.getTop();
-        brick.textExtent = chain.getTextExtent(brick.getText());
+        brick.textExtent =
+                chain.find(TupleStyle.FONT).getTextExtent(brick.getText());
+
         int width = textMargin.getLeft() + brick.textExtent.x;
 
         int currX = width + spacing;

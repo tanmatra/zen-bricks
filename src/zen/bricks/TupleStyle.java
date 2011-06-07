@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 
 import zen.bricks.properties.BackgroundProperty;
@@ -191,8 +192,15 @@ public class TupleStyle extends Style
         return font;
     }
 
+    public Point getTextExtent(String text) {
+        return savedGC.textExtent(text, TupleBrick.TEXT_FLAGS);
+    }
+
+    public int getTextAscent() {
+        return fontMetrics.getAscent() + fontMetrics.getLeading();
+    }
+
     public IStyleEditor createEditor() {
-//        return new TupleStyleEditor(this);
         return new PropertiesListEditor(ALL_PROPERTIES, this);
     }
 

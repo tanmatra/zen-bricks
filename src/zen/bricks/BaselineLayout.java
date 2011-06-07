@@ -20,7 +20,9 @@ public class BaselineLayout extends TupleLayout
     }
 
     public boolean doLayout(TupleBrick brick, Editor editor) {
-        final StyleChain chain = editor.getUI().getStyleChain(brick, editor);
+        final UI ui = editor.getUI();
+
+        final StyleChain chain = ui.getStyleChain(brick, editor);
         final Margin textMargin = chain.get(TupleStyle.TEXT_MARGIN);
         final Margin brickPadding = chain.get(TupleStyle.PADDING);
         final int paddingLeft = brickPadding.getLeft();
@@ -29,10 +31,13 @@ public class BaselineLayout extends TupleLayout
 
         final ArrayList<Line> lines = new ArrayList<TupleBrick.Line>(1);
 
-        final Point textExtent = chain.getTextExtent(brick.getText());
+        final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
+        final Point textExtent =
+                fontStyle.getTextExtent(brick.getText());
+
         brick.textX = textMargin.getLeft();
         brick.textExtent = textExtent;
-        final int textAscent = chain.getTextAscent();
+        final int textAscent = fontStyle.getTextAscent();
         int lineAscent = textAscent;
 
         int lineY = brickPadding.getTop();
