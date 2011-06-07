@@ -87,12 +87,12 @@ public class TupleStyle extends Style
     /**
      * Not null only if {@link #font} specified.
      */
-    FontMetrics fontMetrics;
+    private FontMetrics fontMetrics;
 
     /**
      * Not null only if {@link #font} specified.
      */
-    GC savedGC;
+    private GC savedGC;
 
     private Color backgroundColor;
 
@@ -196,8 +196,12 @@ public class TupleStyle extends Style
         return savedGC.textExtent(text, TupleBrick.TEXT_FLAGS);
     }
 
-    public int getTextAscent() {
+    public int getFontAscent() {
         return fontMetrics.getAscent() + fontMetrics.getLeading();
+    }
+
+    public int getFontHeight() {
+        return fontMetrics.getHeight();
     }
 
     public IStyleEditor createEditor() {

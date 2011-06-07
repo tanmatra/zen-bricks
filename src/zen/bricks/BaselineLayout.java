@@ -37,8 +37,8 @@ public class BaselineLayout extends TupleLayout
 
         brick.textX = textMargin.getLeft();
         brick.textExtent = textExtent;
-        final int textAscent = fontStyle.getTextAscent();
-        int lineAscent = textAscent;
+        final int fontAscent = fontStyle.getFontAscent();
+        int lineAscent = fontAscent;
 
         int lineY = brickPadding.getTop();
         int currX = textMargin.getLeft() + textExtent.x + textMargin.getRight();
@@ -69,7 +69,7 @@ public class BaselineLayout extends TupleLayout
             // END OF LINE
             int lineHeight;
             if (firstLine) {
-                brick.textY = lineY + (lineAscent - textAscent);
+                brick.textY = lineY + (lineAscent - fontAscent);
                 brick.ascent = lineY + lineAscent;
                 lineHeight = brick.textY + textExtent.y + textMargin.getBottom();
                 firstLine = false;
@@ -85,8 +85,9 @@ public class BaselineLayout extends TupleLayout
                 final int margin;
                 if (child instanceof LineBreak) {
                     margin = 0;
-                    if (lineHeight < 10) {
-                        lineHeight = 10;
+                    final int fontHeight = fontStyle.getFontHeight();
+                    if (lineHeight < fontHeight) {
+                        lineHeight = fontHeight;
                     }
                     child.resize(child.getWidth(), lineHeight);
                 } else {
