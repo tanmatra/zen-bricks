@@ -38,7 +38,7 @@ public class UI
 
     // ================================================================== Fields
 
-    final Device device;
+    private final Device device;
 
     private Boolean advanced;
     int antialias;
@@ -286,7 +286,7 @@ public class UI
         public void load(Preferences preferences) {
             antialias = parseState(preferences, ANTIALIAS_KEY);
             textAntialias = parseState(preferences, TEXT_ANTIALIAS_KEY);
-            canvasBackgroundColor = ColorUtil.parseColor(device,
+            canvasBackgroundColor = ColorUtil.parseColor(getDevice(),
                     preferences.get(CANVAS_BACKGROUND_KEY, null));
             caretOffset = preferences.getInt(CARET_OFFSET_KEY, 0);
             caretWidth = preferences.getInt(CARET_WIDTH_KEY, 2);
@@ -371,7 +371,7 @@ public class UI
             final RGB rgb = canvasColorSelector.getColorValue();
             if (!rgb.equals(canvasBackgroundColor.getRGB())) {
                 canvasBackgroundColor.dispose();
-                canvasBackgroundColor = new Color(device, rgb);
+                canvasBackgroundColor = new Color(getDevice(), rgb);
             }
 
             caretOffset = caretOffsetSpinner.getSelection();
