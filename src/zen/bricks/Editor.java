@@ -614,7 +614,15 @@ public class Editor
             setSelection(container.getLastChild());
         } else if (selection instanceof LineBreak) {
             final ContainerBrick container = selection.getParent();
-            setSelection(container.getLastChild());
+            final Brick last = container.getLastChild();
+            if (last != selection) {
+                setSelection(last);
+            } else {
+                final ContainerBrick container2 = container.getParent();
+                if (container2 != null) {
+                    setSelection(container2.getLastChild());
+                }
+            }
         }
     }
 
