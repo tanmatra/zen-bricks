@@ -41,14 +41,14 @@ public class BorderProperty extends StyleProperty<Border>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final String type = preferences.get(key, null);
+        final String type = read(preferences);
         if (type == null) {
             set(style, null);
         } else {
             final UI ui = style.getUI();
             for (final BorderFactory<?> factory : ui.getBorderFactories()) {
                 if (factory.getName().equals(type)) {
-                    final Preferences borderPrefs = preferences.node(key);
+                    final Preferences borderPrefs = node(preferences);
                     final Border border = factory.createBorder(ui, borderPrefs);
                     set(style, border);
                     return;
@@ -60,17 +60,17 @@ public class BorderProperty extends StyleProperty<Border>
 
     public void save(TupleStyle object, Preferences preferences) {
         final Border border = get(object);
-        final Preferences borderPrefs = preferences.node(key);
+        final Preferences borderPrefs = node(preferences);
         if (border == null) {
             try {
-                preferences.remove(key);
+                write(preferences, null);
                 borderPrefs.removeNode();
             } catch (BackingStoreException e) {
                 throw new RuntimeException(e);
             }
             return;
         }
-        preferences.put(key, border.getFactory().getName());
+        write(preferences, border.getFactory().getName());
         border.save(borderPrefs);
     }
 

@@ -21,15 +21,11 @@ public abstract class MarginProperty extends StyleProperty<Margin>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        set(style, Margin.parseMargin(preferences.get(key, null)));
+        set(style, Margin.parseMargin(read(preferences)));
     }
 
     public void save(TupleStyle object, Preferences preferences) {
         final Margin margin = get(object);
-        if (margin == null) {
-            preferences.remove(key);
-        } else {
-            preferences.put(key, margin.format());
-        }
+        write(preferences, (margin == null) ? null : margin.format());
     }
 }

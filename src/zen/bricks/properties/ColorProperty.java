@@ -23,16 +23,12 @@ public abstract class ColorProperty extends StyleProperty<RGB>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final String value = preferences.get(key, null);
+        final String value = read(preferences);
         set(style, ColorUtil.parse(style.getDevice(), value));
     }
 
     public void save(TupleStyle object, Preferences preferences) {
         final RGB rgb = get(object);
-        if (rgb == null) {
-            preferences.remove(key);
-        } else {
-            preferences.put(key, ColorUtil.format(rgb));
-        }
+        write(preferences, (rgb == null) ? null : ColorUtil.format(rgb));
     }
 }

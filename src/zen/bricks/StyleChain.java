@@ -24,8 +24,7 @@ public class StyleChain
             chain = chain.parent;
         } while (chain != null);
         throw new Error(String.format(
-                "Style property \"%s\" (%s) not found in chain",
-                property.getTitle(), property.getKey()));
+                "Style property %s not found in chain", property));
     }
 
     public <V> V get(StyleProperty<V> property) {

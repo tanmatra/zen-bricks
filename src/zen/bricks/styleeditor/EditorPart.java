@@ -2,6 +2,10 @@ package zen.bricks.styleeditor;
 
 import zen.bricks.Property;
 
+/**
+ * @param <T> type of edited object
+ * @param <V> type of edited property value
+ */
 public abstract class EditorPart<T, V>
 {
     protected final T editedObject;

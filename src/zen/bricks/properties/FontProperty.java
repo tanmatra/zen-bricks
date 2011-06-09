@@ -27,7 +27,7 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final String value = preferences.get(key, null);
+        final String value = read(preferences);
         final FontData[] list;
         if ((value == null) || "inherit".equals(value)) {
             list = null;
@@ -70,7 +70,7 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
     public void save(TupleStyle object, Preferences preferences) {
         final FontData[] fontList = get(object);
         if (fontList == null) {
-            preferences.remove(key);
+            write(preferences, null);
             return;
         }
         final StringBuilder buf = new StringBuilder(40);
@@ -84,6 +84,6 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         if ((style & SWT.ITALIC) != 0) {
             buf.append(' ').append(ITALIC);
         }
-        preferences.put(key, buf.toString());
+        write(preferences, buf.toString());
     }
 }

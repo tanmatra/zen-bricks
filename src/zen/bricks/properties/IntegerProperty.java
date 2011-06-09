@@ -30,7 +30,7 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final String string = preferences.get(key, null);
+        final String string = read(preferences);
         final Integer value = (string == null) ?
                 null : Integer.parseInt(string);
         set(style, value);
@@ -39,9 +39,9 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
     public void save(TupleStyle object, Preferences preferences) {
         final Integer value = get(object);
         if (value == null) {
-            preferences.remove(key);
+            write(preferences, null);
         } else {
-            preferences.putInt(key, value);
+            write(preferences, value);
         }
     }
 }

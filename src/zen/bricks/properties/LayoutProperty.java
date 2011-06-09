@@ -82,7 +82,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     public void load(TupleStyle style, Preferences preferences) {
-        final String value = preferences.get(key, null);
+        final String value = read(preferences);
         if (value == null) {
             set(style, null);
         } else {
@@ -98,10 +98,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
 
     public void save(TupleStyle object, Preferences preferences) {
         final TupleLayout tupleLayout = get(object);
-        if (tupleLayout == null) {
-            preferences.remove(key);
-        } else {
-            preferences.put(key, tupleLayout.getName());
-        }
+        write(preferences,
+                (tupleLayout == null) ? null : tupleLayout.getName());
     }
 }

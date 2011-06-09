@@ -4,15 +4,10 @@ import zen.bricks.styleeditor.StyleEditorPart;
 
 public abstract class StyleProperty<V> extends Property<TupleStyle, V>
 {
-    // ================================================================== Fields
-
-    protected final String key;
-
     // ============================================================ Constructors
 
     public StyleProperty(String title, String key) {
-        super(title);
-        this.key = key;
+        super(key, title);
     }
 
     // ================================================================= Methods
@@ -26,8 +21,4 @@ public abstract class StyleProperty<V> extends Property<TupleStyle, V>
     }
 
     protected abstract StyleEditorPart<V> newEditorPart(TupleStyle style);
-
-    public String getKey() {
-        return key;
-    }
 }

@@ -35,7 +35,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
     }
 
     public void load(TupleStyle style, Preferences preferences) {
-        final String string = preferences.get(key, null);
+        final String string = read(preferences);
         final TransparentColor transparentColor;
         if (string == null) {
             transparentColor = null;
@@ -52,14 +52,14 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
     public void save(TupleStyle object, Preferences preferences) {
         final TransparentColor transparentColor = get(object);
         if (transparentColor == null) {
-            preferences.remove(key);
+            write(preferences, null);
             return;
         }
         final Color color = transparentColor.getColor();
         if (color == null) {
-            preferences.put(key, TRANSPARENT);
+            write(preferences, TRANSPARENT);
         } else {
-            preferences.put(key, ColorUtil.format(color));
+            write(preferences, ColorUtil.format(color));
         }
     }
 }
