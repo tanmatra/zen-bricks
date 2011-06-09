@@ -16,9 +16,7 @@ public abstract class ColorProperty extends StyleProperty<RGB>
         super(title, key);
     }
 
-    protected StyleEditorPart<RGB> newEditorPart(
-            TupleStyle style)
-    {
+    public StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
         return new ColorEditorPart(this, style);
     }
 

@@ -12,13 +12,5 @@ public abstract class StyleProperty<V> extends Property<TupleStyle, V>
 
     // ================================================================= Methods
 
-    public StyleEditorPart<V> createEditorPart(TupleStyle style) {
-        final StyleEditorPart<V> part = newEditorPart(style);
-        if (style.isTopLevel()) {
-            part.setMandatory(true);
-        }
-        return part;
-    }
-
-    protected abstract StyleEditorPart<V> newEditorPart(TupleStyle style);
+    public abstract StyleEditorPart<V> createEditorPart(TupleStyle style);
 }

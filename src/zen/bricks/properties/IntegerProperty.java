@@ -19,9 +19,7 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
         this.minimum = minimum;
     }
 
-    protected StyleEditorPart<Integer> newEditorPart(
-            TupleStyle style)
-    {
+    public StyleEditorPart<Integer> createEditorPart(TupleStyle style) {
         final IntegerEditorPart part = new IntegerEditorPart(this, style);
         if (minimum != null) {
             part.setMinimum(minimum);

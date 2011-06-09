@@ -20,9 +20,7 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         super(title, keySuffix);
     }
 
-    protected StyleEditorPart<FontData[]> newEditorPart(
-            TupleStyle style)
-    {
+    public StyleEditorPart<FontData[]> createEditorPart(TupleStyle style) {
         return new FontEditorPart(this, style);
     }
 

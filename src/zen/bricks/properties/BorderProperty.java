@@ -74,9 +74,7 @@ public class BorderProperty extends StyleProperty<Border>
         border.save(borderPrefs);
     }
 
-    protected StyleEditorPart<Border> newEditorPart(
-            final TupleStyle style)
-    {
+    public StyleEditorPart<Border> createEditorPart(TupleStyle style) {
         return new BorderEditorPart(this, style);
     }
 

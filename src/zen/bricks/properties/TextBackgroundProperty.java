@@ -20,8 +20,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
         super(title, keySuffix);
     }
 
-    protected StyleEditorPart<TransparentColor> newEditorPart(
-            TupleStyle style)
+    public StyleEditorPart<TransparentColor> createEditorPart(TupleStyle style)
     {
         return new TransparentColorEditorPart(this, style);
     }

@@ -33,7 +33,7 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
     }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    protected StyleEditorPart<TupleLayout> newEditorPart(
+    public StyleEditorPart<TupleLayout> createEditorPart(
             final TupleStyle style)
     {
         return new CheckedEditorPart<TupleLayout>(this, style)
