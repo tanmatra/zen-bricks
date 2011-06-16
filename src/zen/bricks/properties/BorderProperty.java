@@ -18,16 +18,16 @@ import zen.bricks.BorderFactory;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
+import zen.bricks.styleeditor.CheckedEditorPart;
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.styleeditor.StyleEditorPart;
-import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class BorderProperty extends StyleProperty<Border>
 {
     // ============================================================ Constructors
 
-    public BorderProperty(String title, String key) {
-        super(title, key);
+    public BorderProperty(String key, String title) {
+        super(key, title);
     }
 
     // ================================================================= Methods
@@ -48,7 +48,7 @@ public class BorderProperty extends StyleProperty<Border>
             final UI ui = style.getUI();
             for (final BorderFactory<?> factory : ui.getBorderFactories()) {
                 if (factory.getName().equals(type)) {
-                    final Preferences borderPrefs = node(preferences);
+                    final Preferences borderPrefs = subNode(preferences);
                     final Border border = factory.createBorder(ui, borderPrefs);
                     set(style, border);
                     return;
@@ -58,20 +58,20 @@ public class BorderProperty extends StyleProperty<Border>
         }
     }
 
-    public void save(TupleStyle object, Preferences preferences) {
-        final Border border = get(object);
-        final Preferences borderPrefs = node(preferences);
+    public void save(TupleStyle style, Preferences preferences) {
+        final Border border = get(style);
+        final Preferences borderPrefs = subNode(preferences);
         if (border == null) {
             try {
                 write(preferences, null);
                 borderPrefs.removeNode();
-            } catch (BackingStoreException e) {
-                throw new RuntimeException(e);
+            } catch (BackingStoreException ex) {
+                throw new RuntimeException(ex);
             }
-            return;
+        } else {
+            write(preferences, border.getFactory().getName());
+            border.save(borderPrefs);
         }
-        write(preferences, border.getFactory().getName());
-        border.save(borderPrefs);
     }
 
     public StyleEditorPart<Border> createEditorPart(TupleStyle style) {
@@ -80,18 +80,13 @@ public class BorderProperty extends StyleProperty<Border>
 
     // ========================================================== Nested Classes
 
-    static class BorderEditorPart extends CheckedEditorPart<Border>
+    private static class BorderEditorPart extends CheckedEditorPart<Border>
     {
         private Label label;
-
         private Combo combo;
-
         private IStyleEditor borderStyleEditor;
-
         private BorderFactory<?> selectedFactory;
-
         private final List<BorderFactory<?>> factories;
-
         private Composite editorPanel;
 
         BorderEditorPart(BorderProperty property, TupleStyle style) {

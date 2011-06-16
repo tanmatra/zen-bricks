@@ -8,17 +8,33 @@ import java.util.prefs.Preferences;
  */
 public abstract class Property<T, V>
 {
+    // ================================================================== Fields
+
     private final String key;
 
     private final String title;
+
+    private boolean optional;
+
+    // ============================================================ Constructors
 
     protected Property(String key, String title) {
         this.key = key;
         this.title = title;
     }
 
+    // ================================================================= Methods
+
     public String getTitle() {
         return title;
+    }
+
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 
     public abstract V get(T object);
@@ -49,7 +65,7 @@ public abstract class Property<T, V>
         preferences.putInt(key, value);
     }
 
-    protected Preferences node(Preferences preferences) {
+    protected Preferences subNode(Preferences preferences) {
         return preferences.node(key);
     }
 

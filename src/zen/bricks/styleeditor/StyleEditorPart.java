@@ -6,8 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
 
-public abstract class StyleEditorPart<V>
-        extends EditorPart<TupleStyle, V>
+public abstract class StyleEditorPart<V> extends EditorPart<TupleStyle, V>
 {
     private boolean mandatory;
 

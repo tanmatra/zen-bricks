@@ -6,7 +6,7 @@ public abstract class StyleProperty<V> extends Property<TupleStyle, V>
 {
     // ============================================================ Constructors
 
-    public StyleProperty(String title, String key) {
+    public StyleProperty(String key, String title) {
         super(key, title);
     }
 

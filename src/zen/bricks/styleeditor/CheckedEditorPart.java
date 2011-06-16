@@ -1,4 +1,4 @@
-package zen.bricks.styleeditor.parts;
+package zen.bricks.styleeditor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -12,11 +12,10 @@ import org.eclipse.swt.widgets.Listener;
 
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleStyle;
-import zen.bricks.styleeditor.StyleEditorPart;
 
 public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
 {
-    Button definedCheck;
+    protected Button definedCheckbox;
 
     public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
         super(style, property);
@@ -27,20 +26,20 @@ public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     }
 
     protected void createDefinedCheck(Composite parent) {
-        definedCheck = new Button(parent, SWT.CHECK);
-        definedCheck.setText(property.getTitle());
+        definedCheckbox = new Button(parent, SWT.CHECK);
+        definedCheckbox.setText(property.getTitle());
         if (isMandatory()) {
-            definedCheck.setSelection(true);
-            definedCheck.setGrayed(true);
-            definedCheck.addListener(SWT.Selection, new Listener() {
+            definedCheckbox.setSelection(true);
+            definedCheckbox.setGrayed(true);
+            definedCheckbox.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
                     event.doit = false;
-                    definedCheck.setSelection(true);
+                    definedCheckbox.setSelection(true);
                 }
             });
         } else {
-            definedCheck.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
+            definedCheckbox.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent event) {
                     definedCheckChanged(isDefined());
                 }
             });
@@ -72,12 +71,12 @@ public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
     protected abstract void definedCheckChanged(boolean defined);
 
     public boolean isDefined() {
-        return isMandatory() || definedCheck.getSelection();
+        return isMandatory() || definedCheckbox.getSelection();
     }
 
     protected void setDefined(boolean defined) {
         if (!isMandatory()) {
-            definedCheck.setSelection(defined);
+            definedCheckbox.setSelection(defined);
         }
     }
 }

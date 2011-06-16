@@ -11,20 +11,13 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 
-import zen.bricks.properties.BackgroundProperty;
 import zen.bricks.properties.BorderProperty;
-import zen.bricks.properties.ChildrenSpacingProperty;
 import zen.bricks.properties.ColorProperty;
 import zen.bricks.properties.FontProperty;
-import zen.bricks.properties.ForegroundProperty;
 import zen.bricks.properties.IntegerProperty;
 import zen.bricks.properties.LayoutProperty;
-import zen.bricks.properties.LineSpacingProperty;
 import zen.bricks.properties.MarginProperty;
-import zen.bricks.properties.PaddingProperty;
 import zen.bricks.properties.TextBackgroundProperty;
-import zen.bricks.properties.TextFontProperty;
-import zen.bricks.properties.TextMarginProperty;
 import zen.bricks.properties.TransparentColor;
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.styleeditor.PropertiesListEditor;
@@ -34,35 +27,78 @@ public class TupleStyle extends Style
     // ============================================================ Class Fields
 
     public static final ColorProperty FOREGROUND =
-            new ForegroundProperty("Foreground color", "color");
+            new ColorProperty("color", "Foreground color")
+    {
+        public RGB get(TupleStyle style) {
+            return style.getForegroundRGB(); }
+        public void set(TupleStyle style, RGB value) {
+            style.setForegroundRGB(value); }
+    };
 
     public static final ColorProperty BACKGROUND =
-            new BackgroundProperty("Background color", "background");
+            new ColorProperty("background", "Background color")
+    {
+        public RGB get(TupleStyle style) {
+            return style.getBackgroundRGB(); }
+        public void set(TupleStyle style, RGB value) {
+            style.setBackgroundRGB(value); }
+    };
 
     public static final StyleProperty<TransparentColor> TEXT_BACKGROUND =
-            new TextBackgroundProperty("Text background color",
-                    "textBackground");
+            new TextBackgroundProperty("textBackground",
+                    "Text background color");
 
     public static final FontProperty FONT =
-            new TextFontProperty("Font", "font");
+            new FontProperty("font", "Font")
+    {
+        public FontData[] get(TupleStyle style) {
+            return style.getFontList(); }
+        public void set(TupleStyle style, FontData[] value) {
+            style.setFont(value); }
+    };
 
     public static final MarginProperty PADDING =
-            new PaddingProperty("Brick padding", "padding");
+            new MarginProperty("padding", "Brick padding")
+    {
+        public Margin get(TupleStyle style) {
+            return style.getPadding(); }
+        public void set(TupleStyle style, Margin value) {
+            style.setPadding(value); }
+    };
 
     public static final MarginProperty TEXT_MARGIN =
-            new TextMarginProperty("Text margin", "textMargin");
+            new MarginProperty("textMargin", "Text margin")
+    {
+        public Margin get(TupleStyle style) {
+            return style.getTextMargin(); }
+        public void set(TupleStyle style, Margin value) {
+            style.setTextMargin(value); }
+    };
 
     public static final IntegerProperty LINE_SPACING =
-            new LineSpacingProperty("Line spacing", "lineSpacing");
+            new IntegerProperty("lineSpacing", "Line spacing")
+    {
+        { setMinimum(-1); }
+        public Integer get(TupleStyle style) {
+            return style.getLineSpacing(); }
+        public void set(TupleStyle style, Integer value) {
+            style.setLineSpacing(value); }
+    };
 
     public static final IntegerProperty CHILDREN_SPACING =
-            new ChildrenSpacingProperty("Children spacing", "spacing");
+            new IntegerProperty("spacing", "Children spacing")
+    {
+        public Integer get(TupleStyle style) {
+            return style.getSpacing(); }
+        public void set(TupleStyle style, Integer value) {
+            style.setSpacing(value); }
+    };
 
     public static final StyleProperty<TupleLayout> LAYOUT =
-            new LayoutProperty("Layout", "layout");
+            new LayoutProperty("layout", "Layout");
 
     public static final StyleProperty<Border> BORDER =
-            new BorderProperty("Border", "border");
+            new BorderProperty("border", "Border");
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static final StyleProperty<?>[] ALL_PROPERTIES = {

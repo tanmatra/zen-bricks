@@ -10,16 +10,15 @@ import org.eclipse.swt.widgets.Composite;
 import zen.bricks.StyleProperty;
 import zen.bricks.TupleLayout;
 import zen.bricks.TupleStyle;
-import zen.bricks.UI;
+import zen.bricks.styleeditor.CheckedEditorPart;
 import zen.bricks.styleeditor.StyleEditorPart;
-import zen.bricks.styleeditor.parts.CheckedEditorPart;
 
 public class LayoutProperty extends StyleProperty<TupleLayout>
 {
     // ============================================================ Constructors
 
-    public LayoutProperty(String title, String keySuffix) {
-        super(title, keySuffix);
+    public LayoutProperty(String key, String title) {
+        super(key, title);
     }
 
     // ================================================================= Methods
@@ -32,54 +31,9 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         style.setLayout(value);
     }
 
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    public StyleEditorPart<TupleLayout> createEditorPart(
-            final TupleStyle style)
-    {
-        return new CheckedEditorPart<TupleLayout>(this, style)
-        {
-            private Combo combo;
-
-            public void createWidgets(Composite parent, int columns) {
-                final UI ui = style.getUI();
-
-                createDefinedCheck(parent);
-                final Composite panel =
-                        createValuesPanel(parent, columns - 1);
-
-                combo = new Combo(panel, SWT.DROP_DOWN | SWT.READ_ONLY);
-                final List<TupleLayout> layouts = ui.getTupleLayouts();
-                for (TupleLayout tupleLayout : layouts) {
-                    combo.add(tupleLayout.getTitle());
-                }
-
-                final TupleLayout styleLayout = style.getLayout();
-                if (styleLayout != null) {
-                    final int idx =
-                            ui.getTupleLayouts().indexOf(styleLayout);
-                    if (idx >= 0) {
-                        combo.select(idx);
-                    }
-                }
-
-                combo.setEnabled(isDefined());
-            }
-
-            protected void definedCheckChanged(boolean defined) {
-                combo.setEnabled(defined);
-            }
-
-            public TupleLayout getValue() {
-                final int idx = combo.getSelectionIndex();
-                if (idx < 0) {
-                    return null;
-                } else {
-                    return style.getUI().getTupleLayouts().get(idx);
-                }
-            }
-        };
+    public StyleEditorPart<TupleLayout> createEditorPart(TupleStyle style) {
+        return new LayoutEditorPart(this, style);
     }
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     public void load(TupleStyle style, Preferences preferences) {
         final String value = read(preferences);
@@ -100,5 +54,55 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         final TupleLayout tupleLayout = get(object);
         write(preferences,
                 (tupleLayout == null) ? null : tupleLayout.getName());
+    }
+
+    // ========================================================== Nested Classes
+
+    private static class LayoutEditorPart extends CheckedEditorPart<TupleLayout>
+    {
+        private Combo combo;
+
+        LayoutEditorPart(StyleProperty<TupleLayout> property, TupleStyle style)
+        {
+            super(property, style);
+        }
+
+        private List<TupleLayout> getLayouts() {
+            return getEditedObject().getUI().getTupleLayouts();
+        }
+
+        public void createWidgets(Composite parent, int columns) {
+            createDefinedCheck(parent);
+            final Composite panel = createValuesPanel(parent, columns - 1);
+
+            combo = new Combo(panel, SWT.DROP_DOWN | SWT.READ_ONLY);
+            final List<TupleLayout> layouts = getLayouts();
+            for (TupleLayout tupleLayout : layouts) {
+                combo.add(tupleLayout.getTitle());
+            }
+
+            final TupleLayout styleLayout = getEditedValue();
+            if (styleLayout != null) {
+                final int idx = layouts.indexOf(styleLayout);
+                if (idx >= 0) {
+                    combo.select(idx);
+                }
+            }
+
+            combo.setEnabled(isDefined());
+        }
+
+        protected void definedCheckChanged(boolean defined) {
+            combo.setEnabled(defined);
+        }
+
+        public TupleLayout getValue() {
+            final int idx = combo.getSelectionIndex();
+            if (idx < 0) {
+                return null;
+            } else {
+                return getLayouts().get(idx);
+            }
+        }
     }
 }
