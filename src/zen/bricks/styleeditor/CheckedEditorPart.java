@@ -10,15 +10,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import zen.bricks.StyleProperty;
-import zen.bricks.TupleStyle;
+import zen.bricks.Property;
 
-public abstract class CheckedEditorPart<T> extends StyleEditorPart<T>
+public abstract class CheckedEditorPart<T, V> extends EditorPart<T, V>
 {
     protected Button definedCheckbox;
 
-    public CheckedEditorPart(StyleProperty<T> property, TupleStyle style) {
-        super(style, property);
+    public CheckedEditorPart(T object, Property<T, V> property) {
+        super(object, property);
     }
 
     protected int getNumColumns() {

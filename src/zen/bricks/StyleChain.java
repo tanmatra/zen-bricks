@@ -14,7 +14,7 @@ public class StyleChain
         this.parent = parent;
     }
 
-    public TupleStyle find(StyleProperty<?> property) {
+    public TupleStyle find(Property<TupleStyle, ?> property) {
         StyleChain chain = this;
         do {
             final TupleStyle style = chain.style;
@@ -27,7 +27,7 @@ public class StyleChain
                 "Style property %s not found in chain", property));
     }
 
-    public <V> V get(StyleProperty<V> property) {
+    public <V> V get(Property<TupleStyle, V> property) {
         return property.get(find(property));
     }
 }

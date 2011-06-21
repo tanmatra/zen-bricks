@@ -18,12 +18,11 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
 
 import zen.bricks.AdjustFontDialog;
-import zen.bricks.StyleProperty;
-import zen.bricks.TupleStyle;
+import zen.bricks.Property;
 import zen.bricks.styleeditor.CheckedEditorPart;
-import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 
-public abstract class FontProperty extends StyleProperty<FontData[]>
+public abstract class FontProperty<T> extends Property<T, FontData[]>
 {
     // ============================================================ Class Fields
 
@@ -38,11 +37,11 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
 
     // ================================================================= Methods
 
-    public StyleEditorPart<FontData[]> createEditorPart(TupleStyle style) {
-        return new FontEditorPart(this, style);
+    public EditorPart<T, FontData[]> createEditorPart(T style) {
+        return new FontEditorPart<T>(style, this);
     }
 
-    public void load(TupleStyle style, Preferences preferences) {
+    public void load(T style, Preferences preferences) {
         final String value = read(preferences);
         final FontData[] list;
         if ((value == null) || "inherit".equals(value)) {
@@ -83,7 +82,7 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         return data;
     }
 
-    public void save(TupleStyle object, Preferences preferences) {
+    public void save(T object, Preferences preferences) {
         final FontData[] fontList = get(object);
         if (fontList == null) {
             write(preferences, null);
@@ -105,7 +104,7 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
 
     // ========================================================== Nested Classes
 
-    private static class FontEditorPart extends CheckedEditorPart<FontData[]>
+    private static class FontEditorPart<T> extends CheckedEditorPart<T, FontData[]>
     {
         Button fontSelectButton;
         FontData[] fontList;
@@ -113,10 +112,8 @@ public abstract class FontProperty extends StyleProperty<FontData[]>
         private Font previewFont;
         private Button adjustButton;
 
-        public FontEditorPart(StyleProperty<FontData[]> property,
-                TupleStyle style)
-        {
-            super(property, style);
+        public FontEditorPart(T object, Property<T, FontData[]> property) {
+            super(object, property);
             fontList = getEditedValue(); // inline?
         }
 

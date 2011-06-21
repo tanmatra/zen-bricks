@@ -13,12 +13,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.ColorUtil;
-import zen.bricks.StyleProperty;
+import zen.bricks.Property;
 import zen.bricks.TupleStyle;
 import zen.bricks.styleeditor.CheckedEditorPart;
-import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 
-public class TextBackgroundProperty extends StyleProperty<TransparentColor>
+public class TextBackgroundProperty extends Property<TupleStyle, TransparentColor>
 {
     // ============================================================ Class Fields
 
@@ -32,9 +32,10 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
 
     // ================================================================= Methods
 
-    public StyleEditorPart<TransparentColor> createEditorPart(TupleStyle style)
+    public EditorPart<TupleStyle, TransparentColor> createEditorPart(
+            TupleStyle object)
     {
-        return new TransparentColorEditorPart(this, style);
+        return new TransparentColorEditorPart(object, this);
     }
 
     public TransparentColor get(TupleStyle style) {
@@ -77,16 +78,15 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
     // ========================================================== Nested Classes
 
     private static class TransparentColorEditorPart
-            extends CheckedEditorPart<TransparentColor>
+            extends CheckedEditorPart<TupleStyle, TransparentColor>
     {
         private ColorSelector colorSelector;
         private Button transparentCheck;
 
-        public TransparentColorEditorPart(
-                StyleProperty<TransparentColor> property,
-                TupleStyle style)
+        public TransparentColorEditorPart(TupleStyle object,
+                Property<TupleStyle, TransparentColor> property)
         {
-            super(property, style);
+            super(object, property);
         }
 
         public void createWidgets(Composite parent, int columns) {
@@ -99,7 +99,7 @@ public class TextBackgroundProperty extends StyleProperty<TransparentColor>
             transparentCheck = new Button(panel, SWT.CHECK);
             transparentCheck.setText("Transparent");
             transparentCheck.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(SelectionEvent event) {
                     transparentCheckChanged();
                 }
             });

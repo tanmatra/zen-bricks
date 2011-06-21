@@ -1,5 +1,8 @@
 package zen.bricks.styleeditor;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.widgets.Composite;
+
 import zen.bricks.Property;
 
 /**
@@ -8,14 +11,22 @@ import zen.bricks.Property;
  */
 public abstract class EditorPart<T, V>
 {
+    // ================================================================== Fields
+
     protected final T editedObject;
 
     protected final Property<T, V> property;
+
+    private boolean mandatory;
+
+    // ============================================================ Constructors
 
     protected EditorPart(T object, Property<T, V> property) {
         this.editedObject = object;
         this.property = property;
     }
+
+    // ================================================================= Methods
 
     protected abstract V getValue();
 
@@ -45,5 +56,25 @@ public abstract class EditorPart<T, V>
 
     protected V getEditedValue() {
         return property.get(editedObject);
+    }
+
+    protected abstract int getNumColumns();
+
+    public abstract void createWidgets(Composite parent, int numColumns);
+
+    protected static GridDataFactory gridData() {
+        return GridDataFactory.swtDefaults();
+    }
+
+    protected static GridDataFactory gridData(int span) {
+        return gridData().span(span, 1);
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    public boolean isMandatory() {
+        return mandatory;
     }
 }

@@ -1,25 +1,35 @@
 package zen.bricks.styleeditor;
 
-import zen.bricks.StyleProperty;
-import zen.bricks.TupleStyle;
+import java.util.List;
 
-public class PropertiesListEditor extends MultipartEditor
+import zen.bricks.Property;
+
+public class PropertiesListEditor<T> extends MultipartEditor
 {
-    protected final StyleProperty<?>[] properties;
+    protected final T object;
 
-    protected final TupleStyle style;
+    protected final List<Property<T, ?>> properties;
 
-    public PropertiesListEditor(TupleStyle style, StyleProperty<?>[] properties)
+    private boolean mandatory;
+
+    public PropertiesListEditor(T object, List<Property<T, ?>> properties)
     {
+        this.object = object;
         this.properties = properties;
-        this.style = style;
     }
 
-    protected StyleEditorPart<?>[] createParts() {
-        final int count = properties.length;
-        final StyleEditorPart<?>[] parts = new StyleEditorPart<?>[count];
+    public void setAllPropertiesMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    protected EditorPart<?, ?>[] createParts() {
+        final int count = properties.size();
+        final EditorPart<?, ?>[] parts = new EditorPart<?, ?>[count];
         for (int i = 0; i < count; i++) {
-            parts[i] = properties[i].createEditorPart(style);
+            final EditorPart<T, ?> part =
+                    properties.get(i).createEditorPart(object);
+            part.setMandatory(mandatory);
+            parts[i] = part;
         }
         return parts;
     }

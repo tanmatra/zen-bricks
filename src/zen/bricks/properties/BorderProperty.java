@@ -15,14 +15,14 @@ import org.eclipse.swt.widgets.Label;
 
 import zen.bricks.Border;
 import zen.bricks.BorderFactory;
-import zen.bricks.StyleProperty;
+import zen.bricks.Property;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
 import zen.bricks.styleeditor.CheckedEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 import zen.bricks.styleeditor.IStyleEditor;
-import zen.bricks.styleeditor.StyleEditorPart;
 
-public class BorderProperty extends StyleProperty<Border>
+public class BorderProperty extends Property<TupleStyle, Border>
 {
     // ============================================================ Constructors
 
@@ -74,13 +74,14 @@ public class BorderProperty extends StyleProperty<Border>
         }
     }
 
-    public StyleEditorPart<Border> createEditorPart(TupleStyle style) {
-        return new BorderEditorPart(this, style);
+    public EditorPart<TupleStyle, Border> createEditorPart(TupleStyle style) {
+        return new BorderEditorPart(style, this);
     }
 
     // ========================================================== Nested Classes
 
-    private static class BorderEditorPart extends CheckedEditorPart<Border>
+    private static class BorderEditorPart
+            extends CheckedEditorPart<TupleStyle, Border>
     {
         private Label label;
         private Combo combo;
@@ -89,8 +90,8 @@ public class BorderProperty extends StyleProperty<Border>
         private final List<BorderFactory<?>> factories;
         private Composite editorPanel;
 
-        BorderEditorPart(BorderProperty property, TupleStyle style) {
-            super(property, style);
+        BorderEditorPart(TupleStyle style, BorderProperty property) {
+            super(style, property);
             factories = style.getUI().getBorderFactories();
         }
 
@@ -120,7 +121,7 @@ public class BorderProperty extends StyleProperty<Border>
                 combo.add(factory.getTitle());
             }
             combo.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(SelectionEvent event) {
                     comboSelected();
                 }
             });

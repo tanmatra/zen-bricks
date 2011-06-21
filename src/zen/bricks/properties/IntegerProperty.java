@@ -4,13 +4,12 @@ import java.util.prefs.Preferences;
 
 import org.eclipse.swt.widgets.Composite;
 
-import zen.bricks.StyleProperty;
-import zen.bricks.TupleStyle;
+import zen.bricks.Property;
 import zen.bricks.styleeditor.CheckedEditorPart;
-import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 import zen.bricks.swt.LabelSpinnerPair;
 
-public abstract class IntegerProperty extends StyleProperty<Integer>
+public abstract class IntegerProperty<T> extends Property<T, Integer>
 {
     // ================================================================== Fields
 
@@ -28,22 +27,22 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
         this.minimum = minimum;
     }
 
-    public StyleEditorPart<Integer> createEditorPart(TupleStyle style) {
-        final IntegerEditorPart part = new IntegerEditorPart(this, style);
+    public EditorPart<T, Integer> createEditorPart(T object) {
+        final IntegerEditorPart<T> part = new IntegerEditorPart<T>(object, this);
         if (minimum != null) {
             part.setMinimum(minimum);
         }
         return part;
     }
 
-    public void load(TupleStyle style, Preferences preferences) {
+    public void load(T object, Preferences preferences) {
         final String string = read(preferences);
         final Integer value = (string == null) ?
                 null : Integer.parseInt(string);
-        set(style, value);
+        set(object, value);
     }
 
-    public void save(TupleStyle object, Preferences preferences) {
+    public void save(T object, Preferences preferences) {
         final Integer value = get(object);
         if (value == null) {
             write(preferences, null);
@@ -54,13 +53,13 @@ public abstract class IntegerProperty extends StyleProperty<Integer>
 
     // ========================================================== Nested Classes
 
-    private static class IntegerEditorPart extends CheckedEditorPart<Integer>
+    private static class IntegerEditorPart<T> extends CheckedEditorPart<T, Integer>
     {
         private LabelSpinnerPair pair;
         private Integer minimum;
 
-        IntegerEditorPart(StyleProperty<Integer> property, TupleStyle style) {
-            super(property, style);
+        IntegerEditorPart(T object, Property<T, Integer> property) {
+            super(object, property);
         }
 
         public void setMinimum(Integer minimum) {

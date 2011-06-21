@@ -7,12 +7,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.ColorUtil;
-import zen.bricks.StyleProperty;
-import zen.bricks.TupleStyle;
+import zen.bricks.Property;
 import zen.bricks.styleeditor.CheckedEditorPart;
-import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 
-public abstract class ColorProperty extends StyleProperty<RGB>
+public abstract class ColorProperty<T> extends Property<T, RGB>
 {
     // ============================================================ Constructors
 
@@ -22,28 +21,28 @@ public abstract class ColorProperty extends StyleProperty<RGB>
 
     // ================================================================= Methods
 
-    public StyleEditorPart<RGB> createEditorPart(TupleStyle style) {
-        return new ColorEditorPart(this, style);
+    public EditorPart<T, RGB> createEditorPart(T style) {
+        return new ColorEditorPart<T>(style, this);
     }
 
-    public void load(TupleStyle style, Preferences preferences) {
+    public void load(T style, Preferences preferences) {
         final String value = read(preferences);
-        set(style, ColorUtil.parse(style.getDevice(), value));
+        set(style, ColorUtil.parse(value));
     }
 
-    public void save(TupleStyle object, Preferences preferences) {
+    public void save(T object, Preferences preferences) {
         final RGB rgb = get(object);
         write(preferences, (rgb == null) ? null : ColorUtil.format(rgb));
     }
 
     // ========================================================== Nested Classes
 
-    private static class ColorEditorPart extends CheckedEditorPart<RGB>
+    private static class ColorEditorPart<T> extends CheckedEditorPart<T, RGB>
     {
         private ColorSelector colorSelector;
 
-        public ColorEditorPart(StyleProperty<RGB> property, TupleStyle style) {
-            super(property, style);
+        public ColorEditorPart(T object, Property<T, RGB> property) {
+            super(object, property);
         }
 
         public void createWidgets(Composite parent, int columns) {

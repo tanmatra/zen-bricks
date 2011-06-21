@@ -2,6 +2,8 @@ package zen.bricks;
 
 import java.util.prefs.Preferences;
 
+import zen.bricks.styleeditor.EditorPart;
+
 /**
  * @param <T> object type
  * @param <V> value type
@@ -76,4 +78,6 @@ public abstract class Property<T, V>
     public String toString() {
         return String.format("(Property %s \"%s\")", key, title);
     }
+
+    public abstract EditorPart<T, V> createEditorPart(T object);
 }

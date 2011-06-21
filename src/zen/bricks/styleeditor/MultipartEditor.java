@@ -7,14 +7,14 @@ import org.eclipse.swt.widgets.Control;
 
 public abstract class MultipartEditor implements IStyleEditor
 {
-    private StyleEditorPart<?>[] parts;
+    private EditorPart<?, ?>[] parts;
 
     private Composite composite;
 
     protected MultipartEditor() {
     }
 
-    protected abstract StyleEditorPart<?>[] createParts();
+    protected abstract EditorPart<?, ?>[] createParts();
 
     public void createControl(Composite parent) {
         parts = createParts();
@@ -22,7 +22,7 @@ public abstract class MultipartEditor implements IStyleEditor
         composite = new Composite(parent, SWT.NONE);
 
         int numColumns = 0;
-        for (final StyleEditorPart<?> part : parts) {
+        for (final EditorPart<?, ?> part : parts) {
             numColumns = Math.max(numColumns, part.getNumColumns());
         }
 
@@ -39,13 +39,13 @@ public abstract class MultipartEditor implements IStyleEditor
     }
 
     public void apply() {
-        for (final StyleEditorPart<?> part : parts) {
+        for (final EditorPart<?, ?> part : parts) {
             part.apply();
         }
     }
 
     public void cancel() {
-        for (final StyleEditorPart<?> part : parts) {
+        for (final EditorPart<?, ?> part : parts) {
             part.cancel();
         }
     }

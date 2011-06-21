@@ -7,13 +7,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
-import zen.bricks.StyleProperty;
+import zen.bricks.Property;
 import zen.bricks.TupleLayout;
 import zen.bricks.TupleStyle;
 import zen.bricks.styleeditor.CheckedEditorPart;
-import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 
-public class LayoutProperty extends StyleProperty<TupleLayout>
+public class LayoutProperty extends Property<TupleStyle, TupleLayout>
 {
     // ============================================================ Constructors
 
@@ -31,8 +31,8 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
         style.setLayout(value);
     }
 
-    public StyleEditorPart<TupleLayout> createEditorPart(TupleStyle style) {
-        return new LayoutEditorPart(this, style);
+    public EditorPart<TupleStyle, TupleLayout> createEditorPart(TupleStyle style) {
+        return new LayoutEditorPart(style, this);
     }
 
     public void load(TupleStyle style, Preferences preferences) {
@@ -58,13 +58,15 @@ public class LayoutProperty extends StyleProperty<TupleLayout>
 
     // ========================================================== Nested Classes
 
-    private static class LayoutEditorPart extends CheckedEditorPart<TupleLayout>
+    private static class LayoutEditorPart
+            extends CheckedEditorPart<TupleStyle, TupleLayout>
     {
         private Combo combo;
 
-        LayoutEditorPart(StyleProperty<TupleLayout> property, TupleStyle style)
+        LayoutEditorPart(TupleStyle style,
+                Property<TupleStyle, TupleLayout> property)
         {
-            super(property, style);
+            super(style, property);
         }
 
         private List<TupleLayout> getLayouts() {

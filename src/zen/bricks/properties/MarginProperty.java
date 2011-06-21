@@ -6,13 +6,12 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
 
 import zen.bricks.Margin;
-import zen.bricks.StyleProperty;
-import zen.bricks.TupleStyle;
+import zen.bricks.Property;
 import zen.bricks.styleeditor.CheckedEditorPart;
-import zen.bricks.styleeditor.StyleEditorPart;
+import zen.bricks.styleeditor.EditorPart;
 import zen.bricks.swt.LabelSpinnerPair;
 
-public abstract class MarginProperty extends StyleProperty<Margin>
+public abstract class MarginProperty<T> extends Property<T, Margin>
 {
     // ============================================================ Constructors
 
@@ -22,32 +21,30 @@ public abstract class MarginProperty extends StyleProperty<Margin>
 
     // ================================================================= Methods
 
-    public StyleEditorPart<Margin> createEditorPart(TupleStyle style) {
-        return new MarginEditorPart(this, style);
+    public EditorPart<T, Margin> createEditorPart(T style) {
+        return new MarginEditorPart<T>(style, this);
     }
 
-    public void load(TupleStyle style, Preferences preferences) {
-        set(style, Margin.parseMargin(read(preferences)));
+    public void load(T object, Preferences preferences) {
+        set(object, Margin.parseMargin(read(preferences)));
     }
 
-    public void save(TupleStyle object, Preferences preferences) {
+    public void save(T object, Preferences preferences) {
         final Margin margin = get(object);
         write(preferences, (margin == null) ? null : margin.format());
     }
 
     // ========================================================== Nested Classes
 
-    private static class MarginEditorPart extends CheckedEditorPart<Margin>
+    private static class MarginEditorPart<T> extends CheckedEditorPart<T, Margin>
     {
         private LabelSpinnerPair leftValue;
         private LabelSpinnerPair topValue;
         private LabelSpinnerPair rightValue;
         private LabelSpinnerPair bottomValue;
 
-        public MarginEditorPart(StyleProperty<Margin> property,
-                TupleStyle style)
-        {
-            super(property, style);
+        public MarginEditorPart(T object, Property<T, Margin> property) {
+            super(object, property);
         }
 
         protected void definedCheckChanged(boolean selected) {
