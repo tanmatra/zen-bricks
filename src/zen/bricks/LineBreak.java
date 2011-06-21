@@ -17,10 +17,8 @@ public class LineBreak extends Brick
 {
     // ========================================================== Nested Classes
 
-    public static class LineBreakStyle extends Style
+    static class LineBreakStyle extends Style
     {
-        private static final String COLOR_KEY = "color";
-
         Color color;
 
         public LineBreakStyle(UI ui, String key, String name) {
@@ -28,28 +26,31 @@ public class LineBreak extends Brick
         }
 
         protected void loadImpl(Preferences node) {
-            color = ColorUtil.parseColor(
-                    ui.getDevice(), node.get(COLOR_KEY, null));
+            COLOR.load(this, node);
         }
 
         protected void saveImpl(Preferences node) {
-            node.put(COLOR_KEY, ColorUtil.format(color));
+            COLOR.save(this, node);
         }
 
         void setRGB(RGB rgb) {
-            color = new Color(ui.getDevice(), rgb);
+            if (color != null) {
+                color.dispose();
+            }
+            if (rgb != null) {
+                color = new Color(ui.getDevice(), rgb);
+            } else {
+                color = null;
+            }
         }
 
         RGB getRGB() {
-            return color.getRGB();
+            return (color == null) ? null : color.getRGB();
         }
 
         public IStyleEditor createEditor() {
-            final PropertiesListEditor<LineBreakStyle> editor =
-                    new PropertiesListEditor<LineBreakStyle>(
-                            this, ALL_PROPERTIES);
-            editor.setAllPropertiesMandatory(true);
-            return editor;
+            return new PropertiesListEditor<LineBreakStyle>(
+                    this, ALL_PROPERTIES);
         }
 
         public void dispose() {
@@ -60,7 +61,9 @@ public class LineBreak extends Brick
         }
     }
 
-    private static final Property<LineBreakStyle, RGB> COLOR =
+    // ============================================================ Class Fields
+
+    static final ColorProperty<LineBreakStyle> COLOR =
             new ColorProperty<LineBreakStyle>("color", "Color")
     {
         public RGB get(LineBreakStyle style) {
@@ -84,9 +87,11 @@ public class LineBreak extends Brick
     protected void paint(GC gc, int baseX, int baseY, Rectangle clipping,
             Editor editor)
     {
-        final LineBreakStyle style = editor.getUI().getLineBreakStyle();
-        gc.setBackground(style.color);
-        gc.fillRectangle(baseX, baseY, getWidth(), getHeight());
+        final Color color = editor.getUI().getLineBreakStyle().color;
+        if (color != null) {
+            gc.setBackground(color);
+            gc.fillRectangle(baseX, baseY, getWidth(), getHeight());
+        }
     }
 
     public boolean doLayout(Editor editor, boolean force) {
