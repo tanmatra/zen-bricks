@@ -241,7 +241,7 @@ public class TupleStyle extends Style
     }
 
     public IStyleEditor createEditor() {
-        return new PropertiesListEditor(ALL_PROPERTIES, this);
+        return new PropertiesListEditor(this, ALL_PROPERTIES);
     }
 
     public Color getBackgroundColor() {
