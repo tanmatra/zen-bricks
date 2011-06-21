@@ -103,20 +103,11 @@ public class TupleStyle extends Style
             new BorderProperty("border", "Border");
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    public static final List<Property<TupleStyle, ?>> ALL_PROPERTIES =
-            Arrays.<Property<TupleStyle, ?>>asList
-    (
-        FONT,
-        FOREGROUND,
-        BACKGROUND,
-        TEXT_BACKGROUND,
-        PADDING,
-        TEXT_MARGIN,
-        LINE_SPACING,
-        CHILDREN_SPACING,
-        LAYOUT,
-        BORDER
-    );
+    private static final List<? extends Property<TupleStyle, ?>> ALL_PROPERTIES =
+            Arrays.asList(
+                    FONT, FOREGROUND, BACKGROUND, TEXT_BACKGROUND,
+                    PADDING, TEXT_MARGIN, LINE_SPACING, CHILDREN_SPACING,
+                    LAYOUT, BORDER);
 
     // ================================================================== Fields
 

@@ -8,11 +8,12 @@ public class PropertiesListEditor<T> extends MultipartEditor
 {
     protected final T object;
 
-    protected final List<Property<T, ?>> properties;
+    protected final List<? extends Property<T, ?>> properties;
 
     private boolean mandatory;
 
-    public PropertiesListEditor(T object, List<Property<T, ?>> properties)
+    public PropertiesListEditor(T object,
+            List<? extends Property<T, ?>> properties)
     {
         this.object = object;
         this.properties = properties;
