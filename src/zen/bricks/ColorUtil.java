@@ -81,6 +81,9 @@ public class ColorUtil
     }
 
     public static RGB parse(String str) {
+        if (str == null) {
+            return null;
+        }
         if (str.charAt(0) == '#') {
             final int r;
             final int g;
