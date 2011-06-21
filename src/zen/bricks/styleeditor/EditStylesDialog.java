@@ -8,13 +8,14 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
 
 import zen.bricks.Style;
 import zen.bricks.UI;
@@ -36,6 +38,35 @@ public class EditStylesDialog extends Dialog
     {
         public String getText(Object element) {
             return ((Style) element).getName();
+        }
+    }
+
+    static class StylesContentProvider implements ITreeContentProvider
+    {
+        public Object[] getElements(Object inputElement) {
+            return (Object[]) inputElement;
+        }
+
+        public Object[] getChildren(Object parentElement) {
+            final Style style = ((Style) parentElement);
+            return style.getChildren().toArray();
+        }
+
+        public Object getParent(Object element) {
+            final Style style = ((Style) element);
+            return style.getParent();
+        }
+
+        public boolean hasChildren(Object element) {
+            final Style style = ((Style) element);
+            return style.getChildren().size() > 0;
+        }
+
+        public void dispose() {
+        }
+
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+        {
         }
     }
 
@@ -91,13 +122,15 @@ public class EditStylesDialog extends Dialog
         final Label stylesLabel = new Label(listPanel, SWT.NONE);
         stylesLabel.setText("Styles:");
 
-        final TableViewer stylesViewer = new TableViewer(listPanel,
-                SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
-        GridDataFactory.fillDefaults().grab(true, true)
-                .applyTo(stylesViewer.getTable());
+        final TreeViewer stylesViewer = new TreeViewer(listPanel,
+                SWT.BORDER | SWT.SINGLE);
+        final Tree tree = stylesViewer.getTree();
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
+
         stylesViewer.setLabelProvider(new StyleLabelProvider());
-        stylesViewer.setContentProvider(ArrayContentProvider.getInstance());
-        stylesViewer.setInput(styles);
+        stylesViewer.setContentProvider(new StylesContentProvider());
+        stylesViewer.setInput(styles.toArray());
+        stylesViewer.expandAll();
         stylesViewer.addPostSelectionChangedListener(
                 new ISelectionChangedListener()
         {

@@ -111,8 +111,6 @@ public class TupleStyle extends Style
 
     // ================================================================== Fields
 
-    private boolean topLevel;
-
     private Font font;
 
     /**
@@ -149,6 +147,10 @@ public class TupleStyle extends Style
         super(ui, key, name);
     }
 
+    public TupleStyle(Style parent, String key, String name) {
+        super(parent, key, name);
+    }
+
     // ================================================================= Methods
 
     protected void loadImpl(Preferences node) {
@@ -161,14 +163,6 @@ public class TupleStyle extends Style
         for (final Property<TupleStyle, ?> property : ALL_PROPERTIES) {
             property.save(this, node);
         }
-    }
-
-    public boolean isTopLevel() {
-        return topLevel;
-    }
-
-    public void setTopLevel(boolean topLevel) {
-        this.topLevel = topLevel;
     }
 
     public void dispose() {

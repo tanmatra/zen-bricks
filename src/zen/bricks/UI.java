@@ -68,16 +68,19 @@ public class UI
 
     private void createStyles() {
         allStyles.add(new GlobalStyle("global", "Global"));
-        allStyles.add(basicStyle = new TupleStyle(this, "basic", "Basic"));
-        basicStyle.setTopLevel(true);
-        allStyles.add(atomStyle = new TupleStyle(this, "atom", "Atom"));
-        allStyles.add(listStyle = new TupleStyle(this, "list", "List"));
-        allStyles.add(selectedStyle =
-                new TupleStyle(this, "selected", "Selected"));
-        allStyles.add(selectedParentStyle =
-                new TupleStyle(this, "selectedParent", "Selected parent"));
-        allStyles.add(lineBreakStyle =
-                new LineBreak.LineBreakStyle(this, "linebreak", "Line break"));
+
+        basicStyle = new TupleStyle(this, "basic", "Basic");
+        allStyles.add(basicStyle);
+
+        atomStyle = new TupleStyle(basicStyle, "atom", "Atom");
+        listStyle = new TupleStyle(basicStyle, "list", "List");
+        selectedStyle = new TupleStyle(basicStyle, "selected", "Selected");
+        selectedParentStyle =
+                new TupleStyle(basicStyle, "selectedParent", "Selected parent");
+
+        lineBreakStyle =
+                new LineBreak.LineBreakStyle(this, "linebreak", "Line break");
+        allStyles.add(lineBreakStyle);
     }
 
     void dispose() {
