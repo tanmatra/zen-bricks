@@ -3,18 +3,14 @@ package zen.bricks.actions;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackReader;
-import java.io.Reader;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
 import zen.bricks.Brick;
-import zen.bricks.LineBreak;
 import zen.bricks.MainWindow;
-import zen.bricks.TupleBrick;
+import zen.bricks.ZenTextReader;
 
 public class OpenAction extends Action
 {
@@ -55,87 +51,14 @@ public class OpenAction extends Action
     private Brick load(String fileName) throws IOException {
         final InputStream input = new FileInputStream(fileName);
         try {
-            final Reader inputReader = new InputStreamReader(input, "UTF-8");
+            final ZenTextReader reader = new ZenTextReader(input);
             try {
-                final PushbackReader reader = new PushbackReader(inputReader);
-                try {
-                    return readBrick(reader, null);
-                } finally {
-                    reader.close();
-                }
+                return reader.readBrick(null);
             } finally {
-                inputReader.close();
+                reader.close();
             }
         } finally {
             input.close();
         }
-    }
-
-    private Brick readBrick(PushbackReader reader, TupleBrick parent)
-            throws IOException
-    {
-        final int c = reader.read();
-        if (c < 0) {
-            return null;
-        } else if (c == '(') {
-            final String text = readTupleText(reader);
-            final TupleBrick tupleBrick = new TupleBrick(parent, text);
-            for (;;) {
-                final Brick brick = readBrick(reader, tupleBrick);
-                if (brick != null) {
-                    tupleBrick.appendChild(brick);
-                }
-                final int c2 = reader.read();
-                if (c2 < 0) {
-                    throw new IOException("Unexpected EOF in tuple");
-                } else if (c2 == ')') {
-                    break;
-                } else {
-                    reader.unread(c2);
-                }
-            }
-            return tupleBrick;
-        } else if (c == ')') {
-            reader.unread(c);
-            return null;
-        } else if (c == '\n') {
-            return new LineBreak(parent);
-        } else {
-            throw new IOException("Invalid char: " + (char) c);
-        }
-    }
-
-    private String readTupleText(PushbackReader reader) throws IOException {
-        final StringBuilder buffer = new StringBuilder();
-        LOOP: for (;;) {
-            final int c = reader.read();
-            if (c < 0) {
-                break;
-            }
-            switch (c) {
-                case '(': case ')': case '[': case ']': case '\n':
-                    reader.unread(c);
-                    break LOOP;
-                case '\\':
-                    final int c2 = reader.read();
-                    if (c2 < 0) {
-                        throw new IOException("Unexpected EOF in escape char");
-                    }
-                    switch (c2) {
-                        case '\\': case '(': case ')': case '[': case ']':
-                            buffer.append((char) c2);
-                            break;
-                        case 'n':
-                            buffer.append('\n');
-                            break;
-                        default:
-                            throw new IOException("Illegal escape char");
-                    }
-                    break;
-                default:
-                    buffer.append((char) c);
-            }
-        }
-        return buffer.toString();
     }
 }
