@@ -76,6 +76,6 @@ public abstract class Style
     }
 
     public boolean isTopLevel() {
-        return children.size() == 0;
+        return (parent == null);
     }
 }
