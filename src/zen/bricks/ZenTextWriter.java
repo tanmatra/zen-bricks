@@ -22,12 +22,17 @@ public class ZenTextWriter
         if (brick instanceof TupleBrick) {
             final TupleBrick tupleBrick = (TupleBrick) brick;
             final int count = tupleBrick.getChildCount() - 1;
+            final String text = tupleBrick.getText();
             if (count == 0) {
-                writer.write(' ');
-                writeTupleText(tupleBrick.getText());
+                if (text.isEmpty()) {
+                    writer.write("()");
+                } else {
+                    writer.write(' ');
+                    writeTupleText(text);
+                }
             } else {
                 writer.write('(');
-                writeTupleText(tupleBrick.getText());
+                writeTupleText(text);
                 for (int i = 0; i < count; i++) {
                     write(tupleBrick.getChild(i));
                 }
