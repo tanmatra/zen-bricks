@@ -55,8 +55,10 @@ public class ZenTextWriter
                 case '\n':
                     writer.write("\\n");
                     break;
-                case ' ': case '\\':
-                case '(': case ')': case '[': case ']':
+                case ' ':
+                    writer.write("\\_");
+                    break;
+                case '\\': case '(': case ')': case '[': case ']':
                     writer.write('\\');
                     writer.write(c);
                     break;
