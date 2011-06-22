@@ -223,10 +223,12 @@ public class TupleBrick extends ContainerBrick
         final StyleChain chain = ui.getStyleChain(this, editor);
 
         final Border border = chain.find(TupleStyle.BORDER).getBorder();
-        border.paint(gc, baseX, baseY, this, clipping, editor);
+        border.paintBackground(gc, baseX, baseY, this, clipping, editor);
 
         paintText(gc, baseX, baseY, clipping, chain);
         paintChildren(gc, baseX, baseY, clipping, editor);
+
+        border.paintBorder(gc, baseX, baseY, this, clipping, editor);
     }
 
     private void paintText(GC gc, int baseX, int baseY, Rectangle clipping,

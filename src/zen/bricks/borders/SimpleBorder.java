@@ -114,16 +114,17 @@ public class SimpleBorder extends Border
         }
     }
 
-    public void paint(GC gc, int x, int y, Brick brick, Rectangle clipping,
-            Editor editor)
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    public void paintBackground(GC gc, int x, int y, Brick brick,
+            Rectangle clipping, Editor editor)
     {
         final TupleBrick tupleBrick = (TupleBrick) brick;
         final StyleChain styleChain = ui.getStyleChain(tupleBrick, editor);
         final Color backgroundColor =
                 styleChain.find(TupleStyle.BACKGROUND).getBackgroundColor();
+        gc.setAntialias(SWT.OFF);
         paintBackground(gc, x, y, brick, backgroundColor);
-
-        paintBorder(gc, x, y, brick, clipping, color);
     }
 
     protected void paintBackground(GC gc, int x, int y, Brick brick,
@@ -133,15 +134,15 @@ public class SimpleBorder extends Border
         gc.fillRectangle(x, y, brick.getWidth(), brick.getHeight());
     }
 
-    /**
-     * @param clipping not used
-     */
-    protected void paintBorder(GC gc, int x, int y, Brick brick,
-            Rectangle clipping, Color foreground)
+    public void paintBorder(GC gc, int x, int y, Brick brick,
+            Rectangle clipping, Editor editor)
     {
-        gc.setForeground(foreground);
+        gc.setAntialias(SWT.OFF);
+        gc.setForeground(color);
         gc.drawRectangle(x, y, brick.getWidth() - 1, brick.getHeight() - 1);
     }
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     public RGB getColor() {
         return color.getRGB();

@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Spinner;
 
 import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
+import zen.bricks.Editor;
 import zen.bricks.Property;
 import zen.bricks.TupleStyle;
 import zen.bricks.UI;
@@ -100,16 +101,18 @@ public class RoundedBorder extends SimpleBorder
     protected void paintBackground(GC gc, int x, int y, Brick brick,
             Color background)
     {
+        gc.setAntialias(SWT.OFF);
         gc.setBackground(background);
         gc.fillRoundRectangle(x, y,
                 brick.getWidth(), brick.getHeight(),
                 arcSize, arcSize);
     }
 
-    protected void paintBorder(GC gc, int x, int y, Brick brick,
-            Rectangle clipping, Color foreground)
+    public void paintBorder(GC gc, int x, int y, Brick brick,
+            Rectangle clipping, Editor editor)
     {
-        gc.setForeground(foreground);
+        ui.prepareAntialias(gc);
+        gc.setForeground(color);
         gc.drawRoundRectangle(x, y,
                 brick.getWidth() - 1, brick.getHeight() - 1,
                 arcSize, arcSize);

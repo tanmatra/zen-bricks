@@ -18,8 +18,11 @@ public abstract class Border
 
     public abstract void dispose();
 
-    public abstract void paint(GC gc, int x, int y, Brick brick,
-                                Rectangle clipping, Editor editor);
+    public abstract void paintBackground(GC gc, int x, int y, Brick brick,
+            Rectangle clipping, Editor editor);
+
+    public abstract void paintBorder(GC gc, int x, int y, Brick brick,
+            Rectangle clipping, Editor editor);
 
     public BorderFactory<?> getFactory() {
         return factory;

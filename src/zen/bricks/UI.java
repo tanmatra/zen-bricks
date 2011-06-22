@@ -235,8 +235,11 @@ public class UI
         if (advanced != null) {
             gc.setAdvanced(advanced);
         }
-        gc.setAntialias(antialias);
         gc.setTextAntialias(textAntialias);
+    }
+
+    public void prepareAntialias(GC gc) {
+        gc.setAntialias(antialias);
     }
 
     public StyleChain getStyleChain(TupleBrick brick, Editor editor) {
