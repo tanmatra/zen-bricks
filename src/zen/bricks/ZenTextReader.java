@@ -29,6 +29,10 @@ public class ZenTextReader
         final int c = reader.read();
         if (c < 0) {
             return null;
+        } else if (c == ' ') {
+            final String text = readTupleText();
+            final TupleBrick tupleBrick = new TupleBrick(parent, text);
+            return tupleBrick;
         } else if (c == '(') {
             final String text = readTupleText();
             final TupleBrick tupleBrick = new TupleBrick(parent, text);
@@ -65,7 +69,8 @@ public class ZenTextReader
                 break;
             }
             switch (c) {
-                case '(': case ')': case '[': case ']': case '\n':
+                case '(': case ')': case '[': case ']':
+                case '\n': case ' ':
                     reader.unread(c);
                     break LOOP;
                 case '\\':

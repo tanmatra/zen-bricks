@@ -8,7 +8,7 @@ import java.io.Writer;
 
 public class ZenTextWriter
 {
-    private Writer writer;
+    private final Writer writer;
 
     public ZenTextWriter(OutputStream output) {
         try {
@@ -21,13 +21,18 @@ public class ZenTextWriter
     public void write(Brick brick) throws IOException {
         if (brick instanceof TupleBrick) {
             final TupleBrick tupleBrick = (TupleBrick) brick;
-            writer.write('(');
-            writeTupleText(tupleBrick.getText());
             final int count = tupleBrick.getChildCount() - 1;
-            for (int i = 0; i < count; i++) {
-                write(tupleBrick.getChild(i));
+            if (count == 0) {
+                writer.write(' ');
+                writeTupleText(tupleBrick.getText());
+            } else {
+                writer.write('(');
+                writeTupleText(tupleBrick.getText());
+                for (int i = 0; i < count; i++) {
+                    write(tupleBrick.getChild(i));
+                }
+                writer.write(')');
             }
-            writer.write(')');
         } else if (brick instanceof LineBreak) {
             writer.write('\n');
         } else {
