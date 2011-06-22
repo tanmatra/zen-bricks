@@ -26,13 +26,12 @@ public class ZenTextReader
     }
 
     public Brick readBrick(TupleBrick parent) throws IOException {
-        final int c = reader.read();
+        int c;
+        do { // skip spaces
+            c = reader.read();
+        } while (c == ' ');
         if (c < 0) {
             return null;
-        } else if (c == ' ') {
-            final String text = readTupleText();
-            final TupleBrick tupleBrick = new TupleBrick(parent, text);
-            return tupleBrick;
         } else if (c == '(') {
             final String text = readTupleText();
             final TupleBrick tupleBrick = new TupleBrick(parent, text);
@@ -56,8 +55,11 @@ public class ZenTextReader
             return null;
         } else if (c == '\n') {
             return new LineBreak(parent);
-        } else {
-            throw new IOException("Invalid char: " + (char) c);
+        } else { // atom
+            reader.unread(c);
+            final String text = readTupleText();
+            final TupleBrick tupleBrick = new TupleBrick(parent, text);
+            return tupleBrick;
         }
     }
 
