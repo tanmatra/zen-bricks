@@ -74,7 +74,8 @@ public class ZenTextReader
                         throw new IOException("Unexpected EOF in escape char");
                     }
                     switch (c2) {
-                        case '\\': case '(': case ')': case '[': case ']':
+                        case ' ': case '\\':
+                        case '(': case ')': case '[': case ']':
                             buffer.append((char) c2);
                             break;
                         case 'n':
