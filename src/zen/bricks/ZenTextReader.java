@@ -85,6 +85,9 @@ public class ZenTextReader
                         case '(': case ')': case '[': case ']':
                             buffer.append((char) c2);
                             break;
+                        case '_':
+                            buffer.append(' ');
+                            break;
                         case 'n':
                             buffer.append('\n');
                             break;
