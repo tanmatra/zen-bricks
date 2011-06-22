@@ -106,12 +106,12 @@ public class UI
         }
     }
 
-    void load(Preferences preferences) throws Exception {
+    public void load(Preferences preferences) throws Exception {
         loadLayoutFactories();
         loadBorderFactories();
 
         for (final Style style : allStyles) {
-            style.load(preferences);
+            loadStyle(style, preferences);
         }
 
         basicChain = basicStyle.createChain(null);
@@ -121,9 +121,23 @@ public class UI
         fireChangedEvent();
     }
 
+    private static void loadStyle(Style style, Preferences preferences) {
+        style.load(preferences);
+        for (final Style child : style.getChildren()) {
+            loadStyle(child, preferences);
+        }
+    }
+
     public void save(Preferences preferences) {
         for (final Style style : allStyles) {
-            style.save(preferences);
+            saveStyle(style, preferences);
+        }
+    }
+
+    private static void saveStyle(Style style, Preferences preferences) {
+        style.save(preferences);
+        for (final Style child : style.getChildren()) {
+            saveStyle(child, preferences);
         }
     }
 
