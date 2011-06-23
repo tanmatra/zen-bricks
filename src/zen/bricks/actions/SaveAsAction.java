@@ -39,9 +39,14 @@ public class SaveAsAction extends SaveActionBase
         if (fileName == null) {
             return;
         }
+        final int filterIndex = dialog.getFilterIndex();
 
         try {
-            save(document, fileName);
+            if (filterIndex == 1) {
+                saveBinary(document, fileName);
+            } else {
+                save(document, fileName);
+            }
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error saving file");
         }
