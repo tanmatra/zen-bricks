@@ -65,12 +65,17 @@ public class ZenBinaryWriter
         if (brick instanceof TupleBrick) {
             final TupleBrick tuple = (TupleBrick) brick;
             final int strIndex = recordString(tuple.getText());
-            output.write(ZenBinaryProtocol.MARKER_TUPLE);
-            VarInt.encodeInt(output, strIndex);
             final int count = tuple.getChildCount() - 1;
-            VarInt.encodeInt(output, count);
-            for (int i = 0; i < count; i++) {
-                writeBrick(tuple.getChild(i));
+            if (count == 0) {
+                output.write(ZenBinaryProtocol.MARKER_ATOM);
+                VarInt.encodeInt(output, strIndex);
+            } else {
+                output.write(ZenBinaryProtocol.MARKER_TUPLE);
+                VarInt.encodeInt(output, strIndex);
+                VarInt.encodeInt(output, count);
+                for (int i = 0; i < count; i++) {
+                    writeBrick(tuple.getChild(i));
+                }
             }
         } else if (brick instanceof LineBreak) {
             output.write(ZenBinaryProtocol.MARKER_LINEBREAK);

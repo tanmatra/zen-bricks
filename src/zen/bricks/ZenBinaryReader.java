@@ -35,19 +35,10 @@ public class ZenBinaryReader
             final int marker = input.read();
             switch (marker) {
                 case ZenBinaryProtocol.MARKER_STRING:
-                    final String str = readUTF();
-                    pool.add(str);
+                    pool.add(readUTF());
                     break;
                 case ZenBinaryProtocol.MARKER_TUPLE:
-                    final int strIndex = VarInt.decodeInt(input);
-                    final String text = pool.get(strIndex);
-                    final TupleBrick tuple = new TupleBrick(parent, text);
-                    final int count = VarInt.decodeInt(input);
-                    for (int i = 0; i < count; i++) {
-                        final Brick child = readBrick(tuple);
-                        tuple.appendChild(child);
-                    }
-                    return tuple;
+                    return readTuple(parent);
                 case ZenBinaryProtocol.MARKER_LINEBREAK:
                     return new LineBreak(parent);
                 case ZenBinaryProtocol.MARKER_UNKNOWN:
@@ -60,10 +51,31 @@ public class ZenBinaryReader
                         pool.add(readUTF());
                     }
                     break;
+                case ZenBinaryProtocol.MARKER_ATOM:
+                    return readAtom(parent);
                 default:
                     throw new IOException("Bad marker: " + marker);
             }
         }
+    }
+
+    private Brick readTuple(ContainerBrick parent) throws IOException {
+        final int strIndex = VarInt.decodeInt(input);
+        final String text = pool.get(strIndex);
+        final TupleBrick tuple = new TupleBrick(parent, text);
+        final int count = VarInt.decodeInt(input);
+        for (int i = 0; i < count; i++) {
+            final Brick child = readBrick(tuple);
+            tuple.appendChild(child);
+        }
+        return tuple;
+    }
+
+    private Brick readAtom(ContainerBrick parent) throws IOException {
+        final int strIndex = VarInt.decodeInt(input);
+        final String text = pool.get(strIndex);
+        final TupleBrick tuple = new TupleBrick(parent, text);
+        return tuple;
     }
 
     private String readUTF() throws IOException {
