@@ -54,6 +54,12 @@ public class ZenBinaryReader
                     final int classIdx = VarInt.decodeInt(input);
                     final String className = pool.get(classIdx);
                     return new TupleBrick(parent, "[" + className + "]");
+                case ZenBinaryProtocol.MARKER_STRINGLIST:
+                    final int strCount = VarInt.decodeInt(input);
+                    for (int i = 0; i < strCount; i++) {
+                        pool.add(readUTF());
+                    }
+                    break;
                 default:
                     throw new IOException("Bad marker: " + marker);
             }

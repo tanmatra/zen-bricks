@@ -2,7 +2,9 @@ package zen.bricks;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import zen.bricks.utils.VarInt;
@@ -25,7 +27,38 @@ public class ZenBinaryWriter
 
     public void write(Brick brick) throws IOException {
         output.write(ZenBinaryProtocol.VERSION);
+        collectStrings(brick);
         writeBrick(brick);
+    }
+
+    private void collectStrings(Brick brick) throws IOException {
+        final ArrayList<String> list = new ArrayList<String>();
+        scanStrings(brick, list);
+        final int count = list.size();
+        if (count != 0) {
+            output.write(ZenBinaryProtocol.MARKER_STRINGLIST);
+            VarInt.encodeInt(output, count);
+            for (int i = 0; i < count; i++) {
+                writeUTF(list.get(i));
+            }
+        }
+    }
+
+    private void scanStrings(Brick brick, List<String> list) {
+        if (brick instanceof TupleBrick) {
+            final TupleBrick tuple = (TupleBrick) brick;
+            final String text = tuple.getText();
+            Integer index = pool.get(text);
+            if (index == null) {
+                index = ++lastPoolIndex;
+                pool.put(text, index);
+                list.add(text);
+            }
+            final int count = tuple.getChildCount();
+            for (int i = 0; i < count; i++) {
+                scanStrings(tuple.getChild(i), list);
+            }
+        }
     }
 
     private void writeBrick(Brick brick) throws IOException {
