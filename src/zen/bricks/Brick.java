@@ -15,7 +15,7 @@ public abstract class Brick
     int y;
     private int width;
     private int height;
-    int ascent;
+    private int ascent;
 
     // ============================================================ Constructors
 
@@ -137,6 +137,14 @@ public abstract class Brick
 
     public int getBottom() {
         return y + height;
+    }
+
+    public int getAscent() {
+        return ascent;
+    }
+
+    public void setAscent(int ascent) {
+        this.ascent = ascent;
     }
 
     /**

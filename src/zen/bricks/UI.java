@@ -231,6 +231,14 @@ public class UI
         return basicStyle;
     }
 
+    public TupleStyle getSelectedStyle() {
+        return selectedStyle;
+    }
+
+    public TupleStyle getSelectedParentStyle() {
+        return selectedParentStyle;
+    }
+
     public void preparePaint(GC gc) {
         if (advanced != null) {
             gc.setAdvanced(advanced);
@@ -242,23 +250,15 @@ public class UI
         gc.setAntialias(antialias);
     }
 
-    public StyleChain getStyleChain(TupleBrick brick, Editor editor) {
-        StyleChain chain;
+    /*
+     * You should ask Editor for additional styles for chain.
+     */
+    public StyleChain getStyleChain(TupleBrick brick) {
         if (brick.isList()) {
-            chain = listChain;
+            return listChain;
         } else {
-            chain = atomChain;
+            return atomChain;
         }
-        final Brick editorSelection = editor.getSelection();
-        if (brick == editorSelection) {
-            chain = selectedStyle.createChain(chain);
-        }
-        if ((editorSelection instanceof LineBreak) &&
-                (brick == editorSelection.getParent()))
-        {
-            chain = selectedParentStyle.createChain(chain);
-        }
-        return chain;
     }
 
     public LineBreakStyle getLineBreakStyle() {

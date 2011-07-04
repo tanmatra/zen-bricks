@@ -1,5 +1,7 @@
 package zen.bricks;
 
+import org.eclipse.swt.graphics.Point;
+
 
 public class SimpleLayout extends TupleLayout
 {
@@ -15,22 +17,20 @@ public class SimpleLayout extends TupleLayout
     }
 
     public boolean doLayout(TupleBrick brick, Editor editor) {
-        final StyleChain chain = editor.getUI().getStyleChain(brick, editor);
+        final StyleChain chain = editor.getStyleChain(brick);
         final Margin textMargin = chain.get(TupleStyle.TEXT_MARGIN);
         final Margin brickPadding = chain.get(TupleStyle.PADDING);
         final int lineSpacing = chain.get(TupleStyle.LINE_SPACING);
         final int spacing = chain.get(TupleStyle.CHILDREN_SPACING);
 
-        brick.textX = textMargin.getLeft();
-        brick.textY = textMargin.getTop();
-        brick.textExtent =
-                chain.find(TupleStyle.FONT).getTextExtent(brick.getText());
+        brick.setTextPosition(textMargin.getLeft(), textMargin.getTop());
+        final Point textExtent = brick.applyTextStyle(chain);
 
-        int width = textMargin.getLeft() + brick.textExtent.x;
+        int width = textMargin.getLeft() + textExtent.x;
 
         int currX = width + spacing;
         int currY = brickPadding.getTop();
-        int currLineHeight = textMargin.getTop() + brick.textExtent.y;
+        int currLineHeight = textMargin.getTop() + textExtent.y;
 
         for (final TupleBrick.Line line : brick.getLines()) {
             for (final Brick child : line) {

@@ -120,7 +120,7 @@ public class SimpleBorder extends Border
             Rectangle clipping, Editor editor)
     {
         final TupleBrick tupleBrick = (TupleBrick) brick;
-        final StyleChain styleChain = ui.getStyleChain(tupleBrick, editor);
+        final StyleChain styleChain = editor.getStyleChain(tupleBrick);
         final Color backgroundColor =
                 styleChain.find(TupleStyle.BACKGROUND).getBackgroundColor();
         gc.setAntialias(SWT.OFF);

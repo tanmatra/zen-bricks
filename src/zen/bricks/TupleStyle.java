@@ -217,8 +217,8 @@ public class TupleStyle extends Style
         return font;
     }
 
-    public Point getTextExtent(String text) {
-        return savedGC.textExtent(text, TupleBrick.TEXT_FLAGS);
+    public Point getTextExtent(String text, int flags) {
+        return savedGC.textExtent(text, flags);
     }
 
     public int getFontAscent() {

@@ -20,9 +20,7 @@ public class BaselineLayout extends TupleLayout
     }
 
     public boolean doLayout(TupleBrick brick, Editor editor) {
-        final UI ui = editor.getUI();
-
-        final StyleChain chain = ui.getStyleChain(brick, editor);
+        final StyleChain chain = editor.getStyleChain(brick);
         final Margin textMargin = chain.get(TupleStyle.TEXT_MARGIN);
         final Margin brickPadding = chain.get(TupleStyle.PADDING);
         final int paddingLeft = brickPadding.getLeft();
@@ -32,13 +30,10 @@ public class BaselineLayout extends TupleLayout
         final ArrayList<Line> lines = new ArrayList<TupleBrick.Line>(1);
 
         final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
-        final Point textExtent =
-                fontStyle.getTextExtent(brick.getText());
+        final Point textExtent = brick.applyTextStyle(chain);
 
-        brick.textX = textMargin.getLeft();
-        brick.textExtent = textExtent;
-        final int fontAscent = fontStyle.getFontAscent();
-        int lineAscent = fontAscent;
+        final int textAscent = textMargin.getTop() + fontStyle.getFontAscent();
+        int lineAscent = textAscent;
 
         int lineY = brickPadding.getTop();
         int currX = textMargin.getLeft() + textExtent.x + textMargin.getRight();
@@ -60,7 +55,7 @@ public class BaselineLayout extends TupleLayout
                 child.doLayout(editor);
                 child.x = currX;
                 currX += child.getWidth() + spacing;
-                lineAscent = Math.max(lineAscent, child.ascent);
+                lineAscent = Math.max(lineAscent, child.getAscent());
                 if (child instanceof LineBreak) {
                     lineEnd++;
                     break;
@@ -69,9 +64,11 @@ public class BaselineLayout extends TupleLayout
             // END OF LINE
             int lineHeight;
             if (firstLine) {
-                brick.textY = lineY + (lineAscent - fontAscent);
-                brick.ascent = lineY + lineAscent;
-                lineHeight = brick.textY + textExtent.y + textMargin.getBottom();
+                final int textY =
+                        lineY + textMargin.getTop() + (lineAscent - textAscent);
+                brick.setTextPosition(textMargin.getLeft(), textY);
+                brick.setAscent(lineY + lineAscent);
+                lineHeight = textY + textExtent.y + textMargin.getBottom();
                 firstLine = false;
             } else {
                 lineHeight = 0;
@@ -91,7 +88,7 @@ public class BaselineLayout extends TupleLayout
                     }
                     child.resize(child.getWidth(), lineHeight);
                 } else {
-                    margin = lineAscent - child.ascent;
+                    margin = lineAscent - child.getAscent();
                 }
                 child.y = lineY + margin;
                 lineHeight = Math.max(lineHeight, child.getHeight() + margin);

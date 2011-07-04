@@ -661,6 +661,19 @@ public class Editor
         mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
     }
 
+    public StyleChain getStyleChain(TupleBrick brick) {
+        StyleChain chain = ui.getStyleChain(brick);
+        if (brick == selection) {
+            chain = ui.getSelectedStyle().createChain(chain);
+        }
+        if ((selection instanceof LineBreak) &&
+                (brick == selection.getParent()))
+        {
+            chain = ui.getSelectedParentStyle().createChain(chain);
+        }
+        return chain;
+    }
+
     public void scrollTo(Brick brick) {
         final Rectangle rect = brick.toScreen();
         final int dy = verticalScrollNeeded(rect);

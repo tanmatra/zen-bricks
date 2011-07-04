@@ -92,11 +92,11 @@ public class TupleBrick extends ContainerBrick
 
     private String text;
 
-    Point textExtent;
+    private Point textExtent;
 
-    int textX;
+    private int textX;
 
-    int textY;
+    private int textY;
 
     final ArrayList<Brick> children = new ArrayList<Brick>(2);
 
@@ -127,6 +127,11 @@ public class TupleBrick extends ContainerBrick
     public void setText(String text) {
         this.text = text;
         invalidate();
+    }
+
+    public void setTextPosition(int textX, int textY) {
+        this.textX = textX;
+        this.textY = textY;
     }
 
     public boolean isValidInsertIndex(int position) {
@@ -219,14 +224,13 @@ public class TupleBrick extends ContainerBrick
     public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
                       Editor editor)
     {
-        final UI ui = editor.getUI();
-        final StyleChain chain = ui.getStyleChain(this, editor);
+        final StyleChain chain = editor.getStyleChain(this);
 
         final Border border = chain.find(TupleStyle.BORDER).getBorder();
         border.paintBackground(gc, baseX, baseY, this, clipping, editor);
 
-        paintText(gc, baseX, baseY, clipping, chain);
         paintChildren(gc, baseX, baseY, clipping, editor);
+        paintText(gc, baseX, baseY, clipping, chain);
 
         border.paintBorder(gc, baseX, baseY, this, clipping, editor);
     }
@@ -255,6 +259,16 @@ public class TupleBrick extends ContainerBrick
         }
 
         gc.drawText(text, textX, textY, flags);
+    }
+
+    Point applyTextStyle(StyleChain chain) {
+        int flags = TEXT_FLAGS;
+        if (chain.get(TupleStyle.TEXT_BACKGROUND).getColor() == null) {
+            flags |= SWT.DRAW_TRANSPARENT;
+        }
+        final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
+        textExtent = fontStyle.getTextExtent(text, flags);
+        return textExtent;
     }
 
     private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping,
@@ -305,9 +319,9 @@ public class TupleBrick extends ContainerBrick
         if (valid && !force) {
             return false;
         }
-        final StyleChain styleChain = editor.getUI().getStyleChain(this, editor);
-        final TupleStyle style = styleChain.find(TupleStyle.LAYOUT);
-        final boolean changed = style.getLayout().doLayout(this, editor);
+        final StyleChain styleChain = editor.getStyleChain(this);
+        final TupleLayout layout = styleChain.get(TupleStyle.LAYOUT);
+        final boolean changed = layout.doLayout(this, editor);
         valid = true;
         return changed;
     }

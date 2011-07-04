@@ -20,7 +20,7 @@ public class ColorBrick extends Brick
         resize(width, height);
         this.fore = fore;
         this.back = back;
-        ascent = height;
+        setAscent(height);
     }
 
     public void attach(Editor editor) {
