@@ -2,8 +2,6 @@ package zen.bricks;
 
 import java.util.LinkedList;
 
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -15,6 +13,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+
+import zen.bricks.Position.Side;
 
 public class Editor
 {
@@ -38,7 +38,7 @@ public class Editor
 
     private UI ui;
 
-    private Brick selection;
+    private Position position;
 
     private Rectangle clientArea;
 
@@ -195,7 +195,6 @@ public class Editor
             this.ui.removeEditor(this);
         }
         this.ui = ui;
-        ui.applyTo(this);
         ui.addEditor(this);
     }
 
@@ -209,7 +208,7 @@ public class Editor
     }
 
     public void setDocument(Brick document) {
-        selection = null;
+        setPosition(null);
         canvas.getCaret().setVisible(false);
         if (this.document != null) {
             this.document.detach(this);
@@ -219,6 +218,7 @@ public class Editor
         document.y = frameMargin.getLeft();
         document.attach(this);
         refresh();
+        setPosition(document.enter(Side.LEFT));
     }
 
     public void refresh() {
@@ -228,7 +228,7 @@ public class Editor
             canvasResized(false); // ??
         }
         canvas.redraw();
-        displayCaretFor(selection);
+        updateCaret();
     }
 
     private static TupleBrick appendBrick(TupleBrick parent, String text) {
@@ -289,7 +289,7 @@ public class Editor
             document = null;
         }
         if (ui != null) {
-            ui.dispose();
+            ui.removeEditor(this);
             ui = null;
         }
     }
@@ -308,7 +308,7 @@ public class Editor
             target = target.handleMouseEvent(x, y, event, this);
         }
         if (event.doit && (event.type == SWT.MouseDown)) {
-            setSelection(null);
+            setPosition(null);
         }
     }
 
@@ -347,8 +347,12 @@ public class Editor
             deleteBrick();
         } else if (e.keyCode == SWT.BS && e.stateMask == 0) {
             backspaceBrick();
-        } else if (e.keyCode == SWT.END && e.stateMask == 0) {
-            navigateEnd();
+//        } else if (e.keyCode == SWT.END && e.stateMask == 0) {
+//            navigateLast();
+        } else if (e.keyCode == 'd' && e.stateMask == SWT.CTRL) {
+            if (position != null) {
+                position.getBrick().printDebugInfo();
+            }
         }
     }
 
@@ -357,111 +361,70 @@ public class Editor
     }
 
     private void editBrick() {
-        if (!(selection instanceof TupleBrick)) {
+        if ((position == null) || !position.canEdit()) {
             warning();
             return;
         }
-        final TupleBrick tupleBrick = (TupleBrick) selection;
-        final InputDialog dialog =
-                new InputDialog(mainWindow.getShell(), "Edit",
-                        "Brick text:", tupleBrick.getText(), null);
-        if (dialog.open() == Window.CANCEL) {
-            return;
-        }
-        tupleBrick.setText(dialog.getValue());
-        revalidate(tupleBrick);
+        position.edit(this);
     }
 
     private void insertBrick() {
-        if (selection == null) {
+        if ((position == null) || !position.canInsert()) {
             warning();
             return;
         }
-        final int index = selection.index;
-        final ContainerBrick parent = selection.getParent();
-        if (parent == null) {
+
+        final Brick parent = position.getBrick();
+        if (!(parent instanceof ContainerBrick)) {
             warning();
             return;
         }
-        if (!parent.isValidInsertIndex(index)) {
-            warning();
-            return;
+        final TupleBrick tuple = new TupleBrick((ContainerBrick) parent, "");
+        position.insert(tuple);
+        tuple.attach(this);
+        if (tuple.edit(this)) {
+            setPosition(tuple.enter(Side.LEFT));
+        } else {
+            tuple.detach(this);
+            position.delete(this);
         }
-        final InputDialog dialog =
-                new InputDialog(mainWindow.getShell(), "Insert",
-                        "Brick text:", "", null);
-        if (dialog.open() == Window.CANCEL) {
-            return;
-        }
-        final TupleBrick newBrick = new TupleBrick(parent, dialog.getValue());
-        parent.insertChild(index, newBrick);
-        newBrick.attach(this);
-        revalidate(newBrick);
-        setSelection(newBrick.getFirstChild());
     }
 
     private void insertLineBreak() {
-        if (selection == null) {
+        if ((position == null) | !position.canInsert()) {
             warning();
             return;
         }
-        final int index = selection.index;
-        final ContainerBrick parent = selection.getParent();
-        if (parent == null) {
+
+        final Brick parent = position.getBrick();
+        if (!(parent instanceof ContainerBrick)) {
             warning();
             return;
         }
-        if (!parent.isValidInsertIndex(index)) {
-            warning();
-            return;
-        }
-        final Brick newBrick = new LineBreak(parent);
-        parent.insertChild(index, newBrick);
-        newBrick.attach(this);
-        revalidate(newBrick);
-        setSelection(parent.getChild(index + 1));
+        final LineBreak lineBreak = new LineBreak((ContainerBrick) parent);
+        position.insert(lineBreak);
+        lineBreak.attach(this);
+        revalidate(lineBreak);
+        position.next();
+        updatePosition();
     }
 
     private void deleteBrick() {
-        if (selection == null) {
+        if ((position == null) || !position.canDelete()) {
             warning();
             return;
         }
-        final int index = selection.index;
-        final ContainerBrick parent = selection.getParent();
-        if (parent == null) {
-            warning();
-            return;
-        }
-        if (!parent.isValidDeleteIndex(index)) {
-            warning();
-            return;
-        }
-        final Brick old = parent.removeChild(index);
-        old.detach(this);
-        revalidate(parent);
-        setSelection(parent.getChild(index));
+        position.delete(this);
+        updateCaret();
     }
 
     private void backspaceBrick() {
-        if (selection == null) {
+        if ((position == null) || !position.canBackDelete()) {
             warning();
             return;
         }
-        final int index = selection.index - 1;
-        final ContainerBrick parent = selection.getParent();
-        if (parent == null) {
-            warning();
-            return;
-        }
-        if (!parent.isValidDeleteIndex(index)) {
-            warning();
-            return;
-        }
-        final Brick old = parent.removeChild(index);
-        old.detach(this);
-        revalidate(parent);
-        setSelection(parent.getChild(index));
+        position.backDelete(this);
+        updateCaret();
     }
 
     void revalidate(Brick brick) {
@@ -513,164 +476,101 @@ public class Editor
         scrollCanvasVertically();
     }
 
-    void navigateLevelUp() {
-        if (selection == null) {
-            return;
-        }
-        final Brick parent = selection.getParent();
-        if (parent != null) {
-            setSelection(parent, true);
-        }
-    }
-
     void navigatePreceding() {
-        if (selection == null) {
-            return;
-        }
-        Brick brick = selection;
-        Brick prec = brick.getPreviousSibling();
-        if (prec != null) {
-            setSelection(prec.getLastDescendantOrSelf(), true);
-            return;
-        }
-        brick = brick.getParent();
-        if (brick != null) {
-            setSelection(brick, true);
+        if (position != null) {
+            setPosition(position.preceding());
         }
     }
 
     void navigateFollowing() {
-        if (selection == null) {
-            return;
-        }
-        Brick brick = selection;
-        Brick following = brick.getFirstChild();
-        if (following != null) {
-            setSelection(following, true);
-            return;
-        }
-        do {
-            following = brick.getNextSibling();
-            if (following != null) {
-                setSelection(following, true);
-                return;
-            }
-            brick = brick.getParent();
-        } while (brick != null);
-    }
-
-    void navigatePrevious(boolean allowParent) {
-        if (selection == null) {
-            return;
-        }
-        Brick previous = selection.getPreviousSibling();
-        if (previous != null) {
-            setSelection(previous, true);
-            return;
-        }
-        if (!allowParent) {
-            return;
-        }
-        previous = selection.getParent();
-        if (previous != null) {
-            setSelection(previous, true);
+        if (position != null) {
+            setPosition(position.following());
         }
     }
 
-    void navigateNext(boolean allowParent) {
-        Brick brick = selection;
-        if (brick == null) {
-            return;
-        }
-        Brick next = brick.getNextSibling();
-        if (next != null) {
-            setSelection(next, true);
-            return;
-        }
-        if (!allowParent) {
-            return;
-        }
-        next = brick.getParent();
-        if (next != null) {
-            setSelection(next, true);
-        }
-    }
-
-    void navigateNextOrUp() {
-        Brick brick = selection;
-        while (brick != null) {
-            final Brick next = brick.getNextSibling();
-            if (next != null) {
-                setSelection(next, true);
-                return;
-            }
-            brick = brick.getParent();
-        }
-    }
-
-    private void navigateEnd() {
-        if (selection instanceof ContainerBrick) {
-            final ContainerBrick container = (ContainerBrick) selection;
-            setSelection(container.getLastChild());
-        } else if (selection instanceof LineBreak) {
-            final ContainerBrick container = selection.getParent();
-            final Brick last = container.getLastChild();
-            if (last != selection) {
-                setSelection(last);
+    void navigatePrevious() {
+        if (position != null) {
+            if (position.previous()) {
+                updatePosition();
             } else {
-                final ContainerBrick container2 = container.getParent();
-                if (container2 != null) {
-                    setSelection(container2.getLastChild());
-                }
+                warning();
             }
         }
+    }
+
+    void navigateNext() {
+        if (position != null) {
+            if (position.next()) {
+                updatePosition();
+            } else {
+                warning();
+            }
+        }
+    }
+
+    void navigateFirst() {
+        if (position != null) {
+            position.first();
+            updatePosition();
+        }
+    }
+
+    void navigateLast() {
+        if (position != null) {
+            position.last();
+            updatePosition();
+        }
+    }
+
+    void navigateUp() {
+        if (position == null) {
+            warning();
+            return;
+        }
+        setPosition(position.up(Side.LEFT));
+    }
+
+    public void navigateDown() {
+        if (position == null) {
+            warning();
+            return;
+        }
+        setPosition(position.up(Side.RIGHT));
     }
 
     void scrollToSelected() {
-        if (selection != null) {
-            scrollTo(selection);
+        if (position != null) {
+            scrollTo(position.getBrick()); // TODO
         }
     }
 
-    public void setSelection(Brick newSel, boolean scroll) {
-        setSelection(newSel);
-        if (scroll && (newSel != null)) {
-            scrollTo(newSel);
+    public void setPosition(Position position) {
+        final Position oldPosition = this.position;
+        this.position = position;
+        if (oldPosition != null) {
+            paintOnly(oldPosition.getBrick());
+        }
+        if (position != null) {
+            paintOnly(position.getBrick());
+            updateCaret();
+            mainWindow.setStatus("Path = " + getPath(position.getBrick())); // DEBUG
         }
     }
 
-    public void setSelection(Brick newSel) {
-        final Brick oldSel = selection;
-        selection = newSel;
-        if (oldSel != null) {
-            if (oldSel instanceof LineBreak) {
-                paintOnly(oldSel.getParent());
-            } else {
-                paintOnly(oldSel);
-            }
-        }
-        if (newSel != null) {
-            if (newSel instanceof LineBreak) {
-                paintOnly(newSel.getParent());
-            } else {
-                paintOnly(newSel);
-            }
-        }
-        displayCaretFor(newSel);
-//        mainWindow.setStatus("Selected: " + newSel); // DEBUG
-        mainWindow.setStatus("Path = " + getPath(newSel)); // DEBUG
+    public Position getPosition() {
+        return position;
+    }
+
+    private void updatePosition() {
+        setPosition(position);
     }
 
     public StyleChain getStyleChain(TupleBrick brick) {
         StyleChain chain = ui.getStyleChain(brick);
-        if (brick == selection) {
+        if ((position != null) && (position.getBrick() == brick)) {
             chain = ui.getSelectedStyle().createChain(chain);
         }
-        if ((selection instanceof LineBreak) &&
-                (brick == selection.getParent()))
-        {
-            chain = ui.getSelectedParentStyle().createChain(chain);
-        }
+        // if (selection instanceof LineBreak) ..?
         return chain;
     }
 
@@ -720,9 +620,9 @@ public class Editor
         return 0;
     }
 
-    void displayCaretFor(Brick brick) {
-        if (brick != null) {
-            final Rectangle rect = brick.toScreen();
+    void updateCaret() {
+        if (position != null) {
+            final Rectangle rect = position.toScreen();
             final Caret caret = canvas.getCaret();
             caret.setBounds(rect.x + ui.caretOffset, rect.y,
                     ui.caretWidth, rect.height);
@@ -746,9 +646,5 @@ public class Editor
             brick = brick.getParent();
         }
         return Strings.join(list, " / ");
-    }
-
-    public Brick getSelection() {
-        return selection;
     }
 }

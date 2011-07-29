@@ -21,7 +21,7 @@ public class ZenTextWriter
     public void write(Brick brick) throws IOException {
         if (brick instanceof TupleBrick) {
             final TupleBrick tupleBrick = (TupleBrick) brick;
-            final int count = tupleBrick.getChildCount() - 1;
+            final int count = tupleBrick.getChildCount();
             final String text = tupleBrick.getText();
             if (count == 0) {
                 if (text.isEmpty()) {

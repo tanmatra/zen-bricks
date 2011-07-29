@@ -27,9 +27,10 @@ public class BaselineLayout extends TupleLayout
         final int lineSpacing = chain.get(TupleStyle.LINE_SPACING);
         final int spacing = chain.get(TupleStyle.CHILDREN_SPACING);
 
-        final ArrayList<Line> lines = new ArrayList<TupleBrick.Line>(1);
+        final ArrayList<Line> lines = new ArrayList<Line>(1);
 
         final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
+        final int fontHeight = fontStyle.getFontHeight();
         final Point textExtent = brick.applyTextStyle(chain);
 
         final int textAscent = textMargin.getTop() + fontStyle.getFontAscent();
@@ -40,6 +41,7 @@ public class BaselineLayout extends TupleLayout
         if (currX < paddingLeft) { // for narrow text
             currX = paddingLeft;
         }
+        int lineX = currX;
         int width = currX;
         boolean firstLine = true;
 
@@ -47,6 +49,7 @@ public class BaselineLayout extends TupleLayout
         int lineStart = 0;
 
         for (;;) {
+            boolean breakFound = false;
             // lineEnd counts position of line break
             int lineEnd;
             // PRIMARY LINE LOOP
@@ -57,6 +60,7 @@ public class BaselineLayout extends TupleLayout
                 currX += child.getWidth() + spacing;
                 lineAscent = Math.max(lineAscent, child.getAscent());
                 if (child instanceof LineBreak) {
+                    breakFound = true;
                     lineEnd++;
                     break;
                 }
@@ -71,21 +75,15 @@ public class BaselineLayout extends TupleLayout
                 lineHeight = textY + textExtent.y + textMargin.getBottom();
                 firstLine = false;
             } else {
-                lineHeight = 0;
+                lineHeight = fontHeight;
             }
+
             // SECONDARY LINE LOOP
             for (int j = lineStart; j < lineEnd; j++) {
-                if (j >= count) {
-                    break;
-                }
                 final Brick child = brick.getChild(j);
                 final int margin;
                 if (child instanceof LineBreak) {
                     margin = 0;
-                    final int fontHeight = fontStyle.getFontHeight();
-                    if (lineHeight < fontHeight) {
-                        lineHeight = fontHeight;
-                    }
                     child.resize(child.getWidth(), lineHeight);
                 } else {
                     margin = lineAscent - child.getAscent();
@@ -97,16 +95,20 @@ public class BaselineLayout extends TupleLayout
 
             final Line line =
                     brick.new Line(lineStart, lineEnd, lineY, lineHeight);
+            line.x = lineX;
             lines.add(line);
 
-            lineStart = lineEnd;
             lineY += lineHeight + lineSpacing;
-            if (lineStart >= count) {
+
+            if (!breakFound) {
                 break;
             }
+            lineStart = lineEnd;
+
             // init next line
             lineAscent = 0;
             currX = paddingLeft;
+            lineX = currX;
         }
 
         brick.setLines(lines);

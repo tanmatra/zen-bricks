@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+
+import zen.bricks.Position.Side;
 
 public class TupleBrick extends ContainerBrick
 {
@@ -20,6 +24,7 @@ public class TupleBrick extends ContainerBrick
 
     class Line implements Iterable<Brick>
     {
+        int x;
         int y;
         int height;
         int startIndex;
@@ -86,6 +91,11 @@ public class TupleBrick extends ContainerBrick
                     "(Line [y %d] [height %d] [start %d] [end %d])",
                     y, height, startIndex, endIndex);
         }
+
+        void printDebugInfo() {
+            System.out.format("(Line (start %d) (end %d))%n",
+                    startIndex, endIndex);
+        }
     }
 
     // ================================================================== Fields
@@ -110,7 +120,6 @@ public class TupleBrick extends ContainerBrick
 
     public TupleBrick(ContainerBrick parent) {
         super(parent);
-        children.add(new LineBreak(this));
     }
 
     public TupleBrick(ContainerBrick parent, String text) {
@@ -134,20 +143,27 @@ public class TupleBrick extends ContainerBrick
         this.textY = textY;
     }
 
-    public boolean isValidInsertIndex(int position) {
-        return (position >= 0) && (position < children.size());
+    public int getTextX() {
+        return textX;
     }
 
-    public boolean isValidDeleteIndex(int position) {
-        return (position >= 0) && (position < children.size() - 1);
+    public int getTextY() {
+        return textY;
+    }
+
+    public boolean isValidInsertIndex(int index) {
+        return (index >= 0) && (index <= children.size());
+    }
+
+    public boolean isValidDeleteIndex(int index) {
+        return (index >= 0) && (index < children.size());
     }
 
     public void appendChild(Brick child) {
         checkChild(child);
-        final int childIndex = children.size() - 1;
-        children.get(childIndex).index++; // for final line break
+        final int childIndex = children.size();
         child.index = childIndex;
-        children.add(childIndex, child);
+        children.add(child);
         if (!(child instanceof LineBreak)) {
             contentCount++;
         }
@@ -178,8 +194,7 @@ public class TupleBrick extends ContainerBrick
         if (!isValidDeleteIndex(position)) {
             throw new RuntimeException("Invalid delete index:" + position);
         }
-        final Brick old = children.get(position);
-        children.remove(position);
+        final Brick old = children.remove(position);
         reindex(position);
         if (!(old instanceof LineBreak)) {
             contentCount--;
@@ -271,6 +286,10 @@ public class TupleBrick extends ContainerBrick
         return textExtent;
     }
 
+    public Point getTextExtent() {
+        return textExtent;
+    }
+
     private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping,
                                Editor editor)
     {
@@ -350,5 +369,46 @@ public class TupleBrick extends ContainerBrick
             return null;
         }
         return child;
+    }
+
+    public Position enter(Side side) {
+        return new TuplePosition(this, side);
+    }
+
+    public Position positionOf(Brick brick, Side side) {
+        checkChild(brick);
+        return new TuplePosition(this,
+                brick.index + (side == Side.LEFT ? 0 : 1));
+    }
+
+    public Position locate(int cursorX, int cursorY) {
+        // TODO: text
+        final Brick child = findChildAt(cursorX, cursorY);
+        if (child != null) {
+            return positionOf(child, Side.LEFT);
+        }
+        return null;
+    }
+
+    public boolean edit(Editor editor) {
+        final InputDialog dialog =
+                new InputDialog(editor.getCanvas().getShell(), "Edit",
+                        "Brick text:", getText(), null);
+        if (dialog.open() == Window.CANCEL) {
+            return false;
+        }
+        setText(dialog.getValue());
+        editor.revalidate(this);
+        return true;
+    }
+
+    public void printDebugInfo() {
+        super.printDebugInfo();
+        System.out.format("(count %d) (lines %d) (text: '%s')%n",
+                getChildCount(), getLines().size(),
+                text);
+        for (final Line line : lines) {
+            line.printDebugInfo();
+        }
     }
 }

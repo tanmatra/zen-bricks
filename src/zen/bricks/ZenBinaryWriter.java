@@ -65,7 +65,7 @@ public class ZenBinaryWriter
         if (brick instanceof TupleBrick) {
             final TupleBrick tuple = (TupleBrick) brick;
             final int strIndex = recordString(tuple.getText());
-            final int count = tuple.getChildCount() - 1;
+            final int count = tuple.getChildCount();
             if (count == 0) {
                 output.write(ZenBinaryProtocol.MARKER_ATOM);
                 VarInt.encodeInt(output, strIndex);

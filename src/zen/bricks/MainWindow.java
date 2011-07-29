@@ -125,7 +125,7 @@ public class MainWindow extends ApplicationWindow
     }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    private void createFileMenu(final MenuManager mainMenu) {
+    private void createFileMenu(MenuManager mainMenu) {
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
 
@@ -141,7 +141,7 @@ public class MainWindow extends ApplicationWindow
 
         fileMenu.add(new Separator());
 
-        final Action exitAction = new Action("E&xit") {
+        final Action exitAction = new Action("E&xit\tAlt+X") {
             public void run() {
                 close();
             }
@@ -154,10 +154,17 @@ public class MainWindow extends ApplicationWindow
         final MenuManager navigateMenu = new MenuManager("&Navigate");
         mainMenu.add(navigateMenu);
 
-        navigateMenu.add(new Action("Go to &up level") {
+        navigateMenu.add(new Action("Go to first") {
             { setAccelerator(SWT.HOME); }
             public void run() {
-                getEditor().navigateLevelUp();
+                getEditor().navigateFirst();
+            }
+        });
+
+        navigateMenu.add(new Action("Go to last") {
+            { setAccelerator(SWT.END); }
+            public void run() {
+                getEditor().navigateLast();
             }
         });
 
@@ -178,29 +185,33 @@ public class MainWindow extends ApplicationWindow
         navigateMenu.add(new Action("Go to previous") {
             { setAccelerator(SWT.ARROW_UP); }
             public void run() {
-                getEditor().navigatePrevious(true);
-            }
-        });
-        navigateMenu.add(new Action("Go to previous only") {
-            { setAccelerator(SWT.ARROW_UP | SWT.ALT); }
-            public void run() {
-                getEditor().navigatePrevious(false);
+                getEditor().navigatePrevious();
             }
         });
 
         navigateMenu.add(new Action("Go to next") {
             { setAccelerator(SWT.ARROW_DOWN); }
             public void run() {
-                getEditor().navigateNextOrUp();
+                getEditor().navigateNext();
             }
         });
-        navigateMenu.add(new Action("Go to next only") {
+
+        navigateMenu.add(new Action("Go to up") {
+            { setAccelerator(SWT.ARROW_UP | SWT.ALT); }
+            public void run() {
+                getEditor().navigateUp();
+            }
+        });
+
+        navigateMenu.add(new Action("Go to down") {
             { setAccelerator(SWT.ARROW_DOWN | SWT.ALT); }
             public void run() {
-                getEditor().navigateNext(false);
+                getEditor().navigateDown();
             }
         });
+
         navigateMenu.add(new Separator());
+
         navigateMenu.add(new Action("&Scroll to selected") {
             { setAccelerator(' '); }
             public void run() {

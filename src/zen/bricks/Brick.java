@@ -5,6 +5,8 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 
+import zen.bricks.Position.Side;
+
 public abstract class Brick
 {
     // ================================================================== Fields
@@ -165,7 +167,7 @@ public abstract class Brick
         }
         if (event.type == SWT.MouseDown) {
             event.doit = false;
-            editor.setSelection(this);
+            editor.setPosition(parent.positionOf(this, Side.LEFT));
         }
         return null;
     }
@@ -226,5 +228,24 @@ public abstract class Brick
             return null;
         }
         return parent.getChild(nextIndex);
+    }
+
+    /**
+     * @param side
+     */
+    public Position enter(Position.Side side) {
+        return null;
+    }
+
+    /**
+     * @param cursorX
+     * @param cursorY
+     */
+    public Position locate(int cursorX, int cursorY) {
+        return null;
+    }
+
+    public void printDebugInfo() {
+        System.out.format("---Brick%n(index %d)%n", index);
     }
 }

@@ -79,7 +79,7 @@ public class LineBreak extends Brick
 
     public LineBreak(ContainerBrick parent) {
         super(parent);
-        resize(2, 4);
+        resize(4, 4);
     }
 
     // ================================================================= Methods
@@ -90,7 +90,7 @@ public class LineBreak extends Brick
         final Color color = editor.getUI().getLineBreakStyle().color;
         if (color != null) {
             gc.setBackground(color);
-            gc.fillRectangle(baseX, baseY, getWidth(), getHeight());
+            gc.fillRectangle(baseX, baseY + 1, getWidth(), getHeight() - 2);
         }
     }
 

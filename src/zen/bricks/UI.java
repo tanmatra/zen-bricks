@@ -174,13 +174,6 @@ public class UI
         }
     }
 
-    /**
-     * @param editor
-     */
-    public void applyTo(Editor editor) {
-        // what here ???
-    }
-
     static Boolean parseBoolean(Preferences preferences, String key) {
         final String value = preferences.get(key, null);
         if (value == null) {

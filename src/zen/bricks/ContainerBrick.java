@@ -2,6 +2,8 @@ package zen.bricks;
 
 import org.eclipse.swt.widgets.Event;
 
+import zen.bricks.Position.Side;
+
 public abstract class ContainerBrick extends Brick
 {
     public ContainerBrick(ContainerBrick parent) {
@@ -75,4 +77,6 @@ public abstract class ContainerBrick extends Brick
             throw new RuntimeException("Wrong parent");
         }
     }
+
+    public abstract Position positionOf(Brick brick, Side side);
 }
