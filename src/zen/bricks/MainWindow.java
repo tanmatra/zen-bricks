@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import zen.bricks.actions.ImportXMLAction;
+import zen.bricks.actions.NewDocumentAction;
 import zen.bricks.actions.OpenAction;
 import zen.bricks.actions.SaveAction;
 import zen.bricks.actions.SaveAsAction;
@@ -128,6 +129,8 @@ public class MainWindow extends ApplicationWindow
     private void createFileMenu(MenuManager mainMenu) {
         final MenuManager fileMenu = new MenuManager("&File");
         mainMenu.add(fileMenu);
+
+        fileMenu.add(new NewDocumentAction(this, "&New"));
 
         fileMenu.add(new OpenAction(this, "&Open...\tCtrl+O"));
 
