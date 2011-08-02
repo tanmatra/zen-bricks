@@ -150,8 +150,9 @@ class TuplePosition extends Position
         if (index < 0) {
             // left side of text label
             final Rectangle rect = tuple.toScreen();
-            rect.x += tuple.getTextX();
-            rect.y += tuple.getTextY();
+            final Point textPos = tuple.getTextPosition();
+            rect.x += textPos.x;
+            rect.y += textPos.y;
             final Point textExtent = tuple.getTextExtent();
             rect.width = textExtent.x;
             rect.height = textExtent.y;

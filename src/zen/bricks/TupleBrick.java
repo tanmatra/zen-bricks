@@ -104,9 +104,7 @@ public class TupleBrick extends ContainerBrick
 
     private Point textExtent;
 
-    private int textX;
-
-    private int textY;
+    private final Point textPosition = new Point(0, 0);
 
     final ArrayList<Brick> children = new ArrayList<Brick>(2);
 
@@ -137,17 +135,13 @@ public class TupleBrick extends ContainerBrick
         invalidate();
     }
 
+    public Point getTextPosition() {
+        return textPosition;
+    }
+
     public void setTextPosition(int textX, int textY) {
-        this.textX = textX;
-        this.textY = textY;
-    }
-
-    public int getTextX() {
-        return textX;
-    }
-
-    public int getTextY() {
-        return textY;
+        textPosition.x = textX;
+        textPosition.y = textY;
     }
 
     public boolean isValidInsertIndex(int index) {
@@ -252,8 +246,8 @@ public class TupleBrick extends ContainerBrick
     private void paintText(GC gc, int baseX, int baseY, Rectangle clipping,
                            StyleChain chain)
     {
-        final int textX = baseX + this.textX;
-        final int textY = baseY + this.textY;
+        final int textX = baseX + textPosition.x;
+        final int textY = baseY + textPosition.y;
         if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
             return;
         }
