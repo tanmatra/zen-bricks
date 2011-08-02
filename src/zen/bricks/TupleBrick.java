@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -16,10 +14,6 @@ import zen.bricks.Position.Side;
 
 public class TupleBrick extends ContainerBrick
 {
-    // ============================================================ Class Fields
-
-    static final int TEXT_FLAGS = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
-
     // ========================================================== Nested Classes
 
     class Line implements Iterable<Brick>
@@ -102,9 +96,7 @@ public class TupleBrick extends ContainerBrick
 
     private String text;
 
-    private Point textExtent;
-
-    private final Point textPosition = new Point(0, 0);
+    private LabelRenderer labelRenderer = new SimpleLabelRenderer();
 
     final ArrayList<Brick> children = new ArrayList<Brick>(2);
 
@@ -126,6 +118,16 @@ public class TupleBrick extends ContainerBrick
 
     // ================================================================= Methods
 
+    public void attach(Editor editor) {
+        super.attach(editor);
+        labelRenderer.init(editor);
+    }
+
+    public void detach(Editor editor) {
+        labelRenderer.dispose();
+        super.detach(editor);
+    }
+
     public String getText() {
         return text;
     }
@@ -136,12 +138,11 @@ public class TupleBrick extends ContainerBrick
     }
 
     public Point getTextPosition() {
-        return textPosition;
+        return labelRenderer.getTextPosition();
     }
 
     public void setTextPosition(int textX, int textY) {
-        textPosition.x = textX;
-        textPosition.y = textY;
+        labelRenderer.setTextPosition(textX, textY);
     }
 
     public boolean isValidInsertIndex(int index) {
@@ -238,49 +239,17 @@ public class TupleBrick extends ContainerBrick
         border.paintBackground(gc, baseX, baseY, this, clipping, editor);
 
         paintChildren(gc, baseX, baseY, clipping, editor);
-        paintText(gc, baseX, baseY, clipping, chain);
+        labelRenderer.paint(this, gc, baseX, baseY, clipping, chain);
 
         border.paintBorder(gc, baseX, baseY, this, clipping, editor);
     }
 
-    private void paintText(GC gc, int baseX, int baseY, Rectangle clipping,
-                           StyleChain chain)
-    {
-        final int textX = baseX + textPosition.x;
-        final int textY = baseY + textPosition.y;
-        if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
-            return;
-        }
-
-        gc.setFont(chain.find(TupleStyle.FONT).getFont());
-        gc.setForeground(
-                chain.find(TupleStyle.FOREGROUND).getForegroundColor());
-
-        final TupleStyle backgroundStyle =
-                chain.find(TupleStyle.TEXT_BACKGROUND);
-        final Color color = backgroundStyle.getTextBackground().getColor();
-        int flags = TEXT_FLAGS;
-        if (color != null) {
-            gc.setBackground(color);
-        } else {
-            flags |= SWT.DRAW_TRANSPARENT;
-        }
-
-        gc.drawText(text, textX, textY, flags);
-    }
-
     Point applyTextStyle(StyleChain chain) {
-        int flags = TEXT_FLAGS;
-        if (chain.get(TupleStyle.TEXT_BACKGROUND).getColor() == null) {
-            flags |= SWT.DRAW_TRANSPARENT;
-        }
-        final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
-        textExtent = fontStyle.getTextExtent(text, flags);
-        return textExtent;
+        return labelRenderer.calculateSize(this, chain);
     }
 
     public Point getTextExtent() {
-        return textExtent;
+        return labelRenderer.getTextExtent();
     }
 
     private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping,
