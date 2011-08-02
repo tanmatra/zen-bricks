@@ -118,12 +118,11 @@ public class TupleBrick extends ContainerBrick
 
     // ============================================================ Constructors
 
-    public TupleBrick(ContainerBrick parent) {
-        super(parent);
-    }
-
     public TupleBrick(ContainerBrick parent, String text) {
-        this(parent);
+        super(parent);
+        if (text == null) {
+            throw new IllegalArgumentException("Null tuple text");
+        }
         this.text = text;
     }
 
