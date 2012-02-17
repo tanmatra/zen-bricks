@@ -123,7 +123,7 @@ public class SimpleBorder extends Border
         final StyleChain styleChain = editor.getStyleChain(tupleBrick);
         final Color backgroundColor =
                 styleChain.find(TupleStyle.BACKGROUND).getBackgroundColor();
-        gc.setAntialias(SWT.OFF);
+        ui.prepareGraphicsPaint(gc);
         paintBackground(gc, x, y, brick, backgroundColor);
     }
 
@@ -137,7 +137,7 @@ public class SimpleBorder extends Border
     public void paintBorder(GC gc, int x, int y, Brick brick,
             Rectangle clipping, Editor editor)
     {
-        gc.setAntialias(SWT.OFF);
+        ui.prepareGraphicsPaint(gc);
         gc.setForeground(color);
         gc.drawRectangle(x, y, brick.getWidth() - 1, brick.getHeight() - 1);
     }

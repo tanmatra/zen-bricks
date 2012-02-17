@@ -2,8 +2,6 @@ package zen.bricks;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.graphics.Point;
-
 import zen.bricks.TupleBrick.Line;
 
 public class BaselineLayout extends TupleLayout
@@ -20,6 +18,7 @@ public class BaselineLayout extends TupleLayout
     }
 
     public boolean doLayout(TupleBrick brick, Editor editor) {
+        final LabelRenderer labelRenderer = brick.getLabelRenderer();
         final StyleChain chain = editor.getStyleChain(brick);
         final Margin textMargin = chain.get(TupleStyle.TEXT_MARGIN);
         final Margin brickPadding = chain.get(TupleStyle.PADDING);
@@ -31,13 +30,14 @@ public class BaselineLayout extends TupleLayout
 
         final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
         final int fontHeight = fontStyle.getFontHeight();
-        final Point textExtent = brick.applyTextStyle(chain);
+        labelRenderer.doLayout(editor);
 
         final int textAscent = textMargin.getTop() + fontStyle.getFontAscent();
         int lineAscent = textAscent;
 
         int lineY = brickPadding.getTop();
-        int currX = textMargin.getLeft() + textExtent.x + textMargin.getRight();
+        int currX = textMargin.getLeft() + labelRenderer.getWidth()
+                + textMargin.getRight();
         if (currX < paddingLeft) { // for narrow text
             currX = paddingLeft;
         }
@@ -70,9 +70,11 @@ public class BaselineLayout extends TupleLayout
             if (firstLine) {
                 final int textY =
                         lineY + textMargin.getTop() + (lineAscent - textAscent);
-                brick.setTextPosition(textMargin.getLeft(), textY);
+                labelRenderer.setX(textMargin.getLeft());
+                labelRenderer.setY(textY);
                 brick.setAscent(lineY + lineAscent);
-                lineHeight = textY + textExtent.y + textMargin.getBottom();
+                lineHeight = textY + labelRenderer.getHeight()
+                        + textMargin.getBottom();
                 firstLine = false;
             } else {
                 lineHeight = fontHeight;

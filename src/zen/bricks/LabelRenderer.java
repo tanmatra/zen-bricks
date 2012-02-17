@@ -12,6 +12,14 @@ public abstract class LabelRenderer
 
     protected Point textExtent;
 
+    protected final TupleBrick tupleBrick;
+
+    // ============================================================ Constructors
+
+    protected LabelRenderer(TupleBrick tupleBrick) {
+        this.tupleBrick = tupleBrick;
+    }
+
     // ================================================================= Methods
     /**
      * @param editor
@@ -22,21 +30,42 @@ public abstract class LabelRenderer
     public void dispose() {
     }
 
-    public abstract Point calculateSize(TupleBrick tuple, StyleChain chain);
-
-    public abstract void paint(TupleBrick tuple, GC gc, int baseX, int baseY,
-            Rectangle clipping, StyleChain chain);
-
-    public Point getTextPosition() {
-        return textPosition;
+    protected TupleBrick getTupleBrick() {
+        return tupleBrick;
     }
 
-    public void setTextPosition(int textX, int textY) {
-        textPosition.x = textX;
-        textPosition.y = textY;
+    protected String getText() {
+        return getTupleBrick().getText();
     }
 
-    public Point getTextExtent() {
-        return textExtent;
+    public abstract void doLayout(Editor editor);
+
+    public abstract void paint(GC gc, int baseX, int baseY,
+            Rectangle clipping, Editor editor);
+
+    public int getX() {
+        return textPosition.x;
     }
+
+    public int getY() {
+        return textPosition.y;
+    }
+
+    public void setX(int x) {
+        textPosition.x = x;
+    }
+
+    public void setY(int y) {
+        textPosition.y = y;
+    }
+
+    public int getWidth() {
+        return textExtent.x;
+    }
+
+    public int getHeight() {
+        return textExtent.y;
+    }
+
+    public abstract void invalidate();
 }

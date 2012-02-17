@@ -2,7 +2,6 @@ package zen.bricks;
 
 import java.util.List;
 
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 import zen.bricks.TupleBrick.Line;
@@ -150,12 +149,11 @@ class TuplePosition extends Position
         if (index < 0) {
             // left side of text label
             final Rectangle rect = tuple.toScreen();
-            final Point textPos = tuple.getTextPosition();
-            rect.x += textPos.x;
-            rect.y += textPos.y;
-            final Point textExtent = tuple.getTextExtent();
-            rect.width = textExtent.x;
-            rect.height = textExtent.y;
+            final LabelRenderer labelRenderer = tuple.getLabelRenderer();
+            rect.x += labelRenderer.getX();
+            rect.y += labelRenderer.getY();
+            rect.width = labelRenderer.getWidth();
+            rect.height = labelRenderer.getHeight();
             return rect;
         }
         if (index < tuple.getChildCount()) {

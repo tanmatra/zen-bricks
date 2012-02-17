@@ -7,7 +7,6 @@ import java.util.List;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 import zen.bricks.Position.Side;
@@ -96,7 +95,7 @@ public class TupleBrick extends ContainerBrick
 
     private String text;
 
-    private LabelRenderer labelRenderer = new SimpleLabelRenderer();
+    private LabelRenderer labelRenderer = new ScriptLabelRenderer(this);
 
     final ArrayList<Brick> children = new ArrayList<Brick>(2);
 
@@ -137,12 +136,8 @@ public class TupleBrick extends ContainerBrick
         invalidate();
     }
 
-    public Point getTextPosition() {
-        return labelRenderer.getTextPosition();
-    }
-
-    public void setTextPosition(int textX, int textY) {
-        labelRenderer.setTextPosition(textX, textY);
+    public LabelRenderer getLabelRenderer() {
+        return labelRenderer;
     }
 
     public boolean isValidInsertIndex(int index) {
@@ -239,17 +234,9 @@ public class TupleBrick extends ContainerBrick
         border.paintBackground(gc, baseX, baseY, this, clipping, editor);
 
         paintChildren(gc, baseX, baseY, clipping, editor);
-        labelRenderer.paint(this, gc, baseX, baseY, clipping, chain);
+        labelRenderer.paint(gc, baseX, baseY, clipping, editor);
 
         border.paintBorder(gc, baseX, baseY, this, clipping, editor);
-    }
-
-    Point applyTextStyle(StyleChain chain) {
-        return labelRenderer.calculateSize(this, chain);
-    }
-
-    public Point getTextExtent() {
-        return labelRenderer.getTextExtent();
     }
 
     private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping,
@@ -283,6 +270,7 @@ public class TupleBrick extends ContainerBrick
 
     protected void invalidate() {
         valid = false;
+        labelRenderer.invalidate();
     }
 
     public void invalidate(boolean all) {

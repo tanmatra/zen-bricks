@@ -101,7 +101,7 @@ public class RoundedBorder extends SimpleBorder
     protected void paintBackground(GC gc, int x, int y, Brick brick,
             Color background)
     {
-        gc.setAntialias(SWT.OFF);
+        ui.prepareGraphicsPaint(gc);
         gc.setBackground(background);
         gc.fillRoundRectangle(x, y,
                 brick.getWidth(), brick.getHeight(),
@@ -111,7 +111,7 @@ public class RoundedBorder extends SimpleBorder
     public void paintBorder(GC gc, int x, int y, Brick brick,
             Rectangle clipping, Editor editor)
     {
-        ui.prepareAntialias(gc);
+        ui.prepareGraphicsPaint(gc);
         gc.setForeground(color);
         gc.drawRoundRectangle(x, y,
                 brick.getWidth() - 1, brick.getHeight() - 1,

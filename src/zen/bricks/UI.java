@@ -236,11 +236,15 @@ public class UI
         if (advanced != null) {
             gc.setAdvanced(advanced);
         }
-        gc.setTextAntialias(textAntialias);
     }
 
-    public void prepareAntialias(GC gc) {
+    public void prepareGraphicsPaint(GC gc) {
         gc.setAntialias(antialias);
+    }
+
+    public void prepareTextPaint(GC gc) {
+        gc.setAdvanced(false); // TODO
+        gc.setTextAntialias(textAntialias);
     }
 
     /*
