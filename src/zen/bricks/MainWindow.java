@@ -83,7 +83,7 @@ public class MainWindow extends ApplicationWindow
 
     private StoredPreferences themePreferences;
 
-    private String editorFileName = "";
+    private String editorFileName;
 
     // ============================================================ Constructors
 
@@ -103,7 +103,7 @@ public class MainWindow extends ApplicationWindow
             }
         });
         super.configureShell(shell);
-        shell.setText("Bricks");
+        setEditorFileName(null);
     }
 
     void disposed() {
@@ -424,7 +424,11 @@ public class MainWindow extends ApplicationWindow
 
     public void setEditorFileName(String fileName) {
         editorFileName = fileName;
-        getShell().setText("Bricks - " + fileName);
+        if ((fileName == null) || fileName.isEmpty()) {
+            getShell().setText("Bricks");
+        } else {
+            getShell().setText("Bricks - " + fileName);
+        }
     }
 
     public String getEditorFileName() {

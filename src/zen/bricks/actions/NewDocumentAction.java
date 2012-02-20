@@ -16,6 +16,7 @@ public class NewDocumentAction extends Action
 
     public void run() {
         final TupleBrick document = new TupleBrick(null, "");
+        mainWindow.setEditorFileName(null);
         mainWindow.getEditor().setDocument(document);
     }
 }

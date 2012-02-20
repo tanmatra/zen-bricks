@@ -22,15 +22,21 @@ public class SaveAsAction extends SaveActionBase
         }
 
         String fileName = mainWindow.getEditorFileName();
-        final File file = new File(fileName);
-        String path = file.getParent();
-        if (path == null) {
+        String path;
+        if (fileName == null || fileName.isEmpty()) {
+            fileName = "";
             path = DEFAULT_PATH;
+        } else {
+            final File file = new File(fileName);
+            path = file.getParent();
+            if (path == null) {
+                path = DEFAULT_PATH;
+            }
         }
         final FileDialog dialog =
                 new FileDialog(mainWindow.getShell(), SWT.SAVE);
         dialog.setFilterPath(path);
-        dialog.setFileName(file.getName());
+        dialog.setFileName(fileName);
         dialog.setFilterExtensions(FILTER_EXTENSIONS);
         dialog.setFilterNames(FILTER_NAMES);
         dialog.setOverwrite(true);
