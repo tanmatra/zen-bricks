@@ -103,7 +103,7 @@ public class MainWindow extends ApplicationWindow
             }
         });
         super.configureShell(shell);
-        setEditorFileName(null);
+        shell.setText("Bricks");
     }
 
     void disposed() {
