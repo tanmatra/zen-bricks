@@ -236,7 +236,7 @@ public class MainWindow extends ApplicationWindow
             public void run() {
                 Style lastStyle;
                 final EditStylesDialog dialog =
-                        new EditStylesDialog(getShell(), ui);
+                        new EditStylesDialog(MainWindow.this);
 
                 if (lastStyleRef != null) {
                     lastStyle = lastStyleRef.get();
@@ -387,6 +387,10 @@ public class MainWindow extends ApplicationWindow
         return contents;
     }
 
+    public UI getUI() {
+        return ui;
+    }
+
     public Editor getEditor() {
         return editor;
     }
@@ -472,5 +476,9 @@ public class MainWindow extends ApplicationWindow
         }
         getStatusLineManager().setMessage(
                 "Saved theme \"" + fileName + "\"");
+    }
+
+    public String getThemeFileName() {
+        return themeFileName;
     }
 }

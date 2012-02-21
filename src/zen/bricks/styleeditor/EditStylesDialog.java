@@ -21,12 +21,14 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 
+import zen.bricks.MainWindow;
 import zen.bricks.Style;
 import zen.bricks.UI;
 
@@ -87,11 +89,14 @@ public class EditStylesDialog extends Dialog
 
     private Style selectedStyle;
 
+    private final MainWindow mainWindow;
+
     // ============================================================ Constructors
 
-    public EditStylesDialog(Shell shell, UI ui) {
-        super(shell);
-        this.ui = ui;
+    public EditStylesDialog(MainWindow mainWindow) {
+        super(mainWindow.getShell());
+        this.mainWindow = mainWindow;
+        this.ui = mainWindow.getUI();
     }
 
     // ================================================================= Methods
@@ -109,15 +114,18 @@ public class EditStylesDialog extends Dialog
 
     @Override
     protected Control createDialogArea(Composite parent) {
+        final Composite area = new Composite(parent, SWT.NONE);
+        GridLayoutFactory.swtDefaults().applyTo(area);
+        area.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
         final List<? extends Style> styles = ui.getAllStyles();
 
-        final SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+        final SashForm sashForm = new SashForm(area, SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
 
         // ------------------------------------------------- styles table viewer
         final Composite listPanel = new Composite(sashForm, SWT.NONE);
-        GridLayoutFactory.fillDefaults().extendedMargins(5, 0, 5, 5)
-                .applyTo(listPanel);
+        GridLayoutFactory.fillDefaults().applyTo(listPanel);
 
         final Label stylesLabel = new Label(listPanel, SWT.NONE);
         stylesLabel.setText("Styles:");
@@ -143,8 +151,7 @@ public class EditStylesDialog extends Dialog
 
         // ---------------------------------------------------- properties panel
         final Composite propertiesPanel = new Composite(sashForm, SWT.NONE);
-        GridLayoutFactory.fillDefaults().extendedMargins(0, 5, 5, 5)
-                .applyTo(propertiesPanel);
+        GridLayoutFactory.fillDefaults().applyTo(propertiesPanel);
 
         final Label propsLabel = new Label(propertiesPanel, SWT.NONE);
         propsLabel.setText("Properties:");
@@ -165,7 +172,10 @@ public class EditStylesDialog extends Dialog
         stylesViewer.setSelection(
                 new StructuredSelection(selectedStyle), true);
 
-        return sashForm;
+        new Label(area, SWT.NONE)
+                .setText("Theme: " + mainWindow.getThemeFileName());
+
+        return area;
     }
 
     @Override
