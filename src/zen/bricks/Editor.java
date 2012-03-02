@@ -131,7 +131,7 @@ public class Editor
                 vertSelection = 0;
             }
             needRepaint = true;
-            document.y = frameMargin.getTop() - vertSelection; // ???
+            document.setY(frameMargin.getTop() - vertSelection); // ???
         }
 
         final ScrollBar horizontalBar = canvas.getHorizontalBar();
@@ -146,7 +146,7 @@ public class Editor
                 horizSelection = 0;
             }
             needRepaint = true;
-            document.x = frameMargin.getLeft() - horizSelection; // ???
+            document.setX(frameMargin.getLeft() - horizSelection); // ???
         }
 
         if (needRepaint) {
@@ -156,7 +156,7 @@ public class Editor
 
     void scrollCanvasVertically() {
         final int newY = frameMargin.getTop() - verticalBar.getSelection();
-        final int yDelta = newY - document.y;
+        final int yDelta = newY - document.getY();
         canvas.scroll(
                 0, yDelta, /* destX, destY */
                 0, 0, /* sourceX, sourceY */
@@ -167,12 +167,12 @@ public class Editor
         final Point p = caret.getLocation();
         caret.setLocation(p.x, p.y + yDelta);
 
-        document.y = newY;
+        document.setY(newY);
     }
 
     void scrollCanvasHorizontally() {
         final int newX = frameMargin.getLeft() - horizontalBar.getSelection();
-        final int xDelta = newX - document.x;
+        final int xDelta = newX - document.getX();
         canvas.scroll(
                 xDelta, 0, /* destX, destY */
                 0, 0, /* sourceX, sourceY */
@@ -183,7 +183,7 @@ public class Editor
         final Point p = caret.getLocation();
         caret.setLocation(p.x + xDelta, p.y);
 
-        document.x = newX;
+        document.setX(newX);
     }
 
     public UI getUI() {
@@ -214,8 +214,8 @@ public class Editor
             this.document.detach(this);
         }
         this.document = document;
-        document.x = frameMargin.getTop();
-        document.y = frameMargin.getLeft();
+        document.setX(frameMargin.getTop());
+        document.setY(frameMargin.getLeft());
         document.attach(this);
         refresh();
         setPosition(document.enter(Side.LEFT));
@@ -303,8 +303,8 @@ public class Editor
         int x = event.x;
         int y = event.y;
         while (target != null) {
-            x -= target.x;
-            y -= target.y;
+            x -= target.getX();
+            y -= target.getY();
             target = target.handleMouseEvent(x, y, event, this);
         }
         if (event.doit && (event.type == SWT.MouseDown)) {

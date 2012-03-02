@@ -13,8 +13,8 @@ public abstract class Brick
 
     ContainerBrick parent;
     int index;
-    int x;
-    int y;
+    private int x;
+    private int y;
     private int width;
     private int height;
     private int ascent;

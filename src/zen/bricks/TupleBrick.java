@@ -74,10 +74,10 @@ public class TupleBrick extends ContainerBrick
             final int clipRight = clipLeft + clipping.width;
             for (int i = findChild(clipLeft); i < endIndex; i++) {
                 final Brick child = children.get(i);
-                if (child.x >= clipRight) {
+                if (child.getX() >= clipRight) {
                     break;
                 }
-                child.paint(gc, baseX + child.x, baseY + child.y,
+                child.paint(gc, baseX + child.getX(), baseY + child.getY(),
                         clipping, editor);
             }
         }
@@ -338,7 +338,7 @@ public class TupleBrick extends ContainerBrick
     public String toString() {
         return String.format(
                 "(TextBrick \"%s\" (%d %d %d %d) (index %d))",
-                text, x, y, getWidth(), getHeight(), index);
+                text, getX(), getY(), getWidth(), getHeight(), index);
     }
 
     protected Brick findChildAt(int x, int y) {
@@ -355,7 +355,9 @@ public class TupleBrick extends ContainerBrick
             return null;
         }
         final Brick child = children.get(childIdx);
-        if ((x < child.x) || (y < child.y) || (y >= child.getBottom())) {
+        if ((x < child.getX()) || (y < child.getY()) ||
+            (y >= child.getBottom()))
+        {
             return null;
         }
         return child;
