@@ -148,12 +148,10 @@ class TuplePosition extends Position
     public Rectangle toScreen() {
         if (index < 0) {
             // left side of text label
-            final Rectangle rect = tuple.toScreen();
             final LabelRenderer labelRenderer = tuple.getLabelRenderer();
-            rect.x += labelRenderer.getX();
-            rect.y += labelRenderer.getY();
-            rect.width = labelRenderer.getWidth();
-            rect.height = labelRenderer.getHeight();
+            final Rectangle rect = labelRenderer.toScreen();
+//            rect.x += labelRenderer.getTextX();
+//            rect.y += labelRenderer.getTextY();
             return rect;
         }
         if (index < tuple.getChildCount()) {

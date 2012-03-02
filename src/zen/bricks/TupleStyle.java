@@ -68,13 +68,22 @@ public class TupleStyle extends Style
             style.setPadding(value); }
     };
 
-    public static final MarginProperty<TupleStyle> TEXT_MARGIN =
-            new MarginProperty<TupleStyle>("textMargin", "Text margin")
+    public static final IntegerProperty<TupleStyle> INDENT =
+            new IntegerProperty<TupleStyle>("indent", "Indent")
+    {
+        public Integer get(TupleStyle style) {
+            return style.getIndent(); }
+        public void set(TupleStyle style, Integer value) {
+            style.setIndent(value); }
+    };
+
+    public static final MarginProperty<TupleStyle> TEXT_PADDING =
+            new MarginProperty<TupleStyle>("textPadding", "Text padding")
     {
         public Margin get(TupleStyle style) {
-            return style.getTextMargin(); }
+            return style.getTextPadding(); }
         public void set(TupleStyle style, Margin value) {
-            style.setTextMargin(value); }
+            style.setTextPadding(value); }
     };
 
     public static final IntegerProperty<TupleStyle> LINE_SPACING =
@@ -106,8 +115,8 @@ public class TupleStyle extends Style
     private static final List<? extends Property<TupleStyle, ?>> ALL_PROPERTIES =
             Arrays.asList(
                     FONT, FOREGROUND, BACKGROUND, TEXT_BACKGROUND,
-                    PADDING, TEXT_MARGIN, LINE_SPACING, CHILDREN_SPACING,
-                    LAYOUT, BORDER);
+                    PADDING, INDENT, TEXT_PADDING, LINE_SPACING,
+                    CHILDREN_SPACING, LAYOUT, BORDER);
 
     // ================================================================== Fields
 
@@ -131,7 +140,9 @@ public class TupleStyle extends Style
 
     private Margin padding;
 
-    private Margin textMargin;
+    private Integer indent;
+
+    private Margin textPadding;
 
     private Integer lineSpacing;
 
@@ -217,14 +228,17 @@ public class TupleStyle extends Style
         return font;
     }
 
+    @Deprecated
     public Point getTextExtent(String text, int flags) {
         return savedGC.textExtent(text, flags);
     }
 
+    @Deprecated
     public int getFontAscent() {
         return fontMetrics.getAscent() + fontMetrics.getLeading();
     }
 
+    @Deprecated
     public int getFontHeight() {
         return fontMetrics.getHeight();
     }
@@ -295,12 +309,20 @@ public class TupleStyle extends Style
         this.padding = padding;
     }
 
-    public Margin getTextMargin() {
-        return textMargin;
+    public Integer getIndent() {
+        return indent;
     }
 
-    public void setTextMargin(Margin textMargin) {
-        this.textMargin = textMargin;
+    public void setIndent(Integer indent) {
+        this.indent = indent;
+    }
+
+    public Margin getTextPadding() {
+        return textPadding;
+    }
+
+    public void setTextPadding(Margin textPadding) {
+        this.textPadding = textPadding;
     }
 
     public StyleChain createChain(StyleChain parent) {

@@ -23,6 +23,11 @@ public class TupleBrick extends ContainerBrick
         int startIndex;
         int endIndex;
 
+        Line(int startIndex, int endIndex) {
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+        }
+
         Line(int startIndex, int endIndex, int y, int height) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
@@ -30,11 +35,23 @@ public class TupleBrick extends ContainerBrick
             this.height = height;
         }
 
-        int getBottom() {
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getBottom() {
             return y + height;
         }
 
-        List<Brick> getChildren() {
+        public List<Brick> getChildren() {
             return children.subList(startIndex, endIndex);
         }
 
@@ -119,11 +136,11 @@ public class TupleBrick extends ContainerBrick
 
     public void attach(Editor editor) {
         super.attach(editor);
-        labelRenderer.init(editor);
+        labelRenderer.attach(editor);
     }
 
     public void detach(Editor editor) {
-        labelRenderer.dispose();
+        labelRenderer.detach(editor);
         super.detach(editor);
     }
 
@@ -190,6 +207,29 @@ public class TupleBrick extends ContainerBrick
         }
         invalidate();
         return old;
+    }
+
+    public List<Line> layoutLines() {
+        final ArrayList<Line> result = new ArrayList<Line>(1);
+        final int count = getChildCount();
+        int start = 0;
+        int end = start;
+        for (;;) {
+            if (end == count) {
+                final Line line = new Line(start, end);
+                result.add(line);
+                break;
+            }
+            final Brick child = getChild(end);
+            end++;
+            if (child instanceof LineBreak) {
+                final Line line = new Line(start, end);
+                result.add(line);
+                start = end;
+            }
+        }
+        lines = result;
+        return result;
     }
 
     public void newLine() {
@@ -357,6 +397,7 @@ public class TupleBrick extends ContainerBrick
         System.out.format("(count %d) (lines %d) (text: '%s')%n",
                 getChildCount(), getLines().size(),
                 text);
+        layoutLines();
         for (final Line line : lines) {
             line.printDebugInfo();
         }

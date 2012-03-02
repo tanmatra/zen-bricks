@@ -3,7 +3,7 @@ package zen.bricks;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Point;
 
 public class SimpleLabelRenderer extends LabelRenderer
 {
@@ -25,19 +25,23 @@ public class SimpleLabelRenderer extends LabelRenderer
         if (chain.get(TupleStyle.TEXT_BACKGROUND).getColor() == null) {
             flags |= SWT.DRAW_TRANSPARENT;
         }
+
+        final Margin margin = chain.get(TupleStyle.TEXT_PADDING);
+        setTextX(margin.getLeft());
+        setTextY(margin.getTop());
+
         final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
-        textExtent = fontStyle.getTextExtent(getText(), flags);
+        @SuppressWarnings("deprecation")
+        final Point textExtent = fontStyle.getTextExtent(getText(), flags);
+        setWidth(textExtent.x + margin.getHorizontalSum());
+        setHeight(textExtent.y + margin.getVerticalSum());
+
+        @SuppressWarnings("deprecation")
+        final int fontAscent = fontStyle.getFontAscent();
+        setAscent(fontAscent + margin.getTop());
     }
 
-    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-            Editor editor)
-    {
-        final int textX = baseX + getX();
-        final int textY = baseY + getY();
-        if (!clipping.intersects(textX, textY, textExtent.x, textExtent.y)) {
-            return;
-        }
-
+    protected void doPaint(GC gc, int selfX, int selfY, Editor editor) {
         final StyleChain chain = editor.getStyleChain(getTupleBrick());
         gc.setFont(chain.find(TupleStyle.FONT).getFont());
         gc.setForeground(
@@ -53,7 +57,7 @@ public class SimpleLabelRenderer extends LabelRenderer
             flags |= SWT.DRAW_TRANSPARENT;
         }
 
-        gc.drawText(getText(), textX, textY, flags);
+        gc.drawText(getText(), selfX + getTextX(), selfY + getTextY(), flags);
     }
 
     public void invalidate() {

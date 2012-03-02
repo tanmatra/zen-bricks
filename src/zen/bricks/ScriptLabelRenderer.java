@@ -2,8 +2,8 @@ package zen.bricks;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
@@ -18,17 +18,17 @@ public class ScriptLabelRenderer extends LabelRenderer
         super(tupleBrick);
     }
 
-    public void init(Editor editor) {
-        super.init(editor);
+    public void attach(Editor editor) {
+        super.attach(editor);
         textLayout = new TextLayout(editor.getUI().getDevice());
     }
 
-    public void dispose() {
+    public void detach(Editor editor) {
         if (textLayout != null) {
             textLayout.dispose();
             textLayout = null;
         }
-        super.dispose();
+        super.detach(editor);
     }
 
     public void invalidate() {
@@ -42,10 +42,16 @@ public class ScriptLabelRenderer extends LabelRenderer
 
         final String text = getText();
         textLayout.setText(text);
+
         final StyleChain chain = editor.getStyleChain(getTupleBrick());
-        final TupleStyle fontStyle = chain.find(TupleStyle.FONT);
-        final Font font = fontStyle.getFont();
+
+        final Margin padding = chain.get(TupleStyle.TEXT_PADDING);
+        setTextX(padding.getLeft());
+        setTextY(padding.getTop());
+
+        final Font font = chain.find(TupleStyle.FONT).getFont();
         textLayout.setFont(font);
+
         final Color foreground =
                 chain.find(TupleStyle.FOREGROUND).getForegroundColor();
         final Color background =
@@ -53,21 +59,22 @@ public class ScriptLabelRenderer extends LabelRenderer
                         .getColor();
         final TextStyle style = new TextStyle(null, foreground, background);
         textLayout.setStyle(style, 0, text.length() - 1);
+
         final Rectangle bounds = textLayout.getBounds();
-        textExtent = new Point(bounds.width, bounds.height);
+        setWidth(bounds.width + padding.getHorizontalSum());
+        setHeight(bounds.height + padding.getVerticalSum());
+
+        final FontMetrics lineMetrics = textLayout.getLineMetrics(0);
+        setAscent(lineMetrics.getAscent() + padding.getTop());
 
         valid = true;
     }
 
-    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-            Editor editor)
-    {
-        final int textX = baseX + getX();
-        final int textY = baseY + getY();
-        if (!clipping.intersects(textX, textY, getWidth(), getHeight())) {
-            return;
-        }
+    protected void doPaint(GC gc, int selfX, int selfY, Editor editor) {
+//        gc.setBackground(gc.getDevice().getSystemColor(SWT.COLOR_GRAY));
+//        gc.fillRectangle(selfX, selfY, getWidth(), getHeight());
+
         editor.getUI().prepareTextPaint(gc);
-        textLayout.draw(gc, textX, textY);
+        textLayout.draw(gc, selfX + getTextX(), selfY + getTextY());
     }
 }
