@@ -11,8 +11,8 @@ public abstract class Brick
 {
     // ================================================================== Fields
 
-    ContainerBrick parent;
-    int index;
+    private ContainerBrick parent;
+    private int index;
     private int x;
     private int y;
     private int width;
@@ -29,6 +29,14 @@ public abstract class Brick
 
     public ContainerBrick getParent() {
         return parent;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**

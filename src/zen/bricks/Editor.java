@@ -637,10 +637,10 @@ public class Editor
         while (brick != null) {
             if (brick instanceof TupleBrick) {
                 final TupleBrick tuple = (TupleBrick) brick;
-                list.addFirst(brick.index + ":" +
+                list.addFirst(brick.getIndex() + ":" +
                         Strings.removeChar(tuple.getText(), '\n'));
             } else {
-                list.addFirst(brick.index + ":" +
+                list.addFirst(brick.getIndex() + ":" +
                         brick.getClass().getName());
             }
             brick = brick.getParent();

@@ -168,7 +168,7 @@ public class TupleBrick extends ContainerBrick
     public void appendChild(Brick child) {
         checkChild(child);
         final int childIndex = children.size();
-        child.index = childIndex;
+        child.setIndex(childIndex);
         children.add(child);
         if (!(child instanceof LineBreak)) {
             contentCount++;
@@ -179,7 +179,7 @@ public class TupleBrick extends ContainerBrick
     private void reindex(int startIndex) {
         final int count = children.size();
         for (int i = startIndex; i < count; i++) {
-            children.get(i).index = i;
+            children.get(i).setIndex(i);
         }
     }
 
@@ -338,7 +338,7 @@ public class TupleBrick extends ContainerBrick
     public String toString() {
         return String.format(
                 "(TextBrick \"%s\" (%d %d %d %d) (index %d))",
-                text, getX(), getY(), getWidth(), getHeight(), index);
+                text, getX(), getY(), getWidth(), getHeight(), getIndex());
     }
 
     protected Brick findChildAt(int x, int y) {
@@ -370,7 +370,7 @@ public class TupleBrick extends ContainerBrick
     public Position positionOf(Brick brick, Side side) {
         checkChild(brick);
         return new TuplePosition(this,
-                brick.index + (side == Side.LEFT ? 0 : 1));
+                brick.getIndex() + (side == Side.LEFT ? 0 : 1));
     }
 
     public Position locate(int cursorX, int cursorY) {
