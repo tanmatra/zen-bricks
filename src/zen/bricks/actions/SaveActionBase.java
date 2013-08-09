@@ -3,13 +3,12 @@ package zen.bricks.actions;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import org.eclipse.jface.action.Action;
-
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
-import zen.bricks.ZenBinaryWriter;
-import zen.bricks.ZenTextWriter;
+import zen.bricks.io.ZenBinaryWriter;
+import zen.bricks.io.ZenTextWriter;
+import zen.bricks.io.ZenWriter;
 
 public class SaveActionBase extends Action
 {
@@ -28,33 +27,31 @@ public class SaveActionBase extends Action
         this.mainWindow = mainWindow;
     }
 
-    protected void save(Brick document, String fileName) throws IOException {
-        final OutputStream output = new FileOutputStream(fileName);
-        try {
-            final ZenTextWriter writer = new ZenTextWriter(output);
-            try {
-                writer.write(document);
-            } finally {
-                writer.close();
-            }
-        } finally {
-            output.close();
+    private static ZenWriter createWriter(int index, OutputStream output) throws IOException {
+        switch (index) {
+            case 0:
+                return new ZenTextWriter(output);
+            case 1:
+                return new ZenBinaryWriter(output);
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
-    protected void saveBinary(Brick document, String fileName)
-            throws IOException
-    {
-        final OutputStream output = new FileOutputStream(fileName);
-        try {
-            final ZenBinaryWriter writer = new ZenBinaryWriter(output);
-            try {
-                writer.write(document);
-            } finally {
-                writer.close();
-            }
-        } finally {
-            output.close();
+    protected void save(int index, Brick document, String fileName) throws IOException {
+        try (final OutputStream output = new FileOutputStream(fileName);
+             final ZenWriter writer = createWriter(index, output))
+        {
+            writer.write(document);
+        }
+    }
+
+    @Deprecated
+    protected void saveAsText(Brick document, String fileName) throws IOException {
+        try (final OutputStream output = new FileOutputStream(fileName);
+             final ZenTextWriter writer = new ZenTextWriter(output))
+        {
+            writer.write(document);
         }
     }
 }

@@ -2,10 +2,8 @@ package zen.bricks.actions;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
-
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
 
@@ -15,6 +13,7 @@ public class SaveAsAction extends SaveActionBase
         super(mainWindow, text);
     }
 
+    @Override
     public void run() {
         final Brick document = mainWindow.getEditor().getDocument();
         if (document == null) {
@@ -48,11 +47,7 @@ public class SaveAsAction extends SaveActionBase
         final int filterIndex = dialog.getFilterIndex();
 
         try {
-            if (filterIndex == 1) {
-                saveBinary(document, fileName);
-            } else {
-                save(document, fileName);
-            }
+            save(filterIndex, document, fileName);
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error saving file");
         }

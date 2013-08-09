@@ -1,4 +1,4 @@
-package zen.bricks;
+package zen.bricks.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,8 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import zen.bricks.Brick;
+import zen.bricks.ContainerBrick;
+import zen.bricks.LineBreak;
+import zen.bricks.TupleBrick;
 
-public class ZenTextReader
+public class ZenTextReader implements ZenReader
 {
     private final PushbackReader reader;
 
@@ -21,11 +25,13 @@ public class ZenTextReader
         reader = new PushbackReader(streamReader);
     }
 
+    @Override
     public void close() throws IOException {
         reader.close();
     }
 
-    public Brick readBrick(TupleBrick parent) throws IOException {
+    @Override
+    public Brick read(ContainerBrick parent) throws IOException {
         int c;
         do { // skip spaces
             c = reader.read();
@@ -36,7 +42,7 @@ public class ZenTextReader
             final String text = readTupleText();
             final TupleBrick tupleBrick = new TupleBrick(parent, text);
             for (;;) {
-                final Brick brick = readBrick(tupleBrick);
+                final Brick brick = read(tupleBrick);
                 if (brick != null) {
                     tupleBrick.appendChild(brick);
                 }

@@ -1,4 +1,8 @@
-package zen.bricks;
+package zen.bricks.io;
+
+import zen.bricks.Brick;
+import zen.bricks.LineBreak;
+import zen.bricks.TupleBrick;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,10 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import zen.bricks.utils.VarInt;
 
-public class ZenBinaryWriter
+public class ZenBinaryWriter implements ZenWriter
 {
     private final OutputStream output;
 
@@ -21,10 +24,12 @@ public class ZenBinaryWriter
         this.output = output;
     }
 
+    @Override
     public void close() throws IOException {
         output.close();
     }
 
+    @Override
     public void write(Brick brick) throws IOException {
         output.write(ZenBinaryProtocol.VERSION);
         collectStrings(brick);

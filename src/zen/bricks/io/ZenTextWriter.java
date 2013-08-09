@@ -1,4 +1,8 @@
-package zen.bricks;
+package zen.bricks.io;
+
+import zen.bricks.Brick;
+import zen.bricks.LineBreak;
+import zen.bricks.TupleBrick;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,7 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-public class ZenTextWriter
+public class ZenTextWriter implements ZenWriter
 {
     private final Writer writer;
 
@@ -18,6 +22,7 @@ public class ZenTextWriter
         }
     }
 
+    @Override
     public void write(Brick brick) throws IOException {
         if (brick instanceof TupleBrick) {
             final TupleBrick tupleBrick = (TupleBrick) brick;
@@ -68,6 +73,7 @@ public class ZenTextWriter
         }
     }
 
+    @Override
     public void close() throws IOException {
         writer.close();
     }

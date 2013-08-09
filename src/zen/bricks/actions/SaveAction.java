@@ -37,7 +37,7 @@ public class SaveAction extends SaveActionBase
         }
 
         try {
-            save(document, fileName);
+            saveAsText(document, fileName);
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error saving file");
         }

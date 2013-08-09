@@ -1,14 +1,17 @@
-package zen.bricks;
+package zen.bricks.io;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UTFDataFormatException;
 import java.util.ArrayList;
-
+import zen.bricks.Brick;
+import zen.bricks.ContainerBrick;
+import zen.bricks.LineBreak;
+import zen.bricks.TupleBrick;
 import zen.bricks.utils.VarInt;
 
-public class ZenBinaryReader
+public class ZenBinaryReader implements ZenReader
 {
     private final InputStream input;
 
@@ -18,16 +21,18 @@ public class ZenBinaryReader
         this.input = input;
     }
 
+    @Override
     public void close() throws IOException {
         input.close();
     }
 
-    public Brick read() throws IOException {
+    @Override
+    public Brick read(ContainerBrick parent) throws IOException {
         final int version = input.read();
         if (version != ZenBinaryProtocol.VERSION) {
             throw new IOException("Wrong binary file version: " + version);
         }
-        return readBrick(null);
+        return readBrick(parent);
     }
 
     private Brick readBrick(ContainerBrick parent) throws IOException {

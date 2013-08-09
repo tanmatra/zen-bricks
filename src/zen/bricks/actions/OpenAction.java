@@ -3,15 +3,14 @@ package zen.bricks.actions;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
-
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
-import zen.bricks.ZenBinaryReader;
-import zen.bricks.ZenTextReader;
+import zen.bricks.io.ZenBinaryReader;
+import zen.bricks.io.ZenReader;
+import zen.bricks.io.ZenTextReader;
 
 public class OpenAction extends Action
 {
@@ -28,6 +27,7 @@ public class OpenAction extends Action
         this.mainWindow = mainWindow;
     }
 
+    @Override
     public void run() {
         final FileDialog dialog =
                 new FileDialog(mainWindow.getShell(), SWT.OPEN | SWT.SINGLE);
@@ -41,12 +41,10 @@ public class OpenAction extends Action
         }
 
         final Brick document;
-        try {
-            if (dialog.getFilterIndex() == 1) {
-                document = loadBinary(fileName);
-            } else {
-                document = load(fileName);
-            }
+        try (final InputStream input = new FileInputStream(fileName);
+             final ZenReader reader = openReader(dialog.getFilterIndex(), input))
+        {
+            document = reader.read(null);
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error loading file");
             return;
@@ -55,31 +53,14 @@ public class OpenAction extends Action
         mainWindow.setEditorFileName(fileName);
     }
 
-    private Brick loadBinary(String fileName) throws IOException {
-        final InputStream input = new FileInputStream(fileName);
-        try {
-            final ZenBinaryReader reader = new ZenBinaryReader(input);
-            try {
-                return reader.read();
-            } finally {
-                reader.close();
-            }
-        } finally {
-            input.close();
-        }
-    }
-
-    private Brick load(String fileName) throws IOException {
-        final InputStream input = new FileInputStream(fileName);
-        try {
-            final ZenTextReader reader = new ZenTextReader(input);
-            try {
-                return reader.readBrick(null);
-            } finally {
-                reader.close();
-            }
-        } finally {
-            input.close();
+    private static ZenReader openReader(int index, InputStream input) {
+        switch (index) {
+            case 0:
+                return new ZenTextReader(input);
+            case 1:
+                return new ZenBinaryReader(input);
+            default:
+                throw new IllegalArgumentException();
         }
     }
 }
