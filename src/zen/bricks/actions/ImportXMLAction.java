@@ -3,10 +3,8 @@ package zen.bricks.actions;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -26,7 +24,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
 import zen.bricks.Editor;
 import zen.bricks.MainWindow;
 import zen.bricks.TupleBrick;
@@ -46,6 +43,7 @@ public class ImportXMLAction extends Action
 
         BrickHandler() { }
 
+        @Override
         public InputSource resolveEntity(String publicId, String systemId)
                 throws IOException, SAXException
         {
@@ -73,6 +71,7 @@ public class ImportXMLAction extends Action
             return res.toString();
         }
 
+        @Override
         public void startElement(String uri, String localName,
                 String qName, Attributes attributes) throws SAXException
         {
@@ -119,12 +118,14 @@ public class ImportXMLAction extends Action
             }
         }
 
+        @Override
         public void characters(char[] ch, int start, int length)
                 throws SAXException
         {
             buffer.append(ch, start, length);
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException
         {
@@ -164,11 +165,13 @@ public class ImportXMLAction extends Action
             this.handler = handler;
         }
 
+        @Override
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
             newShell.setText("Import XML options");
         }
 
+        @Override
         protected Control createDialogArea(Composite parent) {
             final Composite area = (Composite) super.createDialogArea(parent);
             final GridLayout layout = (GridLayout) area.getLayout();
@@ -188,6 +191,7 @@ public class ImportXMLAction extends Action
                 .applyTo(attrGroupText);
 
             groupCheck.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     final boolean selection = groupCheck.getSelection();
                     attrGroupLabel.setEnabled(selection);
@@ -214,6 +218,7 @@ public class ImportXMLAction extends Action
             return area;
         }
 
+        @Override
         protected void okPressed() {
             if (groupCheck.getSelection()) {
                 handler.groupText = attrGroupText.getText();
@@ -240,9 +245,9 @@ public class ImportXMLAction extends Action
 
     // ================================================================= Methods
 
+    @Override
     public void run() {
-        final FileDialog dialog =
-                new FileDialog(mainWindow.getShell(), SWT.OPEN);
+        final FileDialog dialog = new FileDialog(mainWindow.getShell(), SWT.OPEN);
         dialog.setFilterNames(new String[] { "XML files", "All files" });
         dialog.setFilterExtensions(new String[] { "*.xml", "*.*" });
         dialog.setFilterPath(path);
@@ -263,7 +268,8 @@ public class ImportXMLAction extends Action
             final Editor editor = mainWindow.getEditor();
             final TupleBrick root = parse(fileName, handler);
             editor.setDocument(root);
-            mainWindow.setEditorFileName(fileName);
+            editor.setFileType(null);
+            editor.setFileName(fileName);
         } catch (Exception ex) {
             mainWindow.showException(ex, "Import error");
         }

@@ -76,4 +76,14 @@ public enum ZenFileType
     public abstract ZenReader openReader(InputStream input) throws IOException;
 
     public abstract ZenWriter openWriter(OutputStream output) throws IOException;
+
+    public static int indexOf(ZenFileType type) {
+        final ZenFileType[] values = values();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == type) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

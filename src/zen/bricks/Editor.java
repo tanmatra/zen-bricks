@@ -1,7 +1,6 @@
 package zen.bricks;
 
 import java.util.LinkedList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -13,8 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
-
 import zen.bricks.Position.Side;
+import zen.bricks.io.ZenFileType;
 
 public class Editor
 {
@@ -50,6 +49,10 @@ public class Editor
 
     private final Margin scrollMargin = new Margin(10, 10, 10, 10);
 
+    private ZenFileType fileType;
+
+    private String fileName;
+
     // ============================================================ Constructors
 
     public Editor(UI ui, MainWindow mainWindow, Composite parent) {
@@ -62,11 +65,13 @@ public class Editor
         initScrollBars();
 
         canvas.addListener(SWT.Resize, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 canvasResized(false);
             }
         });
         canvas.addListener(SWT.Paint, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 paint(event.gc);
             }
@@ -87,6 +92,7 @@ public class Editor
         verticalBar.setIncrement(VERT_SCROLL_INCREMENT);
         verticalBar.setPageIncrement(100);
         verticalBar.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 scrollCanvasVertically();
             }
@@ -95,6 +101,7 @@ public class Editor
         horizontalBar.setIncrement(HORIZ_SCROLL_INCREMENT);
         horizontalBar.setPageIncrement(100);
         horizontalBar.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 scrollCanvasHorizontally();
             }
@@ -261,11 +268,13 @@ public class Editor
 
     private void createListeners() {
         canvas.addListener(SWT.Dispose, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 disposed();
             }
         });
         final Listener mouseListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 handleMouseEvent(event);
             }
@@ -276,6 +285,7 @@ public class Editor
         // canvas.addListener(SWT.MouseHover, mouseListener);
         // canvas.addListener(SWT.MouseMove, mouseListener);
         canvas.addListener(SWT.KeyDown, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 keyDown(e);
             }
@@ -646,5 +656,22 @@ public class Editor
             brick = brick.getParent();
         }
         return Strings.join(list, " / ");
+    }
+
+    public ZenFileType getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(ZenFileType fileType) {
+        this.fileType = fileType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+        mainWindow.setEditorFileName(fileName);
     }
 }

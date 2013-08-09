@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.prefs.Preferences;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-
 import zen.bricks.actions.ImportXMLAction;
 import zen.bricks.actions.NewDocumentAction;
 import zen.bricks.actions.OpenAction;
@@ -83,8 +81,6 @@ public class MainWindow extends ApplicationWindow
 
     private StoredPreferences themePreferences;
 
-    private String editorFileName;
-
     // ============================================================ Constructors
 
     public MainWindow() {
@@ -96,8 +92,10 @@ public class MainWindow extends ApplicationWindow
 
     // ================================================================= Methods
 
+    @Override
     protected void configureShell(Shell shell) {
         shell.addListener(SWT.Dispose, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 disposed();
             }
@@ -113,10 +111,12 @@ public class MainWindow extends ApplicationWindow
         }
     }
 
+    @Override
     protected Point getInitialSize() {
         return new Point(400, 300);
     }
 
+    @Override
     protected MenuManager createMenuManager() {
         final MenuManager mainMenu = super.createMenuManager();
         createFileMenu(mainMenu);
@@ -145,6 +145,7 @@ public class MainWindow extends ApplicationWindow
         fileMenu.add(new Separator());
 
         final Action exitAction = new Action("E&xit\tAlt+X") {
+            @Override
             public void run() {
                 close();
             }
@@ -159,6 +160,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to first") {
             { setAccelerator(SWT.HOME); }
+            @Override
             public void run() {
                 getEditor().navigateFirst();
             }
@@ -166,6 +168,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to last") {
             { setAccelerator(SWT.END); }
+            @Override
             public void run() {
                 getEditor().navigateLast();
             }
@@ -173,6 +176,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to preceding") {
             { setAccelerator(SWT.ARROW_LEFT); }
+            @Override
             public void run() {
                 getEditor().navigatePreceding();
             }
@@ -180,6 +184,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to following") {
             { setAccelerator(SWT.ARROW_RIGHT); }
+            @Override
             public void run() {
                 getEditor().navigateFollowing();
             }
@@ -187,6 +192,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to previous") {
             { setAccelerator(SWT.ARROW_UP); }
+            @Override
             public void run() {
                 getEditor().navigatePrevious();
             }
@@ -194,6 +200,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to next") {
             { setAccelerator(SWT.ARROW_DOWN); }
+            @Override
             public void run() {
                 getEditor().navigateNext();
             }
@@ -201,6 +208,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to up") {
             { setAccelerator(SWT.ARROW_UP | SWT.ALT); }
+            @Override
             public void run() {
                 getEditor().navigateUp();
             }
@@ -208,6 +216,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("Go to down") {
             { setAccelerator(SWT.ARROW_DOWN | SWT.ALT); }
+            @Override
             public void run() {
                 getEditor().navigateDown();
             }
@@ -217,6 +226,7 @@ public class MainWindow extends ApplicationWindow
 
         navigateMenu.add(new Action("&Scroll to selected") {
             { setAccelerator(' '); }
+            @Override
             public void run() {
                 getEditor().scrollToSelected();
             }
@@ -233,6 +243,7 @@ public class MainWindow extends ApplicationWindow
         {
             private WeakReference<Style> lastStyleRef;
 
+            @Override
             public void run() {
                 Style lastStyle;
                 final EditStylesDialog dialog =
@@ -259,6 +270,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         final Action fontAction = new Action("&Font...") {
+            @Override
             public void run() {
                 final FontDialog fontDialog = new FontDialog(getShell());
                 final Editor editor = getEditor();
@@ -275,6 +287,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         final Action adjustFontAction = new Action("&Adjust font...") {
+            @Override
             public void run() {
                 final AdjustFontDialog dialog = new AdjustFontDialog(getShell());
                 final Editor editor = getEditor();
@@ -294,6 +307,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         final Action loadThemeAction = new Action("&Load theme...") {
+            @Override
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 initThemesFileDialog(dialog);
@@ -308,6 +322,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         viewMenu.add(new Action("&Save theme") {
+            @Override
             public void run() {
                 saveTheme(themeFileName);
             }
@@ -315,6 +330,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         final Action saveThemeAction = new Action("Sa&ve theme as...") {
+            @Override
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
                 initThemesFileDialog(dialog);
@@ -330,6 +346,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         final Action saveXMLThemeAction = new Action("Save theme as &XML...") {
+            @Override
             public void run() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
                 dialog.setFilterNames(new String[] { "XML files" });
@@ -353,6 +370,7 @@ public class MainWindow extends ApplicationWindow
 
         // ---------------------------------------------------------------------
         final Action reloadThemeAction = new Action("&Reload theme\tF5") {
+            @Override
             public void run() {
                 if (themeFileName == null) {
                     return;
@@ -370,6 +388,7 @@ public class MainWindow extends ApplicationWindow
         dialog.setFilterPath(new File(THEMES_DIR).toString());
     }
 
+    @Override
     protected Control createContents(Composite parent) {
         final Composite contents = (Composite) super.createContents(parent);
         final FillLayout layout = new FillLayout();
@@ -426,17 +445,12 @@ public class MainWindow extends ApplicationWindow
         getStatusLineManager().setMessage("Loaded default theme");
     }
 
-    public void setEditorFileName(String fileName) {
-        editorFileName = fileName;
-        if ((fileName == null) || fileName.isEmpty()) {
+    void setEditorFileName(String fileName) {
+        if (Strings.isEmpty(fileName)) {
             getShell().setText("Bricks");
         } else {
             getShell().setText("Bricks - " + fileName);
         }
-    }
-
-    public String getEditorFileName() {
-        return editorFileName;
     }
 
     /* Does not interact with GUI */

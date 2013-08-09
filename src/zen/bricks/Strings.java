@@ -40,4 +40,8 @@ public class Strings
         }
         return buf.toString();
     }
+
+    public static boolean isEmpty(String str) {
+        return (str == null) || str.isEmpty();
+    }
 }
