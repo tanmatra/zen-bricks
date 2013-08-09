@@ -26,11 +26,6 @@ public class ZenTextReader implements ZenReader
     }
 
     @Override
-    public void close() throws IOException {
-        reader.close();
-    }
-
-    @Override
     public Brick read(ContainerBrick parent) throws IOException {
         int c;
         do { // skip spaces

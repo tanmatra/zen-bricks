@@ -41,9 +41,8 @@ public class OpenAction extends Action
         }
 
         final Brick document;
-        try (final InputStream input = new FileInputStream(fileName);
-             final ZenReader reader = openReader(dialog.getFilterIndex(), input))
-        {
+        try (final InputStream input = new FileInputStream(fileName)) {
+            final ZenReader reader = createReader(dialog.getFilterIndex(), input);
             document = reader.read(null);
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error loading file");
@@ -53,7 +52,7 @@ public class OpenAction extends Action
         mainWindow.setEditorFileName(fileName);
     }
 
-    private static ZenReader openReader(int index, InputStream input) {
+    private static ZenReader createReader(int index, InputStream input) {
         switch (index) {
             case 0:
                 return new ZenTextReader(input);

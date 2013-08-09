@@ -39,18 +39,16 @@ public class SaveActionBase extends Action
     }
 
     protected void save(int index, Brick document, String fileName) throws IOException {
-        try (final OutputStream output = new FileOutputStream(fileName);
-             final ZenWriter writer = createWriter(index, output))
-        {
+        try (final OutputStream output = new FileOutputStream(fileName)) {
+            final ZenWriter writer = createWriter(index, output);
             writer.write(document);
         }
     }
 
     @Deprecated
     protected void saveAsText(Brick document, String fileName) throws IOException {
-        try (final OutputStream output = new FileOutputStream(fileName);
-             final ZenTextWriter writer = new ZenTextWriter(output))
-        {
+        try (final OutputStream output = new FileOutputStream(fileName)) {
+            final ZenTextWriter writer = new ZenTextWriter(output);
             writer.write(document);
         }
     }

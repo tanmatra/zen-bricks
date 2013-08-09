@@ -22,11 +22,6 @@ public class ZenBinaryReader implements ZenReader
     }
 
     @Override
-    public void close() throws IOException {
-        input.close();
-    }
-
-    @Override
     public Brick read(ContainerBrick parent) throws IOException {
         final int version = input.read();
         if (version != ZenBinaryProtocol.VERSION) {
@@ -91,7 +86,7 @@ public class ZenBinaryReader implements ZenReader
 
         for (int bytePtr = 0; bytePtr < utfLen;) {
             final int c = bytes[bytePtr] & 0xFF;
-            if (c <= 127) {    // 0xxxxxxx
+            if (c <= 127) { // 0xxxxxxx
                 chars[charPtr++] = (char) c;
                 bytePtr++;
             } else {
@@ -123,7 +118,7 @@ public class ZenBinaryReader implements ZenReader
                                                    (c2 & 0x3F) <<  6 |
                                                    (c3 & 0x3F));
                         break;
-                    default: // 10xx_xxxx,  1111_xxxx
+                    default: // 10xx_xxxx, 1111_xxxx
                         throw malformedByteException(bytePtr);
                 }
             }
