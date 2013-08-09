@@ -1,12 +1,11 @@
 package zen.bricks.actions;
 
 import java.io.IOException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
-
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
+import zen.bricks.io.ZenFileType;
 
 public class SaveAction extends SaveActionBase
 {
@@ -14,6 +13,7 @@ public class SaveAction extends SaveActionBase
         super(mainWindow, text);
     }
 
+    @Override
     public void run() {
         final Brick document = mainWindow.getEditor().getDocument();
         if (document == null) {
@@ -27,8 +27,8 @@ public class SaveAction extends SaveActionBase
             final FileDialog dialog =
                     new FileDialog(mainWindow.getShell(), SWT.SAVE);
             dialog.setFilterPath(DEFAULT_PATH);
-            dialog.setFilterExtensions(FILTER_EXTENSIONS);
-            dialog.setFilterNames(FILTER_NAMES);
+            dialog.setFilterExtensions(ZenFileType.getAllFilterExtensions());
+            dialog.setFilterNames(ZenFileType.getAllFilterNames());
             dialog.setOverwrite(true);
             fileName = dialog.open();
             if (fileName == null) {

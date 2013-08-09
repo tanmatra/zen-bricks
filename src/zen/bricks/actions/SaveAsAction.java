@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
+import zen.bricks.io.ZenFileType;
 
 public class SaveAsAction extends SaveActionBase
 {
@@ -36,18 +37,17 @@ public class SaveAsAction extends SaveActionBase
                 new FileDialog(mainWindow.getShell(), SWT.SAVE);
         dialog.setFilterPath(path);
         dialog.setFileName(fileName);
-        dialog.setFilterExtensions(FILTER_EXTENSIONS);
-        dialog.setFilterNames(FILTER_NAMES);
+        dialog.setFilterExtensions(ZenFileType.getAllFilterExtensions());
+        dialog.setFilterNames(ZenFileType.getAllFilterNames());
         dialog.setOverwrite(true);
 
         fileName = dialog.open();
         if (fileName == null) {
             return;
         }
-        final int filterIndex = dialog.getFilterIndex();
-
+        final ZenFileType type = ZenFileType.values()[dialog.getFilterIndex()];
         try {
-            save(filterIndex, document, fileName);
+            save(type, document, fileName);
         } catch (IOException ex) {
             mainWindow.showException(ex, "Error saving file");
         }

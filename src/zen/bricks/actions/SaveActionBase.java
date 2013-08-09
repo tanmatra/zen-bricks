@@ -6,18 +6,12 @@ import java.io.OutputStream;
 import org.eclipse.jface.action.Action;
 import zen.bricks.Brick;
 import zen.bricks.MainWindow;
-import zen.bricks.io.ZenBinaryWriter;
+import zen.bricks.io.ZenFileType;
 import zen.bricks.io.ZenTextWriter;
 import zen.bricks.io.ZenWriter;
 
 public class SaveActionBase extends Action
 {
-    protected static final String[] FILTER_NAMES =
-            new String[] { "Zen Text files", "Zen Binary files" };
-
-    protected static final String[] FILTER_EXTENSIONS =
-            new String[] { "*.zen", "*.zn" };
-
     protected static final String DEFAULT_PATH = "samples/";
 
     protected final MainWindow mainWindow;
@@ -27,20 +21,9 @@ public class SaveActionBase extends Action
         this.mainWindow = mainWindow;
     }
 
-    private static ZenWriter createWriter(int index, OutputStream output) throws IOException {
-        switch (index) {
-            case 0:
-                return new ZenTextWriter(output);
-            case 1:
-                return new ZenBinaryWriter(output);
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    protected void save(int index, Brick document, String fileName) throws IOException {
+    protected void save(ZenFileType type, Brick document, String fileName) throws IOException {
         try (final OutputStream output = new FileOutputStream(fileName)) {
-            final ZenWriter writer = createWriter(index, output);
+            final ZenWriter writer = type.openWriter(output);
             writer.write(document);
         }
     }
