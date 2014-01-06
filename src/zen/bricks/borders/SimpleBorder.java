@@ -1,7 +1,6 @@
 package zen.bricks.borders;
 
 import java.util.prefs.Preferences;
-
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -10,7 +9,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-
 import zen.bricks.Border;
 import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
@@ -34,23 +32,22 @@ public class SimpleBorder extends Border
     public static class Factory <B extends SimpleBorder>
             extends BorderFactory<B>
     {
+        @Override
         public String getName() {
             return "simple";
         }
 
+        @Override
         public String getTitle() {
             return "Simple";
         }
 
+        @Override
         protected B newBorder(UI ui) {
             return (B) new SimpleBorder(this, ui);
         }
 
-        protected void init(B border, Preferences preferences, UI ui) {
-            final String colorStr = preferences.get(COLOR_KEY, null);
-            border.setColor(ColorUtil.parse(ui.getDevice(), colorStr));
-        }
-
+        @Override
         public IStyleEditor createStyleEditor(
                 TupleStyle style, Property<TupleStyle, B> property)
         {
@@ -72,6 +69,7 @@ public class SimpleBorder extends Border
             super(factory, style, property);
         }
 
+        @Override
         protected void createContent(Composite parent) {
             label = new Label(parent, SWT.NONE);
             label.setText("Color:");
@@ -83,6 +81,7 @@ public class SimpleBorder extends Border
             }
         }
 
+        @Override
         protected void configure(S border) {
             final RGB value = colorSelector.getColorValue();
             if (value != null) { // better handling?
@@ -107,6 +106,7 @@ public class SimpleBorder extends Border
 
     // ================================================================= Methods
 
+    @Override
     public void dispose() {
         if (color != null) {
             color.dispose();
@@ -116,6 +116,13 @@ public class SimpleBorder extends Border
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+    @Override
+    public void init(Preferences preferences, UI ui) {
+        final String colorStr = preferences.get(COLOR_KEY, null);
+        setColor(ColorUtil.parse(ui.getDevice(), colorStr));
+    }
+
+    @Override
     public void paintBackground(GC gc, int x, int y, Brick brick,
             Rectangle clipping, Editor editor)
     {
@@ -134,6 +141,7 @@ public class SimpleBorder extends Border
         gc.fillRectangle(x, y, brick.getWidth(), brick.getHeight());
     }
 
+    @Override
     public void paintBorder(GC gc, int x, int y, Brick brick,
             Rectangle clipping, Editor editor)
     {
@@ -152,6 +160,7 @@ public class SimpleBorder extends Border
         this.color = new Color(ui.getDevice(), rgb);
     }
 
+    @Override
     public void save(Preferences prefs) {
         prefs.put(COLOR_KEY, ColorUtil.format(color));
     }

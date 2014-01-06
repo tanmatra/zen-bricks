@@ -1,7 +1,6 @@
 package zen.bricks.borders;
 
 import java.util.prefs.Preferences;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -9,7 +8,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
-
 import zen.bricks.BorderFactory;
 import zen.bricks.Brick;
 import zen.bricks.Editor;
@@ -29,23 +27,22 @@ public class RoundedBorder extends SimpleBorder
     public static class Factory <B extends RoundedBorder>
             extends SimpleBorder.Factory<B>
     {
+        @Override
         public String getName() {
             return "rounded";
         }
 
+        @Override
         public String getTitle() {
             return "Rounded";
         }
 
+        @Override
         protected B newBorder(UI ui) {
             return (B) new RoundedBorder(this, ui);
         }
 
-        protected void init(B border, Preferences preferences, UI ui) {
-            super.init(border, preferences, ui);
-            border.arcSize = preferences.getInt(ARC_SIZE_KEY, 0);
-        }
-
+        @Override
         public IStyleEditor createStyleEditor(
                 TupleStyle style, Property<TupleStyle, B> property)
         {
@@ -66,6 +63,7 @@ public class RoundedBorder extends SimpleBorder
 
         private Spinner spinner;
 
+        @Override
         protected void createContent(Composite parent) {
             super.createContent(parent);
 
@@ -78,6 +76,7 @@ public class RoundedBorder extends SimpleBorder
             }
         }
 
+        @Override
         protected void configure(S border) {
             super.configure(border);
             border.arcSize = spinner.getSelection();
@@ -98,6 +97,13 @@ public class RoundedBorder extends SimpleBorder
 
     // ================================================================= Methods
 
+    @Override
+    public void init(Preferences preferences, UI ui) {
+        super.init(preferences, ui);
+        arcSize = preferences.getInt(ARC_SIZE_KEY, 0);
+    }
+
+    @Override
     protected void paintBackground(GC gc, int x, int y, Brick brick,
             Color background)
     {
@@ -108,6 +114,7 @@ public class RoundedBorder extends SimpleBorder
                 arcSize, arcSize);
     }
 
+    @Override
     public void paintBorder(GC gc, int x, int y, Brick brick,
             Rectangle clipping, Editor editor)
     {
@@ -118,6 +125,7 @@ public class RoundedBorder extends SimpleBorder
                 arcSize, arcSize);
     }
 
+    @Override
     public void save(Preferences prefs) {
         super.save(prefs);
         prefs.putInt(ARC_SIZE_KEY, arcSize);

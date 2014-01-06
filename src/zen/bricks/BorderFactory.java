@@ -1,13 +1,11 @@
 package zen.bricks;
 
 import java.util.prefs.Preferences;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
-
 import zen.bricks.styleeditor.IStyleEditor;
 
 public abstract class BorderFactory <V extends Border>
@@ -18,13 +16,11 @@ public abstract class BorderFactory <V extends Border>
 
     public V createBorder(UI ui, Preferences preferences) {
         final V border = newBorder(ui);
-        init(border, preferences, ui);
+        border.init(preferences, ui);
         return border;
     }
 
     protected abstract V newBorder(UI ui);
-
-    protected abstract void init(V border, Preferences preferences, UI ui);
 
     public abstract IStyleEditor createStyleEditor(
             TupleStyle style, Property<TupleStyle, V> property);
@@ -54,10 +50,12 @@ public abstract class BorderFactory <V extends Border>
             this.sourceBorder = property.get(style);
         }
 
+        @Override
         public Control getControl() {
             return group;
         }
 
+        @Override
         public final void createControl(Composite parent) {
             group = new Group(parent, SWT.NONE);
             group.setLayout(new GridLayout(2, false));
@@ -68,10 +66,12 @@ public abstract class BorderFactory <V extends Border>
 
         protected abstract void createContent(Composite parent);
 
+        @Override
         public void cancel() {
             // do nothing
         }
 
+        @Override
         public void apply() {
             T border = factory.newBorder(style.getUI());
             try {
