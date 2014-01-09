@@ -24,6 +24,11 @@ public class ZenBinaryWriter implements ZenWriter
     }
 
     @Override
+    public void close() throws IOException {
+        output.flush();
+    }
+
+    @Override
     public void write(Brick brick) throws IOException {
         output.write(ZenBinaryProtocol.VERSION);
         collectStrings(brick);

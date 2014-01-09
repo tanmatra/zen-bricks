@@ -22,6 +22,11 @@ public class ZenTextWriter implements ZenWriter
     }
 
     @Override
+    public void close() throws IOException {
+        writer.close();
+    }
+
+    @Override
     public void write(Brick brick) throws IOException {
         if (brick instanceof TupleBrick) {
             final TupleBrick tupleBrick = (TupleBrick) brick;
