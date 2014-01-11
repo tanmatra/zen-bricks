@@ -1,9 +1,7 @@
 package zen.bricks;
 
 import java.util.List;
-
 import org.eclipse.swt.graphics.Rectangle;
-
 import zen.bricks.TupleBrick.Line;
 
 class TuplePosition extends Position
@@ -31,7 +29,7 @@ class TuplePosition extends Position
      *  ?   |   |   |   |
      * -1   0   1   2   3
      */
-    protected int index;
+    protected final int index;
 
     TuplePosition(TupleBrick tuple, int index) {
         this.tuple = tuple;
@@ -51,47 +49,49 @@ class TuplePosition extends Position
             case RIGHT:
                 index = tuple.getChildCount();
                 break;
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
+    @Override
     public Brick getBrick() {
         return tuple;
     }
 
-    public boolean next() {
+    @Override
+    public Position next() {
         if ((index < tuple.getChildCount())) {
-            index++;
-            return true;
+            return new TuplePosition(tuple, index + 1);
         } else {
-            return false;
+            return null;
         }
     }
 
-    public boolean previous() {
+    @Override
+    public Position previous() {
         if (index > 0) {
-            index--;
-            return true;
+            return new TuplePosition(tuple, index - 1);
         }
         if (index < 0) {
-            return false;
+            return null;
         }
         // index == 0
         if (ALLOW_ON_TEXT) {
-            index = -1;
-            return true;
+            return new TuplePosition(tuple, -1);
         } else {
-            return false;
+            return null;
         }
     }
 
+    @Override
     public Position preceding() {
         if (index < 0) {
             return up(Side.LEFT);
         }
         if (index == 0) {
             if (ALLOW_ON_TEXT) {
-                index = -1;
-                return this;
+                return new TuplePosition(tuple, -1);
             } else {
                 return up(Side.LEFT);
             }
@@ -101,50 +101,52 @@ class TuplePosition extends Position
         if (leftPos != null) {
             return leftPos;
         } else {
-            index--;
-            return this;
+            return new TuplePosition(tuple, index - 1);
         }
     }
 
+    @Override
     public Position following() {
         if (index >= tuple.getChildCount()) {
             return up(Side.RIGHT);
         }
         if (index < 0) {
-            index = 0;
-            return this;
+            return new TuplePosition(tuple, 0);
         }
         final Brick right = tuple.getChild(index);
         final Position rightPos = right.enter(Side.LEFT);
         if (rightPos != null) {
             return rightPos;
         } else {
-            index++;
-            return this;
+            return new TuplePosition(tuple, index + 1);
         }
     }
 
-    public void first() {
+    @Override
+    public Position first() {
         if (ALLOW_ON_TEXT) {
-            index = -1;
+            return new TuplePosition(tuple, -1);
         } else {
-            index = 0;
+            return new TuplePosition(tuple, 0);
         }
     }
 
-    public void last() {
-        index = tuple.getChildCount();
+    @Override
+    public Position last() {
+        return new TuplePosition(tuple, tuple.getChildCount());
     }
 
+    @Override
     public Position up(Side side) {
         final ContainerBrick parent = tuple.getParent();
         if (parent != null) {
             return parent.positionOf(tuple, side);
         } else {
-            return this; // null?
+            return null;
         }
     }
 
+    @Override
     public Rectangle toScreen() {
         if (index < 0) {
             // left side of text label
@@ -189,6 +191,7 @@ class TuplePosition extends Position
     }
 
     // -------------------------------------------------------------------------
+    @Override
     public boolean canEdit() {
         if (ALLOW_ON_TEXT) {
             return (index < 0);
@@ -197,36 +200,44 @@ class TuplePosition extends Position
         }
     }
 
+    @Override
     public boolean canInsert() {
         return (index >= 0) && (index <= tuple.getChildCount());
     }
 
+    @Override
     public boolean canDelete() {
         return (index >= 0) && (index < tuple.getChildCount());
     }
 
+    @Override
     public boolean canBackDelete() {
         return (index > 0);
     }
 
+    @Override
     public void edit(Editor editor) {
         tuple.edit(editor);
     }
 
+    @Override
     public void insert(Brick child) {
         tuple.insertChild(index, child);
     }
 
-    public void delete(Editor editor) {
+    @Override
+    public Position delete(Editor editor) {
         final Brick old = tuple.removeChild(index);
         old.detach(editor);
         editor.revalidate(tuple);
+        return this;
     }
 
-    public void backDelete(Editor editor) {
+    @Override
+    public Position backDelete(Editor editor) {
         final Brick old = tuple.removeChild(index - 1);
         old.detach(editor);
-        index--;
         editor.revalidate(tuple);
+        return new TuplePosition(tuple, index - 1);
     }
 }

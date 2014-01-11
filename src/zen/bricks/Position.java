@@ -16,17 +16,17 @@ public abstract class Position
 
     public abstract Brick getBrick();
 
-    public abstract boolean next();
+    public abstract Position next();
 
-    public abstract boolean previous();
+    public abstract Position previous();
 
     public abstract Position preceding();
 
     public abstract Position following();
 
-    public abstract void first();
+    public abstract Position first();
 
-    public abstract void last();
+    public abstract Position last();
 
     public abstract Position up(Side side);
 
@@ -46,7 +46,7 @@ public abstract class Position
 
     public abstract void insert(Brick child);
 
-    public abstract void delete(Editor editor);
+    public abstract Position delete(Editor editor);
 
-    public abstract void backDelete(Editor editor);
+    public abstract Position backDelete(Editor editor);
 }

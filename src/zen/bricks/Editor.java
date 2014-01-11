@@ -215,7 +215,7 @@ public class Editor
     }
 
     public void setDocument(Brick document) {
-        setPosition(null);
+        internalSetPosition(null);
         canvas.getCaret().setVisible(false);
         if (this.document != null) {
             this.document.detach(this);
@@ -318,7 +318,7 @@ public class Editor
             target = target.handleMouseEvent(x, y, event, this);
         }
         if (event.doit && (event.type == SWT.MouseDown)) {
-            setPosition(null);
+            internalSetPosition(null);
         }
     }
 
@@ -500,35 +500,25 @@ public class Editor
 
     void navigatePrevious() {
         if (position != null) {
-            if (position.previous()) {
-                updatePosition();
-            } else {
-                warning();
-            }
+            setPosition(position.previous());
         }
     }
 
     void navigateNext() {
         if (position != null) {
-            if (position.next()) {
-                updatePosition();
-            } else {
-                warning();
-            }
+            setPosition(position.next());
         }
     }
 
     void navigateFirst() {
         if (position != null) {
-            position.first();
-            updatePosition();
+            setPosition(position.first());
         }
     }
 
     void navigateLast() {
         if (position != null) {
-            position.last();
-            updatePosition();
+            setPosition(position.last());
         }
     }
 
@@ -555,6 +545,14 @@ public class Editor
     }
 
     public void setPosition(Position position) {
+        if (position == null) {
+            warning();
+            return;
+        }
+        internalSetPosition(position);
+    }
+
+    private void internalSetPosition(Position position) {
         final Position oldPosition = this.position;
         this.position = position;
         if (oldPosition != null) {
