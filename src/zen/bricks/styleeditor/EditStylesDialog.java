@@ -95,6 +95,8 @@ public class EditStylesDialog extends Dialog
 
     private Style initialStyle;
 
+    private TreeViewer stylesTreeViewer;
+
     // ============================================================ Constructors
 
     public EditStylesDialog(MainWindow mainWindow) {
@@ -104,6 +106,11 @@ public class EditStylesDialog extends Dialog
     }
 
     // ================================================================= Methods
+
+    @Override
+    protected boolean isResizable() {
+        return true;
+    }
 
     @Override
     protected void configureShell(Shell shell) {
@@ -123,27 +130,45 @@ public class EditStylesDialog extends Dialog
         GridLayoutFactory.swtDefaults().applyTo(area);
         area.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final List<? extends Style> styles = ui.getAllStyles();
-
         final SashForm sashForm = new SashForm(area, SWT.HORIZONTAL);
+        createStylesListPanel(sashForm);
+        createPropertiesPanel(sashForm);
         sashForm.setSashWidth(10);
+        sashForm.setWeights(new int[] { 20, 80 });
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 
-        // ------------------------------------------------- styles table viewer
-        final Composite listPanel = new Composite(sashForm, SWT.NONE);
+        if (initialStyle == null) {
+            final List<? extends Style> styles = ui.getAllStyles();
+            if (!styles.isEmpty()) {
+                initialStyle = styles.get(0);
+            }
+        }
+        if (initialStyle != null) {
+            stylesTreeViewer.setSelection(new StructuredSelection(initialStyle), true);
+        }
+
+        new Label(area, SWT.NONE)
+                .setText("Theme: " + mainWindow.getThemeFileName());
+
+        return area;
+    }
+
+    private Composite createStylesListPanel(Composite parent) {
+        final Composite listPanel = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(listPanel);
 
         final Label stylesLabel = new Label(listPanel, SWT.NONE);
         stylesLabel.setText("Styles:");
 
-        final TreeViewer stylesViewer = new TreeViewer(listPanel, SWT.BORDER | SWT.SINGLE);
-        final Tree tree = stylesViewer.getTree();
+        stylesTreeViewer = new TreeViewer(listPanel, SWT.BORDER | SWT.SINGLE);
+        final Tree tree = stylesTreeViewer.getTree();
         GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
 
-        stylesViewer.setLabelProvider(new StyleLabelProvider());
-        stylesViewer.setContentProvider(new StylesContentProvider());
-        stylesViewer.setInput(styles.toArray());
-        stylesViewer.expandAll();
-        stylesViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
+        stylesTreeViewer.setLabelProvider(new StyleLabelProvider());
+        stylesTreeViewer.setContentProvider(new StylesContentProvider());
+        stylesTreeViewer.setInput(ui.getAllStyles().toArray());
+        stylesTreeViewer.expandAll();
+        stylesTreeViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -151,8 +176,11 @@ public class EditStylesDialog extends Dialog
             }
         });
 
-        // ---------------------------------------------------- properties panel
-        final Composite propertiesPanel = new Composite(sashForm, SWT.NONE);
+        return listPanel;
+    }
+
+    private Composite createPropertiesPanel(Composite parent) {
+        final Composite propertiesPanel = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(propertiesPanel);
 
         final Label propsLabel = new Label(propertiesPanel, SWT.NONE);
@@ -164,20 +192,7 @@ public class EditStylesDialog extends Dialog
         scrolledComposite.setExpandVertical(true);
         GridDataFactory.fillDefaults().hint(600, 400).grab(true, true).applyTo(scrolledComposite);
 
-        // ---------------------------------------------------------------------
-        sashForm.setWeights(new int[] { 20, 80 });
-
-        if ((initialStyle == null) && !styles.isEmpty()) {
-            initialStyle = styles.get(0);
-        }
-        if (initialStyle != null) {
-            stylesViewer.setSelection(new StructuredSelection(initialStyle), true);
-        }
-
-        new Label(area, SWT.NONE)
-                .setText("Theme: " + mainWindow.getThemeFileName());
-
-        return area;
+        return propertiesPanel;
     }
 
     @Override
