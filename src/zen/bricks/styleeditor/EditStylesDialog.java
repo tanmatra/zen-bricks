@@ -3,7 +3,6 @@ package zen.bricks.styleeditor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -18,7 +17,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -27,7 +26,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
-
 import zen.bricks.MainWindow;
 import zen.bricks.Style;
 import zen.bricks.UI;
@@ -38,6 +36,7 @@ public class EditStylesDialog extends Dialog
 
     static class StyleLabelProvider extends LabelProvider
     {
+        @Override
         public String getText(Object element) {
             return ((Style) element).getName();
         }
@@ -45,28 +44,34 @@ public class EditStylesDialog extends Dialog
 
     static class StylesContentProvider implements ITreeContentProvider
     {
+        @Override
         public Object[] getElements(Object inputElement) {
             return (Object[]) inputElement;
         }
 
+        @Override
         public Object[] getChildren(Object parentElement) {
             final Style style = ((Style) parentElement);
             return style.getChildren().toArray();
         }
 
+        @Override
         public Object getParent(Object element) {
             final Style style = ((Style) element);
             return style.getParent();
         }
 
+        @Override
         public boolean hasChildren(Object element) {
             final Style style = ((Style) element);
             return style.getChildren().size() > 0;
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
         {
         }
@@ -80,16 +85,15 @@ public class EditStylesDialog extends Dialog
 
     private final UI ui;
 
-    private Composite stackPanel;
-
-    private StackLayout stackLayout;
-
-    private final Map<Style, IStyleEditor> styleEditors =
-        new HashMap<Style, IStyleEditor>();
+    private final Map<Style, IStyleEditor> styleEditors = new HashMap<Style, IStyleEditor>();
 
     private Style selectedStyle;
 
     private final MainWindow mainWindow;
+
+    private ScrolledComposite scrolledComposite;
+
+    private Style initialStyle;
 
     // ============================================================ Constructors
 
@@ -106,6 +110,7 @@ public class EditStylesDialog extends Dialog
         super.configureShell(shell);
         shell.setText("Edit styles");
         shell.addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 cancelEditors();
             }
@@ -130,8 +135,7 @@ public class EditStylesDialog extends Dialog
         final Label stylesLabel = new Label(listPanel, SWT.NONE);
         stylesLabel.setText("Styles:");
 
-        final TreeViewer stylesViewer = new TreeViewer(listPanel,
-                SWT.BORDER | SWT.SINGLE);
+        final TreeViewer stylesViewer = new TreeViewer(listPanel, SWT.BORDER | SWT.SINGLE);
         final Tree tree = stylesViewer.getTree();
         GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
 
@@ -139,13 +143,11 @@ public class EditStylesDialog extends Dialog
         stylesViewer.setContentProvider(new StylesContentProvider());
         stylesViewer.setInput(styles.toArray());
         stylesViewer.expandAll();
-        stylesViewer.addPostSelectionChangedListener(
-                new ISelectionChangedListener()
-        {
+        stylesViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
-                final IStructuredSelection selection =
-                        (IStructuredSelection) event.getSelection();
-                styleSelected((Style) selection.getFirstElement());
+                final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                onStyleSelected((Style) selection.getFirstElement());
             }
         });
 
@@ -157,20 +159,20 @@ public class EditStylesDialog extends Dialog
         propsLabel.setText("Properties:");
         GridDataFactory.fillDefaults().applyTo(propsLabel);
 
-        stackPanel = new Composite(propertiesPanel, SWT.BORDER | SWT.V_SCROLL);
-        GridDataFactory.fillDefaults().hint(600, 400).grab(true, true)
-                .applyTo(stackPanel);
-        stackLayout = new StackLayout();
-        stackPanel.setLayout(stackLayout);
+        scrolledComposite = new ScrolledComposite(propertiesPanel, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        GridDataFactory.fillDefaults().hint(600, 400).grab(true, true).applyTo(scrolledComposite);
 
         // ---------------------------------------------------------------------
         sashForm.setWeights(new int[] { 20, 80 });
 
-        if ((selectedStyle == null) && (!styles.isEmpty())) {
-            selectedStyle = styles.get(0);
+        if ((initialStyle == null) && !styles.isEmpty()) {
+            initialStyle = styles.get(0);
         }
-        stylesViewer.setSelection(
-                new StructuredSelection(selectedStyle), true);
+        if (initialStyle != null) {
+            stylesViewer.setSelection(new StructuredSelection(initialStyle), true);
+        }
 
         new Label(area, SWT.NONE)
                 .setText("Theme: " + mainWindow.getThemeFileName());
@@ -184,20 +186,33 @@ public class EditStylesDialog extends Dialog
         super.createButtonsForButtonBar(parent);
     }
 
-    void styleSelected(Style style) {
+    private void onStyleSelected(Style style) {
+        if (style == selectedStyle) {
+            return;
+        }
+        if (selectedStyle != null) {
+            final IStyleEditor oldEditor = styleEditors.get(style);
+            if (oldEditor != null) {
+                final Control oldControl = oldEditor.getControl();
+                if (oldControl != null) {
+                    oldControl.setVisible(false);
+                }
+            }
+        }
+
         selectedStyle = style;
         if (style != null) {
             IStyleEditor styleEditor = styleEditors.get(style);
             if (styleEditor == null) {
                 styleEditor = style.createEditor();
                 styleEditors.put(style, styleEditor);
-                styleEditor.createControl(stackPanel);
+                styleEditor.createControl(scrolledComposite);
             }
-            stackLayout.topControl = styleEditor.getControl();
-        } else {
-            stackLayout.topControl = null;
+            final Control control = styleEditor.getControl();
+            scrolledComposite.setContent(control);
+            scrolledComposite.setMinSize(control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+            control.setVisible(true);
         }
-        stackPanel.layout();
     }
 
     @Override
@@ -238,7 +253,7 @@ public class EditStylesDialog extends Dialog
         return selectedStyle;
     }
 
-    public void setSelectedStyle(Style selectedStyle) {
-        this.selectedStyle = selectedStyle;
+    public void setInitialStyle(Style selectedStyle) {
+        initialStyle = selectedStyle;
     }
 }

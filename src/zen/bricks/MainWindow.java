@@ -252,7 +252,7 @@ public class MainWindow extends ApplicationWindow
                 if (lastStyleRef != null) {
                     lastStyle = lastStyleRef.get();
                     if (lastStyle != null) {
-                        dialog.setSelectedStyle(lastStyle);
+                        dialog.setInitialStyle(lastStyle);
                     }
                 }
 
