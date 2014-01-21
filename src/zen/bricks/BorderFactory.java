@@ -22,13 +22,11 @@ public abstract class BorderFactory <V extends Border>
 
     protected abstract V newBorder(UI ui);
 
-    public abstract IStyleEditor createStyleEditor(
-            TupleStyle style, Property<TupleStyle, V> property);
+    public abstract IStyleEditor createStyleEditor(TupleStyle style, Property<TupleStyle, V> property);
 
     // ========================================================== Nested Classes
 
-    public static abstract class StyleEditor<T extends Border>
-            implements IStyleEditor
+    public static abstract class StyleEditor<T extends Border> implements IStyleEditor
     {
         private final TupleStyle style;
 
@@ -41,9 +39,7 @@ public abstract class BorderFactory <V extends Border>
 
         private Group group;
 
-        protected StyleEditor(BorderFactory<T> factory, TupleStyle style,
-                Property<TupleStyle, T> property)
-        {
+        protected StyleEditor(BorderFactory<T> factory, TupleStyle style, Property<TupleStyle, T> property) {
             this.factory = factory;
             this.style = style;
             this.property = property;

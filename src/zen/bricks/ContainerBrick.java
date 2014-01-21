@@ -1,7 +1,6 @@
 package zen.bricks;
 
 import org.eclipse.swt.widgets.Event;
-
 import zen.bricks.Position.Side;
 
 public abstract class ContainerBrick extends Brick
@@ -28,6 +27,7 @@ public abstract class ContainerBrick extends Brick
 
     public abstract boolean isValidDeleteIndex(int position);
 
+    @Override
     public Brick getFirstChild() {
         return (getChildCount() < 1) ? null : getChild(0);
     }
@@ -36,6 +36,7 @@ public abstract class ContainerBrick extends Brick
         return (getChildCount() < 1) ? null : getChild(getChildCount() - 1);
     }
 
+    @Override
     public Brick getLastDescendantOrSelf() {
         if (getChildCount() < 1) {
             return super.getLastDescendantOrSelf();
@@ -43,6 +44,7 @@ public abstract class ContainerBrick extends Brick
         return getChild(getChildCount() - 1).getLastDescendantOrSelf();
     }
 
+    @Override
     public void attach(Editor editor) {
         super.attach(editor);
         final int count = getChildCount();
@@ -51,6 +53,7 @@ public abstract class ContainerBrick extends Brick
         }
     }
 
+    @Override
     public void detach(Editor editor) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -61,9 +64,8 @@ public abstract class ContainerBrick extends Brick
 
     protected abstract Brick findChildAt(int x, int y);
 
-    public Brick handleMouseEvent(int mouseX, int mouseY, Event event,
-                                  Editor editor)
-    {
+    @Override
+    public Brick handleMouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
         final Brick child = findChildAt(mouseX, mouseY);
         if (child == null) {
             return super.handleMouseEvent(mouseX, mouseY, event, editor);

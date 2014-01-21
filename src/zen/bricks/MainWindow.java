@@ -42,8 +42,7 @@ public class MainWindow extends ApplicationWindow
 
     private static final String LAST_THEME_KEY = "theme";
 
-    private static final String DEFAULT_THEME_FILE =
-            "themes/default.theme.properties";
+    private static final String DEFAULT_THEME_FILE = "themes/default.theme.properties";
 
     static final String THEMES_DIR = "themes/";
 
@@ -57,8 +56,7 @@ public class MainWindow extends ApplicationWindow
         final Display display = new Display();
         try {
             final CustomImageRegistry imageRegistry =
-                    new CustomImageRegistry(display, MainWindow.class,
-                            "/zen/bricks/");
+                    new CustomImageRegistry(display, MainWindow.class, "/zen/bricks/");
             final Image shellImage = imageRegistry.load("bricks.png");
             Window.setDefaultImage(shellImage);
             final MainWindow window = new MainWindow();
@@ -138,8 +136,7 @@ public class MainWindow extends ApplicationWindow
 
         fileMenu.add(new SaveAsAction(this, "Save &as...\tCtrl+Shift+S"));
 
-        final Action importXmlAction =
-                new ImportXMLAction(this, "Import XML...\tF3");
+        final Action importXmlAction = new ImportXMLAction(this, "Import XML...\tF3");
         fileMenu.add(importXmlAction);
 
         fileMenu.add(new Separator());
@@ -246,8 +243,7 @@ public class MainWindow extends ApplicationWindow
             @Override
             public void run() {
                 Style lastStyle;
-                final StylesEditorDialog dialog =
-                        new StylesEditorDialog(MainWindow.this);
+                final StylesEditorDialog dialog = new StylesEditorDialog(MainWindow.this);
 
                 if (lastStyleRef != null) {
                     lastStyle = lastStyleRef.get();
@@ -352,7 +348,7 @@ public class MainWindow extends ApplicationWindow
                 dialog.setFilterNames(new String[] { "XML files" });
                 dialog.setFilterExtensions(new String[] { "*.xml" });
                 dialog.setFilterPath(new File(THEMES_DIR).toString());
-//                dialog.setFileName(new File(themeFileName).getName());
+                // dialog.setFileName(new File(themeFileName).getName());
                 final String fileName = dialog.open();
                 if (fileName == null) {
                     return;
@@ -416,9 +412,7 @@ public class MainWindow extends ApplicationWindow
 
     public void showException(Throwable exception, String dialogTitle) {
         exception.printStackTrace();
-        final IStatus status =
-                new Status(IStatus.ERROR, "zen.bricks",
-                        exception.getClass().getName(), exception);
+        final IStatus status = new Status(IStatus.ERROR, "zen.bricks", exception.getClass().getName(), exception);
         ErrorDialog.openError(getShell(), dialogTitle, null, status);
     }
 
@@ -428,12 +422,10 @@ public class MainWindow extends ApplicationWindow
             try {
                 loadThemeImpl(fileName);
             } catch (Exception ex) {
-                System.err.println(
-                        ex.getMessage() + " : " + ex.getCause().getMessage());
+                System.err.println(ex.getMessage() + " : " + ex.getCause().getMessage());
                 break LOAD_LAST;
             }
-            getStatusLineManager().setMessage(
-                    "Loaded theme \"" + themeFileName + "\"");
+            getStatusLineManager().setMessage("Loaded theme \"" + themeFileName + "\"");
             return;
         }
         try {
@@ -476,8 +468,7 @@ public class MainWindow extends ApplicationWindow
             showException(ex.getCause(), ex.getMessage());
             return;
         }
-        getStatusLineManager().setMessage(
-                "Loaded theme \"" + fileName + "\"");
+        getStatusLineManager().setMessage("Loaded theme \"" + fileName + "\"");
     }
 
     void saveTheme(String fileName) {
@@ -488,8 +479,7 @@ public class MainWindow extends ApplicationWindow
             showException(ex, "Error saving theme");
             return;
         }
-        getStatusLineManager().setMessage(
-                "Saved theme \"" + fileName + "\"");
+        getStatusLineManager().setMessage("Saved theme \"" + fileName + "\"");
     }
 
     public String getThemeFileName() {

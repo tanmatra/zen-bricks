@@ -18,11 +18,13 @@ public class ScriptLabelRenderer extends LabelRenderer
         super(tupleBrick);
     }
 
+    @Override
     public void attach(Editor editor) {
         super.attach(editor);
         textLayout = new TextLayout(editor.getUI().getDevice());
     }
 
+    @Override
     public void detach(Editor editor) {
         if (textLayout != null) {
             textLayout.dispose();
@@ -31,10 +33,12 @@ public class ScriptLabelRenderer extends LabelRenderer
         super.detach(editor);
     }
 
+    @Override
     public void invalidate() {
         valid = false;
     }
 
+    @Override
     public void doLayout(Editor editor) {
         if (valid) {
             return;
@@ -52,11 +56,8 @@ public class ScriptLabelRenderer extends LabelRenderer
         final Font font = chain.find(TupleStyle.FONT).getFont();
         textLayout.setFont(font);
 
-        final Color foreground =
-                chain.find(TupleStyle.FOREGROUND).getForegroundColor();
-        final Color background =
-                chain.find(TupleStyle.TEXT_BACKGROUND).getTextBackground()
-                        .getColor();
+        final Color foreground = chain.find(TupleStyle.FOREGROUND).getForegroundColor();
+        final Color background = chain.find(TupleStyle.TEXT_BACKGROUND).getTextBackground().getColor();
         final TextStyle style = new TextStyle(null, foreground, background);
         textLayout.setStyle(style, 0, text.length() - 1);
 
@@ -70,6 +71,7 @@ public class ScriptLabelRenderer extends LabelRenderer
         valid = true;
     }
 
+    @Override
     protected void doPaint(GC gc, int selfX, int selfY, Editor editor) {
 //        gc.setBackground(gc.getDevice().getSystemColor(SWT.COLOR_GRAY));
 //        gc.fillRectangle(selfX, selfY, getWidth(), getHeight());

@@ -3,12 +3,10 @@ package zen.bricks;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
-
 import zen.bricks.Position.Side;
 
 public class TupleBrick extends ContainerBrick
@@ -55,6 +53,7 @@ public class TupleBrick extends ContainerBrick
             return children.subList(startIndex, endIndex);
         }
 
+        @Override
         public Iterator<Brick> iterator() {
             return getChildren().iterator();
         }
@@ -67,9 +66,7 @@ public class TupleBrick extends ContainerBrick
             return (rect.y < (top + height)) && ((rect.y + rect.height) > top);
         }
 
-        void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-                   Editor editor)
-        {
+        void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
             final int clipLeft = clipping.x - baseX;
             final int clipRight = clipLeft + clipping.width;
             for (int i = findChild(clipLeft); i < endIndex; i++) {
@@ -96,9 +93,9 @@ public class TupleBrick extends ContainerBrick
             return min;
         }
 
+        @Override
         public String toString() {
-            return String.format(
-                    "(Line [y %d] [height %d] [start %d] [end %d])",
+            return String.format("(Line [y %d] [height %d] [start %d] [end %d])",
                     y, height, startIndex, endIndex);
         }
 
@@ -134,11 +131,13 @@ public class TupleBrick extends ContainerBrick
 
     // ================================================================= Methods
 
+    @Override
     public void attach(Editor editor) {
         super.attach(editor);
         labelRenderer.attach(editor);
     }
 
+    @Override
     public void detach(Editor editor) {
         labelRenderer.detach(editor);
         super.detach(editor);
@@ -157,14 +156,17 @@ public class TupleBrick extends ContainerBrick
         return labelRenderer;
     }
 
+    @Override
     public boolean isValidInsertIndex(int index) {
         return (index >= 0) && (index <= children.size());
     }
 
+    @Override
     public boolean isValidDeleteIndex(int index) {
         return (index >= 0) && (index < children.size());
     }
 
+    @Override
     public void appendChild(Brick child) {
         checkChild(child);
         final int childIndex = children.size();
@@ -183,6 +185,7 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
+    @Override
     public void insertChild(int position, Brick child) {
         checkChild(child);
         if (!isValidInsertIndex(position)) {
@@ -196,6 +199,7 @@ public class TupleBrick extends ContainerBrick
         invalidate();
     }
 
+    @Override
     public Brick removeChild(int position) {
         if (!isValidDeleteIndex(position)) {
             throw new RuntimeException("Invalid delete index:" + position);
@@ -244,10 +248,12 @@ public class TupleBrick extends ContainerBrick
         return children;
     }
 
+    @Override
     public int getChildCount() {
         return children.size();
     }
 
+    @Override
     public Brick getChild(int i) {
         return children.get(i);
     }
@@ -265,9 +271,7 @@ public class TupleBrick extends ContainerBrick
     }
 
     @Override
-    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-                      Editor editor)
-    {
+    public void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
         final StyleChain chain = editor.getStyleChain(this);
 
         final Border border = chain.find(TupleStyle.BORDER).getBorder();
@@ -279,9 +283,7 @@ public class TupleBrick extends ContainerBrick
         border.paintBorder(gc, baseX, baseY, this, clipping, editor);
     }
 
-    private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping,
-                               Editor editor)
-    {
+    private void paintChildren(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
         final int length = lines.size();
         final int clipTop = clipping.y - baseY;
         final int clipBottom = clipTop + clipping.height;
@@ -313,6 +315,7 @@ public class TupleBrick extends ContainerBrick
         labelRenderer.invalidate();
     }
 
+    @Override
     public void invalidate(boolean all) {
         super.invalidate(all);
         invalidate();
@@ -324,6 +327,7 @@ public class TupleBrick extends ContainerBrick
         }
     }
 
+    @Override
     public boolean doLayout(Editor editor, boolean force) {
         if (valid && !force) {
             return false;
@@ -335,12 +339,13 @@ public class TupleBrick extends ContainerBrick
         return changed;
     }
 
+    @Override
     public String toString() {
-        return String.format(
-                "(TextBrick \"%s\" (%d %d %d %d) (index %d))",
+        return String.format("(TextBrick \"%s\" (%d %d %d %d) (index %d))",
                 text, getX(), getY(), getWidth(), getHeight(), getIndex());
     }
 
+    @Override
     protected Brick findChildAt(int x, int y) {
         final int lineIdx = findLine(y);
         if (lineIdx >= lines.size()) {
@@ -363,16 +368,18 @@ public class TupleBrick extends ContainerBrick
         return child;
     }
 
+    @Override
     public Position enter(Side side) {
         return new TuplePosition(this, side);
     }
 
+    @Override
     public Position positionOf(Brick brick, Side side) {
         checkChild(brick);
-        return new TuplePosition(this,
-                brick.getIndex() + (side == Side.LEFT ? 0 : 1));
+        return new TuplePosition(this, brick.getIndex() + (side == Side.LEFT ? 0 : 1));
     }
 
+    @Override
     public Position locate(int cursorX, int cursorY) {
         // TODO: text
         final Brick child = findChildAt(cursorX, cursorY);
@@ -384,8 +391,7 @@ public class TupleBrick extends ContainerBrick
 
     public boolean edit(Editor editor) {
         final InputDialog dialog =
-                new InputDialog(editor.getCanvas().getShell(), "Edit",
-                        "Brick text:", getText(), null);
+                new InputDialog(editor.getCanvas().getShell(), "Edit", "Brick text:", getText(), null);
         if (dialog.open() == Window.CANCEL) {
             return false;
         }
@@ -394,11 +400,11 @@ public class TupleBrick extends ContainerBrick
         return true;
     }
 
+    @Override
     public void printDebugInfo() {
         super.printDebugInfo();
         System.out.format("(count %d) (lines %d) (text: '%s')%n",
-                getChildCount(), getLines().size(),
-                text);
+                getChildCount(), getLines().size(), text);
         layoutLines();
         for (final Line line : lines) {
             line.printDebugInfo();

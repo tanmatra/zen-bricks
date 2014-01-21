@@ -1,7 +1,6 @@
 package zen.bricks.properties;
 
 import java.util.prefs.Preferences;
-
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -11,7 +10,6 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-
 import zen.bricks.ColorUtil;
 import zen.bricks.Property;
 import zen.bricks.TupleStyle;
@@ -32,20 +30,22 @@ public class TextBackgroundProperty extends Property<TupleStyle, TransparentColo
 
     // ================================================================= Methods
 
-    public EditorPart<TupleStyle, TransparentColor> createEditorPart(
-            TupleStyle object)
-    {
+    @Override
+    public EditorPart<TupleStyle, TransparentColor> createEditorPart(TupleStyle object) {
         return new TransparentColorEditorPart(object, this);
     }
 
+    @Override
     public TransparentColor get(TupleStyle style) {
         return style.getTextBackground();
     }
 
+    @Override
     public void set(TupleStyle style, TransparentColor value) {
         style.setTextBackground(value);
     }
 
+    @Override
     public void load(TupleStyle style, Preferences preferences) {
         final String string = read(preferences);
         final TransparentColor transparentColor;
@@ -61,6 +61,7 @@ public class TextBackgroundProperty extends Property<TupleStyle, TransparentColo
         set(style, transparentColor);
     }
 
+    @Override
     public void save(TupleStyle object, Preferences preferences) {
         final TransparentColor transparentColor = get(object);
         if (transparentColor == null) {
@@ -77,18 +78,16 @@ public class TextBackgroundProperty extends Property<TupleStyle, TransparentColo
 
     // ========================================================== Nested Classes
 
-    private static class TransparentColorEditorPart
-            extends CheckedEditorPart<TupleStyle, TransparentColor>
+    private static class TransparentColorEditorPart extends CheckedEditorPart<TupleStyle, TransparentColor>
     {
         private ColorSelector colorSelector;
         private Button transparentCheck;
 
-        public TransparentColorEditorPart(TupleStyle object,
-                Property<TupleStyle, TransparentColor> property)
-        {
+        public TransparentColorEditorPart(TupleStyle object, Property<TupleStyle, TransparentColor> property) {
             super(object, property);
         }
 
+        @Override
         public void createWidgets(Composite parent, int columns) {
             createDefinedCheck(parent);
 
@@ -99,6 +98,7 @@ public class TextBackgroundProperty extends Property<TupleStyle, TransparentColo
             transparentCheck = new Button(panel, SWT.CHECK);
             transparentCheck.setText("Transparent");
             transparentCheck.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent event) {
                     transparentCheckChanged();
                 }
@@ -127,11 +127,11 @@ public class TextBackgroundProperty extends Property<TupleStyle, TransparentColo
         }
 
         void transparentCheckChanged() {
-            final boolean enabled =
-                    isDefined() && !transparentCheck.getSelection();
+            final boolean enabled = isDefined() && !transparentCheck.getSelection();
             colorSelector.setEnabled(enabled);
         }
 
+        @Override
         public TransparentColor getValue() {
             if (!isDefined()) {
                 return null;

@@ -245,8 +245,7 @@ public class Editor
     }
 
     static TupleBrick makeSample() {
-        final TupleBrick rootBrick = new TupleBrick(null,
-                "Quick brown fox\njumps over the lazy dog");
+        final TupleBrick rootBrick = new TupleBrick(null, "Quick brown fox\njumps over the lazy dog");
 
         rootBrick.appendChild(new ColorBrick(rootBrick, 200, 50,
                 new RGB(192, 64, 64),
@@ -632,8 +631,7 @@ public class Editor
         if (position != null) {
             final Rectangle rect = position.toScreen();
             final Caret caret = canvas.getCaret();
-            caret.setBounds(rect.x + ui.caretOffset, rect.y,
-                    ui.caretWidth, rect.height);
+            caret.setBounds(rect.x + ui.caretOffset, rect.y, ui.caretWidth, rect.height);
             caret.setVisible(true);
         } else {
             canvas.getCaret().setVisible(false);
@@ -645,11 +643,9 @@ public class Editor
         while (brick != null) {
             if (brick instanceof TupleBrick) {
                 final TupleBrick tuple = (TupleBrick) brick;
-                list.addFirst(brick.getIndex() + ":" +
-                        Strings.removeChar(tuple.getText(), '\n'));
+                list.addFirst(brick.getIndex() + ":" + Strings.removeChar(tuple.getText(), '\n'));
             } else {
-                list.addFirst(brick.getIndex() + ":" +
-                        brick.getClass().getName());
+                list.addFirst(brick.getIndex() + ":" + brick.getClass().getName());
             }
             brick = brick.getParent();
         }

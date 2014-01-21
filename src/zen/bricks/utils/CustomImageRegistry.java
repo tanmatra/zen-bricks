@@ -16,9 +16,7 @@ public class CustomImageRegistry extends ImageRegistry
         pathPrefix = null;
     }
 
-    public CustomImageRegistry(Display display, Class<?> klass,
-                                String pathPrefix)
-    {
+    public CustomImageRegistry(Display display, Class<?> klass, String pathPrefix) {
         super(display);
         this.klass = klass;
         this.pathPrefix = pathPrefix;
@@ -33,8 +31,7 @@ public class CustomImageRegistry extends ImageRegistry
         if (pathPrefix != null) {
             path = pathPrefix + path;
         }
-        final ImageDescriptor descriptor = ImageDescriptor.createFromFile(
-                klass, path);
+        final ImageDescriptor descriptor = ImageDescriptor.createFromFile(klass, path);
         put(key, descriptor);
     }
 }

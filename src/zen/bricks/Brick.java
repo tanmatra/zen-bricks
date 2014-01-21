@@ -4,7 +4,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
-
 import zen.bricks.Position.Side;
 
 public abstract class Brick
@@ -72,9 +71,7 @@ public abstract class Brick
      * @param parentY absolute canvas-based
      * @param clipping absolute canvas-based
      */
-    public void repaint(GC gc, int parentX, int parentY, Rectangle clipping,
-                        Editor editor)
-    {
+    public void repaint(GC gc, int parentX, int parentY, Rectangle clipping, Editor editor) {
         final int brickX = parentX + x;
         final int brickY = parentY + y;
         if (clipping.intersects(brickX, brickY, width, height)) {
@@ -93,8 +90,7 @@ public abstract class Brick
      * @param clipping clipping area relative to canvas
      * @param editor editor
      */
-    protected abstract void paint(GC gc, int baseX, int baseY,
-            Rectangle clipping, Editor editor);
+    protected abstract void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor);
 
     /**
      * @return <code>true</code> if brick has really changed its size
@@ -182,9 +178,7 @@ public abstract class Brick
      * @return another brick to what event must be propagated
      *         or <code>null</code> to stop propagation
      */
-    public Brick handleMouseEvent(int mouseX, int mouseY, Event event,
-                                  Editor editor)
-    {
+    public Brick handleMouseEvent(int mouseX, int mouseY, Event event, Editor editor) {
         // debugMouseEvent(event);
         if (!contains(mouseX, mouseY)) {
             return null;

@@ -24,8 +24,7 @@ public class RoundedBorder extends SimpleBorder
 
     // ========================================================== Nested Classes
 
-    public static class Factory <B extends RoundedBorder>
-            extends SimpleBorder.Factory<B>
+    public static class Factory <B extends RoundedBorder> extends SimpleBorder.Factory<B>
     {
         @Override
         public String getName() {
@@ -43,21 +42,16 @@ public class RoundedBorder extends SimpleBorder
         }
 
         @Override
-        public IStyleEditor createStyleEditor(
-                TupleStyle style, Property<TupleStyle, B> property)
-        {
+        public IStyleEditor createStyleEditor(TupleStyle style, Property<TupleStyle, B> property) {
             return new RoundedBorder.StyleEditor<B>(this, style, property);
         }
     }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    static class StyleEditor<S extends RoundedBorder>
-            extends SimpleBorder.StyleEditor<S>
+    static class StyleEditor<S extends RoundedBorder> extends SimpleBorder.StyleEditor<S>
     {
-        StyleEditor(Factory<S> factory,
-                    TupleStyle style, Property<TupleStyle, S> property)
-        {
+        StyleEditor(Factory<S> factory, TupleStyle style, Property<TupleStyle, S> property) {
             super(factory, style, property);
         }
 
@@ -89,9 +83,7 @@ public class RoundedBorder extends SimpleBorder
 
     // ============================================================ Constructors
 
-    protected <T extends RoundedBorder> RoundedBorder(
-            BorderFactory<T> factory, UI ui)
-    {
+    protected <T extends RoundedBorder> RoundedBorder(BorderFactory<T> factory, UI ui) {
         super(factory, ui);
     }
 
@@ -104,9 +96,7 @@ public class RoundedBorder extends SimpleBorder
     }
 
     @Override
-    protected void paintBackground(GC gc, int x, int y, Brick brick,
-            Color background)
-    {
+    protected void paintBackground(GC gc, int x, int y, Brick brick, Color background) {
         ui.prepareGraphicsPaint(gc);
         gc.setBackground(background);
         gc.fillRoundRectangle(x, y,
@@ -115,9 +105,7 @@ public class RoundedBorder extends SimpleBorder
     }
 
     @Override
-    public void paintBorder(GC gc, int x, int y, Brick brick,
-            Rectangle clipping, Editor editor)
-    {
+    public void paintBorder(GC gc, int x, int y, Brick brick, Rectangle clipping, Editor editor) {
         ui.prepareGraphicsPaint(gc);
         gc.setForeground(color);
         gc.drawRoundRectangle(x, y,

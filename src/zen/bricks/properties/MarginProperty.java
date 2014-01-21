@@ -1,10 +1,8 @@
 package zen.bricks.properties;
 
 import java.util.prefs.Preferences;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
-
 import zen.bricks.Margin;
 import zen.bricks.Property;
 import zen.bricks.styleeditor.CheckedEditorPart;
@@ -21,14 +19,17 @@ public abstract class MarginProperty<T> extends Property<T, Margin>
 
     // ================================================================= Methods
 
+    @Override
     public EditorPart<T, Margin> createEditorPart(T style) {
         return new MarginEditorPart<T>(style, this);
     }
 
+    @Override
     public void load(T object, Preferences preferences) {
         set(object, Margin.parseMargin(read(preferences)));
     }
 
+    @Override
     public void save(T object, Preferences preferences) {
         final Margin margin = get(object);
         write(preferences, (margin == null) ? null : margin.format());
@@ -47,6 +48,7 @@ public abstract class MarginProperty<T> extends Property<T, Margin>
             super(object, property);
         }
 
+        @Override
         protected void definedCheckChanged(boolean selected) {
             leftValue.setEnabled(selected);
             topValue.setEnabled(selected);
@@ -54,6 +56,7 @@ public abstract class MarginProperty<T> extends Property<T, Margin>
             bottomValue.setEnabled(selected);
         }
 
+        @Override
         public void createWidgets(Composite parent, int columns) {
             createDefinedCheck(parent);
 
@@ -64,8 +67,7 @@ public abstract class MarginProperty<T> extends Property<T, Margin>
             rightValue = new LabelSpinnerPair(panel, "Right:");
             bottomValue = new LabelSpinnerPair(panel, "Bottom:");
 
-            final GridDataFactory indent =
-                    GridDataFactory.swtDefaults().indent(10, 0);
+            final GridDataFactory indent = GridDataFactory.swtDefaults().indent(10, 0);
             indent.applyTo(topValue.getLabel());
             indent.applyTo(rightValue.getLabel());
             indent.applyTo(bottomValue.getLabel());
@@ -82,6 +84,7 @@ public abstract class MarginProperty<T> extends Property<T, Margin>
             definedCheckChanged(margin != null);
         }
 
+        @Override
         public Margin getValue() {
             if (!isDefined()) {
                 return null;

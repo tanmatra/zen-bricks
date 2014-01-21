@@ -27,8 +27,7 @@ public abstract class MultipartEditor implements IStyleEditor
             numColumns = Math.max(numColumns, part.getNumColumns());
         }
 
-        GridLayoutFactory.fillDefaults().numColumns(numColumns).margins(5, 5)
-                .applyTo(composite);
+        GridLayoutFactory.fillDefaults().numColumns(numColumns).margins(5, 5).applyTo(composite);
 
         for (int i = 0; i < parts.length; i++) {
             parts[i].createWidgets(composite, numColumns);

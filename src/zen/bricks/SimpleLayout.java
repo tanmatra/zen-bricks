@@ -1,20 +1,21 @@
 package zen.bricks;
 
-
-
 public class SimpleLayout extends TupleLayout
 {
     public SimpleLayout() {
     }
 
+    @Override
     public String getTitle() {
         return "Simple";
     }
 
+    @Override
     public String getName() {
         return "simple";
     }
 
+    @Override
     public boolean doLayout(TupleBrick brick, Editor editor) {
         final LabelRenderer labelRenderer = brick.getLabelRenderer();
         final StyleChain chain = editor.getStyleChain(brick);

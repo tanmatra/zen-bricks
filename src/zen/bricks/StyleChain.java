@@ -23,8 +23,7 @@ public class StyleChain
             }
             chain = chain.parent;
         } while (chain != null);
-        throw new Error(String.format(
-                "Style property %s not found in chain", property));
+        throw new Error(String.format("Style property %s not found in chain", property));
     }
 
     public <V> V get(Property<TupleStyle, V> property) {

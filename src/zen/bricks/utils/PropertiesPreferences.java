@@ -54,23 +54,25 @@ public class PropertiesPreferences extends StoredPreferences
         return prefixName() + key;
     }
 
+    @Override
     protected void putSpi(String key, String value) {
         properties.put(keyName(key), value);
     }
 
+    @Override
     protected String getSpi(String key) {
         return properties.getProperty(keyName(key));
     }
 
+    @Override
     protected void removeSpi(String key) {
         properties.remove(keyName(key));
     }
 
+    @Override
     protected void removeNodeSpi() throws BackingStoreException {
         final String prefixName = prefixName();
-        for (Iterator<String> iter = properties.stringPropertyNames().iterator();
-                iter.hasNext();)
-        {
+        for (Iterator<String> iter = properties.stringPropertyNames().iterator(); iter.hasNext();) {
             final String key = iter.next();
             if (key.startsWith(prefixName)) {
                 iter.remove();
@@ -78,6 +80,7 @@ public class PropertiesPreferences extends StoredPreferences
         }
     }
 
+    @Override
     protected String[] keysSpi() throws BackingStoreException {
         final ArrayList<String> list = new ArrayList<String>();
         final String prefix = prefixName();
@@ -92,6 +95,7 @@ public class PropertiesPreferences extends StoredPreferences
         return list.toArray(new String[list.size()]);
     }
 
+    @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
         final ArrayList<String> list = new ArrayList<String>();
         final String prefix = prefixName();
@@ -107,18 +111,22 @@ public class PropertiesPreferences extends StoredPreferences
         return list.toArray(new String[list.size()]);
     }
 
+    @Override
     protected AbstractPreferences childSpi(String name) {
         return new PropertiesPreferences(this, name);
     }
 
+    @Override
     protected void syncSpi() throws BackingStoreException {
         // do nothing
     }
 
+    @Override
     protected void flushSpi() throws BackingStoreException {
         // do nothing
     }
 
+    @Override
     public void save(String fileName) throws IOException {
         final OutputStream out = new FileOutputStream(fileName);
         try {

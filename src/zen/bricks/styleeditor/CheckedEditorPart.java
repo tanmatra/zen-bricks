@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-
 import zen.bricks.Property;
 
 public abstract class CheckedEditorPart<T, V> extends EditorPart<T, V>
@@ -20,6 +19,7 @@ public abstract class CheckedEditorPart<T, V> extends EditorPart<T, V>
         super(object, property);
     }
 
+    @Override
     protected int getNumColumns() {
         return 2;
     }
@@ -31,6 +31,7 @@ public abstract class CheckedEditorPart<T, V> extends EditorPart<T, V>
             definedCheckbox.setSelection(true);
             definedCheckbox.setGrayed(true);
             definedCheckbox.addListener(SWT.Selection, new Listener() {
+                @Override
                 public void handleEvent(Event event) {
                     event.doit = false;
                     definedCheckbox.setSelection(true);
@@ -38,6 +39,7 @@ public abstract class CheckedEditorPart<T, V> extends EditorPart<T, V>
             });
         } else {
             definedCheckbox.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent event) {
                     definedCheckChanged(isDefined());
                 }
@@ -48,17 +50,14 @@ public abstract class CheckedEditorPart<T, V> extends EditorPart<T, V>
     protected Composite createValuesPanel(Composite parent, int span) {
         final Composite panel = new Composite(parent, SWT.NONE);
         final RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
-        rowLayout.marginLeft = rowLayout.marginTop =
-                rowLayout.marginRight = rowLayout.marginBottom = 0;
+        rowLayout.marginLeft = rowLayout.marginTop = rowLayout.marginRight = rowLayout.marginBottom = 0;
         rowLayout.center = true;
         panel.setLayout(rowLayout);
         gridData(span - 1).applyTo(panel);
         return panel;
     }
 
-    protected Composite createValuesPanel(Composite parent, int span,
-            int columns)
-    {
+    protected Composite createValuesPanel(Composite parent, int span, int columns) {
         final Composite panel = new Composite(parent, SWT.NONE);
         final GridLayout layout = new GridLayout(columns, false);
         layout.marginWidth = layout.marginHeight = 0;

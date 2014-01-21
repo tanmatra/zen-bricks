@@ -73,11 +73,9 @@ public class UI
         atomStyle = new TupleStyle(basicStyle, "atom", "Atom");
         listStyle = new TupleStyle(basicStyle, "list", "List");
         selectedStyle = new TupleStyle(basicStyle, "selected", "Selected");
-        selectedParentStyle =
-                new TupleStyle(basicStyle, "selectedParent", "Selected parent");
+        selectedParentStyle = new TupleStyle(basicStyle, "selectedParent", "Selected parent");
 
-        lineBreakStyle =
-                new LineBreak.LineBreakStyle(this, "linebreak", "Line break");
+        lineBreakStyle = new LineBreak.LineBreakStyle(this, "linebreak", "Line break");
         allStyles.add(lineBreakStyle);
     }
 
@@ -140,8 +138,7 @@ public class UI
     }
 
     private void loadLayoutFactories() {
-        final ServiceLoader<TupleLayout> layoutsLoader =
-                ServiceLoader.load(TupleLayout.class);
+        final ServiceLoader<TupleLayout> layoutsLoader = ServiceLoader.load(TupleLayout.class);
         tupleLayouts = new ArrayList<TupleLayout>();
         for (final TupleLayout layout : layoutsLoader) {
             tupleLayouts.add(layout);
@@ -150,8 +147,7 @@ public class UI
 
     private void loadBorderFactories() {
         @SuppressWarnings("rawtypes")
-        final ServiceLoader<BorderFactory> bordersLoader =
-                ServiceLoader.load(BorderFactory.class);
+        final ServiceLoader<BorderFactory> bordersLoader = ServiceLoader.load(BorderFactory.class);
         borderFactories = new ArrayList<BorderFactory<?>>();
         for (final BorderFactory<?> borderFactory : bordersLoader) {
             borderFactories.add(borderFactory);
@@ -295,8 +291,7 @@ public class UI
         protected void loadImpl(Preferences node) {
             antialias = parseState(node, ANTIALIAS_KEY);
             textAntialias = parseState(node, TEXT_ANTIALIAS_KEY);
-            canvasBackgroundColor = ColorUtil.parseColor(getDevice(),
-                    node.get(CANVAS_BACKGROUND_KEY, null));
+            canvasBackgroundColor = ColorUtil.parseColor(getDevice(), node.get(CANVAS_BACKGROUND_KEY, null));
             caretOffset = node.getInt(CARET_OFFSET_KEY, 0);
             caretWidth = node.getInt(CARET_WIDTH_KEY, 2);
         }
@@ -305,8 +300,7 @@ public class UI
         protected void saveImpl(Preferences node) {
             node.put(ANTIALIAS_KEY, stateToString(antialias));
             node.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
-            node.put(CANVAS_BACKGROUND_KEY,
-                    ColorUtil.format(canvasBackgroundColor));
+            node.put(CANVAS_BACKGROUND_KEY, ColorUtil.format(canvasBackgroundColor));
             node.putInt(CARET_OFFSET_KEY, caretOffset);
             node.putInt(CARET_WIDTH_KEY, caretWidth);
         }
@@ -356,8 +350,8 @@ public class UI
             new Label(panel, SWT.NONE).setText("Caret");
 
             final Composite caretPanel = new Composite(panel, SWT.NONE);
-            GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(4)
-                    .applyTo(caretPanel);
+            GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(4).applyTo(caretPanel);
+
             new Label(caretPanel, SWT.NONE).setText("offset:");
             caretOffsetSpinner = new Spinner(caretPanel, SWT.BORDER);
             caretOffsetSpinner.setMinimum(-10);

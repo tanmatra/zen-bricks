@@ -2,7 +2,6 @@ package zen.bricks;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
@@ -12,8 +11,7 @@ public class ColorUtil
 {
     private static final int MULTIPLIER = 0x11;
 
-    private static final Map<String, Integer> systemColors =
-            new HashMap<String, Integer>(35);
+    private static final Map<String, Integer> systemColors = new HashMap<>(35);
 
     static {
         systemColors.put("BLACK", SWT.COLOR_BLACK);
@@ -37,25 +35,19 @@ public class ColorUtil
         systemColors.put("MAGENTA", SWT.COLOR_MAGENTA);
         systemColors.put("RED", SWT.COLOR_RED);
         systemColors.put("TITLE_BACKGROUND", SWT.COLOR_TITLE_BACKGROUND);
-        systemColors.put("TITLE_BACKGROUND_GRADIENT",
-                SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
+        systemColors.put("TITLE_BACKGROUND_GRADIENT", SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
         systemColors.put("TITLE_FOREGROUND", SWT.COLOR_TITLE_FOREGROUND);
-        systemColors.put("TITLE_INACTIVE_BACKGROUND",
-                SWT.COLOR_TITLE_INACTIVE_BACKGROUND);
-        systemColors.put("TITLE_INACTIVE_BACKGROUND_GRADIENT",
-                SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
-        systemColors.put("TITLE_INACTIVE_FOREGROUND",
-                SWT.COLOR_TITLE_INACTIVE_FOREGROUND);
+        systemColors.put("TITLE_INACTIVE_BACKGROUND", SWT.COLOR_TITLE_INACTIVE_BACKGROUND);
+        systemColors.put("TITLE_INACTIVE_BACKGROUND_GRADIENT", SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
+        systemColors.put("TITLE_INACTIVE_FOREGROUND", SWT.COLOR_TITLE_INACTIVE_FOREGROUND);
         systemColors.put("WHITE", SWT.COLOR_WHITE);
         systemColors.put("WIDGET_BACKGROUND", SWT.COLOR_WIDGET_BACKGROUND);
         systemColors.put("WIDGET_BORDER", SWT.COLOR_WIDGET_BORDER);
         systemColors.put("WIDGET_DARK_SHADOW", SWT.COLOR_WIDGET_DARK_SHADOW);
         systemColors.put("WIDGET_FOREGROUND", SWT.COLOR_WIDGET_FOREGROUND);
-        systemColors.put("WIDGET_HIGHLIGHT_SHADOW",
-                SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW);
+        systemColors.put("WIDGET_HIGHLIGHT_SHADOW", SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW);
         systemColors.put("WIDGET_LIGHT_SHADOW", SWT.COLOR_WIDGET_LIGHT_SHADOW);
-        systemColors.put("WIDGET_NORMAL_SHADOW",
-                SWT.COLOR_WIDGET_NORMAL_SHADOW);
+        systemColors.put("WIDGET_NORMAL_SHADOW", SWT.COLOR_WIDGET_NORMAL_SHADOW);
         systemColors.put("YELLOW", SWT.COLOR_YELLOW);
     }
 

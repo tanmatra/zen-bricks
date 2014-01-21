@@ -19,6 +19,7 @@ public class SimpleLabelRenderer extends LabelRenderer
 
     // ================================================================= Methods
 
+    @Override
     public void doLayout(Editor editor) {
         final StyleChain chain = editor.getStyleChain(getTupleBrick());
         int flags = TEXT_FLAGS;
@@ -41,14 +42,13 @@ public class SimpleLabelRenderer extends LabelRenderer
         setAscent(fontAscent + margin.getTop());
     }
 
+    @Override
     protected void doPaint(GC gc, int selfX, int selfY, Editor editor) {
         final StyleChain chain = editor.getStyleChain(getTupleBrick());
         gc.setFont(chain.find(TupleStyle.FONT).getFont());
-        gc.setForeground(
-                chain.find(TupleStyle.FOREGROUND).getForegroundColor());
+        gc.setForeground(chain.find(TupleStyle.FOREGROUND).getForegroundColor());
 
-        final TupleStyle backgroundStyle =
-                chain.find(TupleStyle.TEXT_BACKGROUND);
+        final TupleStyle backgroundStyle = chain.find(TupleStyle.TEXT_BACKGROUND);
         final Color color = backgroundStyle.getTextBackground().getColor();
         int flags = TEXT_FLAGS;
         if (color != null) {
@@ -60,6 +60,7 @@ public class SimpleLabelRenderer extends LabelRenderer
         gc.drawText(getText(), selfX + getTextX(), selfY + getTextY(), flags);
     }
 
+    @Override
     public void invalidate() {
     }
 }

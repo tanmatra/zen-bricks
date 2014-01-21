@@ -2,7 +2,6 @@ package zen.bricks.properties;
 
 import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
-
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -16,7 +15,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Text;
-
 import zen.bricks.AdjustFontDialog;
 import zen.bricks.Property;
 import zen.bricks.styleeditor.CheckedEditorPart;
@@ -37,10 +35,12 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
 
     // ================================================================= Methods
 
+    @Override
     public EditorPart<T, FontData[]> createEditorPart(T style) {
         return new FontEditorPart<T>(style, this);
     }
 
+    @Override
     public void load(T style, Preferences preferences) {
         final String value = read(preferences);
         final FontData[] list;
@@ -82,6 +82,7 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
         return data;
     }
 
+    @Override
     public void save(T object, Preferences preferences) {
         final FontData[] fontList = get(object);
         if (fontList == null) {
@@ -117,6 +118,7 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
             fontList = getEditedValue(); // inline?
         }
 
+        @Override
         public void createWidgets(Composite parent, int columns) {
             createDefinedCheck(parent);
 
@@ -124,6 +126,7 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
 
             previewText = new Text(panel, SWT.BORDER | SWT.READ_ONLY);
             previewText.addDisposeListener(new DisposeListener() {
+                @Override
                 public void widgetDisposed(DisposeEvent e) {
                     disposePreviewFont();
                 }
@@ -134,6 +137,7 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
             fontSelectButton = new Button(panel, SWT.PUSH);
             fontSelectButton.setText("Select...");
             fontSelectButton.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     final FontDialog fontDialog = new FontDialog(panel.getShell());
                     fontDialog.setFontList(fontList);
@@ -147,9 +151,9 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
             adjustButton = new Button(panel, SWT.PUSH);
             adjustButton.setText("Adjust...");
             adjustButton.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
-                    final AdjustFontDialog dialog =
-                            new AdjustFontDialog(panel.getShell());
+                    final AdjustFontDialog dialog = new AdjustFontDialog(panel.getShell());
                     dialog.setFontList(fontList);
                     if (dialog.open() != Window.OK) {
                         return;
@@ -167,6 +171,7 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
             }
         }
 
+        @Override
         protected void definedCheckChanged(boolean selected) {
             fontSelectButton.setEnabled(selected);
             adjustButton.setEnabled(selected);
@@ -196,6 +201,7 @@ public abstract class FontProperty<T> extends Property<T, FontData[]>
             }
         }
 
+        @Override
         public FontData[] getValue() {
             return fontList;
         }

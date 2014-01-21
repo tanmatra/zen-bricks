@@ -29,8 +29,7 @@ public class SimpleBorder extends Border
 
     // ========================================================== Nested Classes
 
-    public static class Factory <B extends SimpleBorder>
-            extends BorderFactory<B>
+    public static class Factory <B extends SimpleBorder> extends BorderFactory<B>
     {
         @Override
         public String getName() {
@@ -48,24 +47,19 @@ public class SimpleBorder extends Border
         }
 
         @Override
-        public IStyleEditor createStyleEditor(
-                TupleStyle style, Property<TupleStyle, B> property)
-        {
+        public IStyleEditor createStyleEditor(TupleStyle style, Property<TupleStyle, B> property) {
             return new SimpleBorder.StyleEditor<B>(this, style, property);
         }
     }
 
     // -------------------------------------------------------------------------
 
-    public static class StyleEditor<S extends SimpleBorder>
-            extends BorderFactory.StyleEditor<S>
+    public static class StyleEditor<S extends SimpleBorder> extends BorderFactory.StyleEditor<S>
     {
         private Label label;
         private ColorSelector colorSelector;
 
-        StyleEditor(Factory<S> factory, TupleStyle style,
-                Property<TupleStyle, S> property)
-        {
+        StyleEditor(Factory<S> factory, TupleStyle style, Property<TupleStyle, S> property) {
             super(factory, style, property);
         }
 
@@ -98,9 +92,7 @@ public class SimpleBorder extends Border
 
     // ============================================================ Constructors
 
-    protected <T extends SimpleBorder> SimpleBorder(
-            BorderFactory<T> factory, UI ui)
-    {
+    protected <T extends SimpleBorder> SimpleBorder(BorderFactory<T> factory, UI ui) {
         super(factory, ui);
     }
 
@@ -123,28 +115,21 @@ public class SimpleBorder extends Border
     }
 
     @Override
-    public void paintBackground(GC gc, int x, int y, Brick brick,
-            Rectangle clipping, Editor editor)
-    {
+    public void paintBackground(GC gc, int x, int y, Brick brick, Rectangle clipping, Editor editor) {
         final TupleBrick tupleBrick = (TupleBrick) brick;
         final StyleChain styleChain = editor.getStyleChain(tupleBrick);
-        final Color backgroundColor =
-                styleChain.find(TupleStyle.BACKGROUND).getBackgroundColor();
+        final Color backgroundColor = styleChain.find(TupleStyle.BACKGROUND).getBackgroundColor();
         ui.prepareGraphicsPaint(gc);
         paintBackground(gc, x, y, brick, backgroundColor);
     }
 
-    protected void paintBackground(GC gc, int x, int y, Brick brick,
-            Color backgroundColor)
-    {
+    protected void paintBackground(GC gc, int x, int y, Brick brick, Color backgroundColor) {
         gc.setBackground(backgroundColor);
         gc.fillRectangle(x, y, brick.getWidth(), brick.getHeight());
     }
 
     @Override
-    public void paintBorder(GC gc, int x, int y, Brick brick,
-            Rectangle clipping, Editor editor)
-    {
+    public void paintBorder(GC gc, int x, int y, Brick brick, Rectangle clipping, Editor editor) {
         ui.prepareGraphicsPaint(gc);
         gc.setForeground(color);
         gc.drawRectangle(x, y, brick.getWidth() - 1, brick.getHeight() - 1);

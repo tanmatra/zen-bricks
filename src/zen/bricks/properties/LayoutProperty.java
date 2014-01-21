@@ -2,11 +2,9 @@ package zen.bricks.properties;
 
 import java.util.List;
 import java.util.prefs.Preferences;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-
 import zen.bricks.Property;
 import zen.bricks.TupleLayout;
 import zen.bricks.TupleStyle;
@@ -23,18 +21,22 @@ public class LayoutProperty extends Property<TupleStyle, TupleLayout>
 
     // ================================================================= Methods
 
+    @Override
     public TupleLayout get(TupleStyle style) {
         return style.getLayout();
     }
 
+    @Override
     public void set(TupleStyle style, TupleLayout value) {
         style.setLayout(value);
     }
 
+    @Override
     public EditorPart<TupleStyle, TupleLayout> createEditorPart(TupleStyle style) {
         return new LayoutEditorPart(style, this);
     }
 
+    @Override
     public void load(TupleStyle style, Preferences preferences) {
         final String value = read(preferences);
         if (value == null) {
@@ -50,10 +52,10 @@ public class LayoutProperty extends Property<TupleStyle, TupleLayout>
         }
     }
 
+    @Override
     public void save(TupleStyle object, Preferences preferences) {
         final TupleLayout tupleLayout = get(object);
-        write(preferences,
-                (tupleLayout == null) ? null : tupleLayout.getName());
+        write(preferences, (tupleLayout == null) ? null : tupleLayout.getName());
     }
 
     // ========================================================== Nested Classes
@@ -63,9 +65,7 @@ public class LayoutProperty extends Property<TupleStyle, TupleLayout>
     {
         private Combo combo;
 
-        LayoutEditorPart(TupleStyle style,
-                Property<TupleStyle, TupleLayout> property)
-        {
+        LayoutEditorPart(TupleStyle style, Property<TupleStyle, TupleLayout> property) {
             super(style, property);
         }
 
@@ -73,6 +73,7 @@ public class LayoutProperty extends Property<TupleStyle, TupleLayout>
             return getEditedObject().getUI().getTupleLayouts();
         }
 
+        @Override
         public void createWidgets(Composite parent, int columns) {
             createDefinedCheck(parent);
             final Composite panel = createValuesPanel(parent, columns - 1);
@@ -94,10 +95,12 @@ public class LayoutProperty extends Property<TupleStyle, TupleLayout>
             combo.setEnabled(isDefined());
         }
 
+        @Override
         protected void definedCheckChanged(boolean defined) {
             combo.setEnabled(defined);
         }
 
+        @Override
         public TupleLayout getValue() {
             final int idx = combo.getSelectionIndex();
             if (idx < 0) {

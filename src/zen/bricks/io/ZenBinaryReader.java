@@ -128,13 +128,11 @@ public class ZenBinaryReader implements ZenReader
     }
 
     private static IOException partialCharException() {
-        return new UTFDataFormatException(
-                "malformed input: partial character at end");
+        return new UTFDataFormatException("malformed input: partial character at end");
     }
 
     private static IOException malformedByteException(int ptr) {
-        return new UTFDataFormatException(
-                "malformed input around byte " + ptr);
+        return new UTFDataFormatException("malformed input around byte " + ptr);
     }
 
     private byte[] readFully(int count) throws IOException {

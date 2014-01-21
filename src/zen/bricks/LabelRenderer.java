@@ -52,9 +52,7 @@ public abstract class LabelRenderer
 
     public abstract void doLayout(Editor editor);
 
-    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-            Editor editor)
-    {
+    public void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
         final int selfX = baseX + getX();
         final int selfY = baseY + getY();
         if (!clipping.intersects(selfX, selfY, getWidth(), getHeight())) {

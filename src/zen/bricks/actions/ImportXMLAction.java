@@ -44,9 +44,7 @@ public class ImportXMLAction extends Action
         BrickHandler() { }
 
         @Override
-        public InputSource resolveEntity(String publicId, String systemId)
-                throws IOException, SAXException
-        {
+        public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
             return new InputSource(new StringReader(""));
         }
 
@@ -72,8 +70,7 @@ public class ImportXMLAction extends Action
         }
 
         @Override
-        public void startElement(String uri, String localName,
-                String qName, Attributes attributes) throws SAXException
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             handleString();
             if (brick != null) {
@@ -85,8 +82,7 @@ public class ImportXMLAction extends Action
             if (attLen > 0) {
                 final TupleBrick attrParent;
                 if (groupText != null) {
-                    final TupleBrick allAttrsBrick =
-                            appendBrick(elementBrick, groupText);
+                    final TupleBrick allAttrsBrick = appendBrick(elementBrick, groupText);
                     attrParent = allAttrsBrick;
                 } else {
                     attrParent = elementBrick;
@@ -96,8 +92,7 @@ public class ImportXMLAction extends Action
                         attrParent.newLine();
                     }
                     final String attName = attributes.getQName(i);
-                    final TupleBrick attNameBrick =
-                            appendBrick(attrParent, prefix + attName + suffix);
+                    final TupleBrick attNameBrick = appendBrick(attrParent, prefix + attName + suffix);
                     final String attValue = removeCRs(attributes.getValue(i));
                     appendBrick(attNameBrick, attValue);
                 }
@@ -119,16 +114,12 @@ public class ImportXMLAction extends Action
         }
 
         @Override
-        public void characters(char[] ch, int start, int length)
-                throws SAXException
-        {
+        public void characters(char[] ch, int start, int length) throws SAXException {
             buffer.append(ch, start, length);
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException
-        {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
             handleString();
             if ((brick.getContentCount() == 0) && fillEmpty) {
                 brick.newLine();
@@ -187,8 +178,7 @@ public class ImportXMLAction extends Action
             GridDataFactory.swtDefaults().indent(20, 0).applyTo(attrGroupLabel);
             attrGroupText = new Text(area, SWT.SINGLE | SWT.BORDER);
             attrGroupText.setText("@");
-            GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT)
-                .applyTo(attrGroupText);
+            GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(attrGroupText);
 
             groupCheck.addSelectionListener(new SelectionAdapter() {
                 @Override
@@ -201,14 +191,12 @@ public class ImportXMLAction extends Action
 
             new Label(area, SWT.NONE).setText("Attribute &prefix:");
             prefixText = new Text(area, SWT.SINGLE | SWT.BORDER);
-            GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT)
-                .applyTo(prefixText);
+            GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(prefixText);
 
             new Label(area, SWT.NONE).setText("Attribute &suffix:");
             suffixText = new Text(area, SWT.SINGLE | SWT.BORDER);
             suffixText.setText(":");
-            GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT)
-                .applyTo(suffixText);
+            GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(suffixText);
 
             fillEmptyCheck = new Button(area, SWT.CHECK);
             fillEmptyCheck.setText("Add &empty text to empty elements");
@@ -257,8 +245,7 @@ public class ImportXMLAction extends Action
         }
 
         final BrickHandler handler = new BrickHandler();
-        final ImportOptionsDialog optionsDialog =
-            new ImportOptionsDialog(mainWindow.getShell(), handler);
+        final ImportOptionsDialog optionsDialog = new ImportOptionsDialog(mainWindow.getShell(), handler);
         if (optionsDialog.open() != Window.OK) {
             return;
         }
@@ -275,9 +262,7 @@ public class ImportXMLAction extends Action
         }
     }
 
-    private TupleBrick parse(String fileName, BrickHandler handler)
-        throws Exception
-    {
+    private TupleBrick parse(String fileName, BrickHandler handler) throws Exception {
         final SAXParserFactory saxFactory = SAXParserFactory.newInstance();
         saxFactory.setValidating(false);
         final SAXParser saxParser = saxFactory.newSAXParser();

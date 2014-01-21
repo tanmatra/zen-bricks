@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,7 +16,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,8 +28,7 @@ public class DOMPreferences extends StoredPreferences
     // ============================================================ Class Fields
 
     public static Preferences load(File file) throws Exception {
-        final DocumentBuilderFactory factory =
-                DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
         final Document document = builder.parse(file);
         return new DOMPreferences(document);
@@ -45,8 +42,7 @@ public class DOMPreferences extends StoredPreferences
 
     public DOMPreferences() {
         super(null, "");
-        final DocumentBuilderFactory factory =
-                DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder;
         try {
             builder = factory.newDocumentBuilder();
@@ -63,27 +59,29 @@ public class DOMPreferences extends StoredPreferences
         this.element = document.getDocumentElement();
     }
 
-    protected DOMPreferences(DOMPreferences parent, String name,
-            Element element)
-    {
+    protected DOMPreferences(DOMPreferences parent, String name, Element element) {
         super(parent, name);
         this.element = element; // FIXME
     }
 
     // ================================================================= Methods
 
+    @Override
     protected void putSpi(String key, String value) {
         element.setAttribute(key, value);
     }
 
+    @Override
     protected String getSpi(String key) {
         return element.getAttribute(key);
     }
 
+    @Override
     protected void removeSpi(String key) {
         element.removeAttribute(key);
     }
 
+    @Override
     protected void removeNodeSpi() throws BackingStoreException {
         final Node parentNode = element.getParentNode();
         parentNode.removeChild(element);
@@ -105,6 +103,7 @@ public class DOMPreferences extends StoredPreferences
         return null;
     }
 
+    @Override
     protected String[] keysSpi() throws BackingStoreException {
         final NamedNodeMap attributes = element.getAttributes();
         final List<String> list = new ArrayList<String>();
@@ -116,6 +115,7 @@ public class DOMPreferences extends StoredPreferences
         return list.toArray(new String[list.size()]);
     }
 
+    @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
         final NodeList nodes = element.getChildNodes();
         final List<String> list = new ArrayList<String>();
@@ -131,6 +131,7 @@ public class DOMPreferences extends StoredPreferences
         return list.toArray(new String[list.size()]);
     }
 
+    @Override
     protected AbstractPreferences childSpi(String name) {
         Element child = findByName(name);
         if (child == null) {
@@ -140,14 +141,17 @@ public class DOMPreferences extends StoredPreferences
         return new DOMPreferences(this, name, child);
     }
 
+    @Override
     protected void syncSpi() throws BackingStoreException {
         // TODO Auto-generated method stub
     }
 
+    @Override
     protected void flushSpi() throws BackingStoreException {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void save(String fileName) throws IOException {
         final TransformerFactory factory = TransformerFactory.newInstance();
         final Transformer transformer;

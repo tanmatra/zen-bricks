@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Text;
 public class AdjustFontDialog extends Dialog
 {
     private static final String SAMPLE_TEXT =
-        "Quick Brown Fox Jumps Over The Lazy Dog.";
+            "Quick Brown Fox Jumps Over The Lazy Dog.";
 
     private static final float SCALE = 10.0f;
 
@@ -37,10 +37,12 @@ public class AdjustFontDialog extends Dialog
         super(shell);
     }
 
+    @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         shell.setText("Adjust font size");
         shell.addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 if (exampleFont != null) {
                     exampleFont.dispose();
@@ -49,6 +51,7 @@ public class AdjustFontDialog extends Dialog
         });
     }
 
+    @Override
     protected Control createDialogArea(Composite parent) {
         final Composite area = (Composite) super.createDialogArea(parent);
         final GridLayout layout = (GridLayout) area.getLayout();
@@ -57,10 +60,8 @@ public class AdjustFontDialog extends Dialog
 
         Group group = new Group(area, SWT.NONE);
         final FillLayout groupLayout = new FillLayout();
-        groupLayout.marginHeight =
-            convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-        groupLayout.marginWidth =
-            convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        groupLayout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        groupLayout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
         group.setLayout(groupLayout);
         group.setText("Text sample");
         gd = new GridData(400, 100);
@@ -81,6 +82,7 @@ public class AdjustFontDialog extends Dialog
         spinner.setMaximum(360);
         spinner.setSelection((int) (fontList[0].height * SCALE));
         spinner.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 exampleFont = exampleText.getFont();
                 final FontData[] fontList = exampleFont.getFontData();
@@ -98,6 +100,7 @@ public class AdjustFontDialog extends Dialog
         return area;
     }
 
+    @Override
     protected void okPressed() {
         fontList = exampleFont.getFontData();
         super.okPressed();

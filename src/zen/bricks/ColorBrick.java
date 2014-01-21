@@ -13,9 +13,7 @@ public class ColorBrick extends Brick
     private Color foreColor;
     private Color backColor;
 
-    public ColorBrick(TupleBrick parent, int width, int height,
-            RGB fore, RGB back)
-    {
+    public ColorBrick(TupleBrick parent, int width, int height, RGB fore, RGB back) {
         super(parent);
         resize(width, height);
         this.fore = fore;
@@ -23,21 +21,22 @@ public class ColorBrick extends Brick
         setAscent(height);
     }
 
+    @Override
     public void attach(Editor editor) {
         final Display device = editor.getCanvas().getDisplay();
         foreColor = new Color(device, fore);
         backColor = new Color(device, back);
     }
 
+    @Override
     public void detach(Editor editor) {
         foreColor.dispose();
         backColor.dispose();
         super.detach(editor);
     }
 
-    public void paint(GC gc, int baseX, int baseY, Rectangle clipping,
-                      Editor editor)
-    {
+    @Override
+    public void paint(GC gc, int baseX, int baseY, Rectangle clipping, Editor editor) {
         gc.setForeground(foreColor);
         gc.setBackground(backColor);
         gc.fillRoundRectangle(baseX, baseY, getWidth(), getHeight(), 6, 6);

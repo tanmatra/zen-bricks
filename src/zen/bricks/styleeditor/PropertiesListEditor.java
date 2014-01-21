@@ -1,7 +1,6 @@
 package zen.bricks.styleeditor;
 
 import java.util.List;
-
 import zen.bricks.Property;
 
 public class PropertiesListEditor<T> extends MultipartEditor
@@ -12,9 +11,7 @@ public class PropertiesListEditor<T> extends MultipartEditor
 
     private boolean mandatory;
 
-    public PropertiesListEditor(T object,
-            List<? extends Property<T, ?>> properties)
-    {
+    public PropertiesListEditor(T object, List<? extends Property<T, ?>> properties) {
         this.object = object;
         this.properties = properties;
     }
@@ -23,12 +20,12 @@ public class PropertiesListEditor<T> extends MultipartEditor
         this.mandatory = mandatory;
     }
 
+    @Override
     protected EditorPart<?, ?>[] createParts() {
         final int count = properties.size();
         final EditorPart<?, ?>[] parts = new EditorPart<?, ?>[count];
         for (int i = 0; i < count; i++) {
-            final EditorPart<T, ?> part =
-                    properties.get(i).createEditorPart(object);
+            final EditorPart<T, ?> part = properties.get(i).createEditorPart(object);
             part.setMandatory(mandatory);
             parts[i] = part;
         }
