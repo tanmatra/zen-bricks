@@ -18,6 +18,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -96,6 +98,14 @@ public class EditStylesDialog extends Dialog
     private Style initialStyle;
 
     private TreeViewer stylesTreeViewer;
+
+    private final ControlAdapter controlResizeListener = new ControlAdapter() {
+        @Override
+        public void controlResized(ControlEvent ev) {
+            final Control control = (Control) ev.widget;
+            scrolledComposite.setMinSize(control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        }
+    };
 
     // ============================================================ Constructors
 
@@ -210,6 +220,7 @@ public class EditStylesDialog extends Dialog
             if (oldEditor != null) {
                 final Control oldControl = oldEditor.getControl();
                 if (oldControl != null) {
+                    oldControl.removeControlListener(controlResizeListener);
                     oldControl.setVisible(false);
                 }
             }
@@ -227,6 +238,7 @@ public class EditStylesDialog extends Dialog
             scrolledComposite.setContent(control);
             scrolledComposite.setMinSize(control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
             control.setVisible(true);
+            control.addControlListener(controlResizeListener);
         }
     }
 

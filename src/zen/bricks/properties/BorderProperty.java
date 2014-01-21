@@ -3,7 +3,6 @@ package zen.bricks.properties;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -12,7 +11,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-
 import zen.bricks.Border;
 import zen.bricks.BorderFactory;
 import zen.bricks.Property;
@@ -32,14 +30,17 @@ public class BorderProperty extends Property<TupleStyle, Border>
 
     // ================================================================= Methods
 
+    @Override
     public Border get(TupleStyle style) {
         return style.getBorder();
     }
 
+    @Override
     public void set(TupleStyle style, Border value) {
         style.setBorder(value);
     }
 
+    @Override
     public void load(TupleStyle style, Preferences preferences) {
         final String type = read(preferences);
         if (type == null) {
@@ -58,6 +59,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
         }
     }
 
+    @Override
     public void save(TupleStyle style, Preferences preferences) {
         final Border border = get(style);
         final Preferences borderPrefs = subNode(preferences);
@@ -74,19 +76,19 @@ public class BorderProperty extends Property<TupleStyle, Border>
         }
     }
 
+    @Override
     public EditorPart<TupleStyle, Border> createEditorPart(TupleStyle style) {
         return new BorderEditorPart(style, this);
     }
 
     // ========================================================== Nested Classes
 
-    private static class BorderEditorPart
-            extends CheckedEditorPart<TupleStyle, Border>
+    private static class BorderEditorPart extends CheckedEditorPart<TupleStyle, Border>
     {
         private Label label;
         private Combo combo;
         private IStyleEditor borderStyleEditor;
-        private BorderFactory<?> selectedFactory;
+        private BorderFactory<? extends Border> selectedFactory;
         private final List<BorderFactory<?>> factories;
         private Composite editorPanel;
 
@@ -95,6 +97,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
             factories = style.getUI().getBorderFactories();
         }
 
+        @Override
         public void apply() {
             if (borderStyleEditor != null) {
                 borderStyleEditor.apply();
@@ -103,10 +106,12 @@ public class BorderProperty extends Property<TupleStyle, Border>
             }
         }
 
+        @Override
         public Border getValue() {
             return null; // will be never called
         }
 
+        @Override
         public void createWidgets(Composite parent, int columns) {
             // ---------------------------------------------------------- row 1
             createDefinedCheck(parent);
@@ -121,6 +126,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
                 combo.add(factory.getTitle());
             }
             combo.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent event) {
                     comboSelected();
                 }
@@ -138,8 +144,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
             final Border sourceBorder = getEditedValue();
             setDefined(sourceBorder != null);
 
-            selectedFactory =
-                    (sourceBorder != null) ? sourceBorder.getFactory() : null;
+            selectedFactory = (sourceBorder != null) ? sourceBorder.getFactory() : null;
             if (selectedFactory != null) {
                 final int factoryIndex = factories.indexOf(selectedFactory);
                 if (factoryIndex >= 0) {
@@ -150,6 +155,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
             definedCheckChanged(isDefined());
         }
 
+        @Override
         protected void definedCheckChanged(boolean defined) {
             label.setEnabled(defined);
             combo.setEnabled(defined);
@@ -164,8 +170,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
 
         void comboSelected() {
             final int index = combo.getSelectionIndex();
-            final BorderFactory<?> newFactory =
-                    (index < 0) ? null : factories.get(index);
+            final BorderFactory<?> newFactory = (index < 0) ? null : factories.get(index);
             if (newFactory == selectedFactory) {
                 return;
             }
@@ -176,15 +181,15 @@ public class BorderProperty extends Property<TupleStyle, Border>
         }
 
         private void layoutEditorPanel() {
-            editorPanel.getParent().layout(true, true);
+            final Composite parent = editorPanel.getParent();
+            // parent.layout(true, true);
+            parent.setSize(editorPanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         }
 
         private void makeEditor() {
             if (selectedFactory != null) {
-                final BorderFactory<Border> bf =
-                        (BorderFactory<Border>) selectedFactory;
-                borderStyleEditor =
-                        bf.createStyleEditor(getEditedObject(), getProperty());
+                final BorderFactory<Border> bf = (BorderFactory<Border>) selectedFactory;
+                borderStyleEditor = bf.createStyleEditor(getEditedObject(), getProperty());
                 borderStyleEditor.createControl(editorPanel);
             } else {
                 borderStyleEditor = null;
