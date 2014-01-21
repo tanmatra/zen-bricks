@@ -32,7 +32,7 @@ import zen.bricks.MainWindow;
 import zen.bricks.Style;
 import zen.bricks.UI;
 
-public class EditStylesDialog extends Dialog
+public class StylesEditorDialog extends Dialog
 {
     // ========================================================== Nested Classes
 
@@ -109,7 +109,7 @@ public class EditStylesDialog extends Dialog
 
     // ============================================================ Constructors
 
-    public EditStylesDialog(MainWindow mainWindow) {
+    public StylesEditorDialog(MainWindow mainWindow) {
         super(mainWindow.getShell());
         this.mainWindow = mainWindow;
         this.ui = mainWindow.getUI();

@@ -29,7 +29,7 @@ import zen.bricks.actions.NewDocumentAction;
 import zen.bricks.actions.OpenAction;
 import zen.bricks.actions.SaveAction;
 import zen.bricks.actions.SaveAsAction;
-import zen.bricks.styleeditor.EditStylesDialog;
+import zen.bricks.styleeditor.StylesEditorDialog;
 import zen.bricks.utils.CustomImageRegistry;
 import zen.bricks.utils.DOMPreferences;
 import zen.bricks.utils.PropertiesPreferences;
@@ -246,8 +246,8 @@ public class MainWindow extends ApplicationWindow
             @Override
             public void run() {
                 Style lastStyle;
-                final EditStylesDialog dialog =
-                        new EditStylesDialog(MainWindow.this);
+                final StylesEditorDialog dialog =
+                        new StylesEditorDialog(MainWindow.this);
 
                 if (lastStyleRef != null) {
                     lastStyle = lastStyleRef.get();
