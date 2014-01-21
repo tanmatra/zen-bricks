@@ -10,6 +10,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import zen.bricks.Border;
 import zen.bricks.BorderFactory;
@@ -91,6 +92,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
         private BorderFactory<? extends Border> selectedFactory;
         private final List<BorderFactory<?>> factories;
         private Composite editorPanel;
+        private Control editorControl;
 
         BorderEditorPart(TupleStyle style, BorderProperty property) {
             super(style, property);
@@ -190,7 +192,7 @@ public class BorderProperty extends Property<TupleStyle, Border>
             if (selectedFactory != null) {
                 final BorderFactory<Border> bf = (BorderFactory<Border>) selectedFactory;
                 borderStyleEditor = bf.createStyleEditor(getEditedObject(), getProperty());
-                borderStyleEditor.createControl(editorPanel);
+                editorControl = borderStyleEditor.createControl(editorPanel);
             } else {
                 borderStyleEditor = null;
             }
@@ -199,7 +201,8 @@ public class BorderProperty extends Property<TupleStyle, Border>
         private void destroyEditor() {
             if (borderStyleEditor != null) {
                 borderStyleEditor.cancel();
-                borderStyleEditor.getControl().dispose();
+                editorControl.dispose();
+                editorControl = null;
                 borderStyleEditor = null;
             }
         }

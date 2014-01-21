@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.prefs.Preferences;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.ColorSelector;
@@ -19,7 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
-
 import zen.bricks.LineBreak.LineBreakStyle;
 import zen.bricks.styleeditor.IStyleEditor;
 import zen.bricks.swt.RadioPanel;
@@ -288,10 +286,12 @@ public class UI
             super(UI.this, key, title);
         }
 
+        @Override
         public IStyleEditor createEditor() {
             return new GlobalStyleEditor();
         }
 
+        @Override
         protected void loadImpl(Preferences node) {
             antialias = parseState(node, ANTIALIAS_KEY);
             textAntialias = parseState(node, TEXT_ANTIALIAS_KEY);
@@ -301,6 +301,7 @@ public class UI
             caretWidth = node.getInt(CARET_WIDTH_KEY, 2);
         }
 
+        @Override
         protected void saveImpl(Preferences node) {
             node.put(ANTIALIAS_KEY, stateToString(antialias));
             node.put(TEXT_ANTIALIAS_KEY, stateToString(textAntialias));
@@ -310,6 +311,7 @@ public class UI
             node.putInt(CARET_WIDTH_KEY, caretWidth);
         }
 
+        @Override
         public void dispose() {
             // do nothing
         }
@@ -327,7 +329,8 @@ public class UI
         private Spinner caretOffsetSpinner;
         private Spinner caretWidthSpinner;
 
-        public void createControl(Composite parent) {
+        @Override
+        public Control createControl(Composite parent) {
             panel = new Composite(parent, SWT.NONE);
             GridLayoutFactory.swtDefaults().numColumns(2).applyTo(panel);
 
@@ -367,12 +370,11 @@ public class UI
             caretWidthSpinner.setMinimum(-10);
             caretWidthSpinner.setMaximum(10);
             caretWidthSpinner.setSelection(caretWidth);
-        }
 
-        public Control getControl() {
             return panel;
         }
 
+        @Override
         public void apply() {
             antialias = (Integer) antialiasPanel.getSelectionValue();
             textAntialias = (Integer) textAntialiasPanel.getSelectionValue();
@@ -387,6 +389,7 @@ public class UI
             caretWidth = caretWidthSpinner.getSelection();
         }
 
+        @Override
         public void cancel() {
         }
     }

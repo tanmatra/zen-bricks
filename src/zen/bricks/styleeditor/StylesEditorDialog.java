@@ -87,7 +87,7 @@ public class StylesEditorDialog extends Dialog
 
     private final UI ui;
 
-    private final Map<Style, IStyleEditor> styleEditors = new HashMap<Style, IStyleEditor>();
+    private final Map<Style, Control> styleEditorControls = new HashMap<>();
 
     private Style selectedStyle;
 
@@ -216,25 +216,22 @@ public class StylesEditorDialog extends Dialog
             return;
         }
         if (selectedStyle != null) {
-            final IStyleEditor oldEditor = styleEditors.get(style);
-            if (oldEditor != null) {
-                final Control oldControl = oldEditor.getControl();
-                if (oldControl != null) {
-                    oldControl.removeControlListener(controlResizeListener);
-                    oldControl.setVisible(false);
-                }
+            final Control control = styleEditorControls.get(style);
+            if (control != null) {
+                control.removeControlListener(controlResizeListener);
+                control.setVisible(false);
             }
         }
 
         selectedStyle = style;
         if (style != null) {
-            IStyleEditor styleEditor = styleEditors.get(style);
-            if (styleEditor == null) {
-                styleEditor = style.createEditor();
-                styleEditors.put(style, styleEditor);
-                styleEditor.createControl(scrolledComposite);
+            Control control = styleEditorControls.get(style);
+            if (control == null) {
+                final IStyleEditor editor = style.createEditor();
+                control = editor.createControl(scrolledComposite);
+                control.setData(editor);
+                styleEditorControls.put(style, control);
             }
-            final Control control = styleEditor.getControl();
             scrolledComposite.setContent(control);
             scrolledComposite.setMinSize(control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
             control.setVisible(true);
@@ -263,16 +260,22 @@ public class StylesEditorDialog extends Dialog
         super.cancelPressed();
     }
 
+    private static IStyleEditor getEditor(Control editorControl) {
+        return (IStyleEditor) editorControl.getData();
+    }
+
     private void apply() {
-        for (IStyleEditor styleEditor : styleEditors.values()) {
-            styleEditor.apply();
+        for (Control control : styleEditorControls.values()) {
+            final IStyleEditor editor = getEditor(control);
+            editor.apply();
         }
         ui.fireChangedEvent();
     }
 
     void cancelEditors() {
-        for (IStyleEditor styleEditor : styleEditors.values()) {
-            styleEditor.cancel();
+        for (Control control : styleEditorControls.values()) {
+            final IStyleEditor editor = getEditor(control);
+            editor.cancel();
         }
     }
 

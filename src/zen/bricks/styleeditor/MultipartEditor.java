@@ -16,7 +16,8 @@ public abstract class MultipartEditor implements IStyleEditor
 
     protected abstract EditorPart<?, ?>[] createParts();
 
-    public void createControl(Composite parent) {
+    @Override
+    public Control createControl(Composite parent) {
         parts = createParts();
 
         composite = new Composite(parent, SWT.NONE);
@@ -32,18 +33,18 @@ public abstract class MultipartEditor implements IStyleEditor
         for (int i = 0; i < parts.length; i++) {
             parts[i].createWidgets(composite, numColumns);
         }
-    }
 
-    public Control getControl() {
         return composite;
     }
 
+    @Override
     public void apply() {
         for (final EditorPart<?, ?> part : parts) {
             part.apply();
         }
     }
 
+    @Override
     public void cancel() {
         for (final EditorPart<?, ?> part : parts) {
             part.cancel();

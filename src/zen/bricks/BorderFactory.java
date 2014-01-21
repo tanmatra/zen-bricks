@@ -51,17 +51,13 @@ public abstract class BorderFactory <V extends Border>
         }
 
         @Override
-        public Control getControl() {
-            return group;
-        }
-
-        @Override
-        public final void createControl(Composite parent) {
+        public final Control createControl(Composite parent) {
             group = new Group(parent, SWT.NONE);
             group.setLayout(new GridLayout(2, false));
             group.setText("Border properties");
 
             createContent(group);
+            return group;
         }
 
         protected abstract void createContent(Composite parent);
